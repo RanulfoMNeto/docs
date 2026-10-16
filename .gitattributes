@@ -1,0 +1,5 @@
+* text=auto eol=lf
+sources/raw/** -text linguist-vendored
+sources/manifest.json -text
+*.otf binary
+*.woff2 binary
