@@ -1,0 +1,221 @@
+{
+  "id": "compaction",
+  "order": 3,
+  "group": "context",
+  "title": {
+    "en": "Compaction",
+    "pt": "Compactação"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "compaction-depth-32"
+          ],
+          "text": {
+            "en": "Compaction replaces conversation history with a summary, optionally focused on what you specify.",
+            "pt": "Compactação substitui o histórico da conversa por um resumo, opcionalmente concentrado no que você especificar."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "compaction-concept-2"
+          ],
+          "text": {
+            "en": "Older parts of the conversation are compressed into a summary to leave more room for new messages.",
+            "pt": "As partes mais antigas da conversa são comprimidas em um resumo para deixar mais espaço para novas mensagens."
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "compaction-depth-33"
+          ],
+          "text": {
+            "en": "Detailed instructions from early in the conversation can be lost. Put [persistent rules](instructions.md) in instruction files instead of relying on conversation history.",
+            "pt": "Instruções detalhadas do início da conversa podem se perder. Coloque [regras persistentes](instructions.md) em arquivos de instruções, em vez de depender do histórico da conversa."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "compaction-codex-4-item-1"
+              ],
+              "text": {
+                "en": "After a long exchange, type `/compact`.",
+                "pt": "Após uma troca longa de mensagens, digite `/compact`."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "compaction-codex-4-item-2"
+              ],
+              "text": {
+                "en": "Confirm when Codex offers to summarize the conversation so far.",
+                "pt": "Confirme quando Codex oferecer resumir a conversa até aquele momento."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "compaction-codex-4-part-2"
+              ],
+              "text": {
+                "en": "Expected result: Codex replaces earlier interactions with a concise summary, freeing context while preserving critical details.",
+                "pt": "Resultado esperado: Codex substitui as interações anteriores por um resumo conciso, liberando contexto e preservando os detalhes críticos."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-inspection-after-compaction",
+              "level": 4,
+              "text": {
+                "en": "CLI · Inspection after compaction",
+                "pt": "CLI · Inspeção após a compactação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "compaction-depth-34"
+              ],
+              "text": {
+                "en": "Type `/status` and inspect current token usage, the active model, approval policy and writable roots. Remote connections also show the remote address and server version.",
+                "pt": "Digite `/status` e examine o uso atual de tokens, o modelo ativo, a política de aprovação e as raízes com permissão de escrita. Conexões remotas também mostram o endereço remoto e a versão do servidor."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "compaction-definition-1"
+              ],
+              "text": {
+                "en": "Older tool outputs are removed first; then the conversation is summarized. The project-root CLAUDE.md and auto memory survive compaction and are reloaded from disk; instructions given only in conversation can be lost. Run `/compact` to trigger it manually, optionally with a focus, such as `/compact focus on the API changes`.",
+                "pt": "As saídas de ferramentas mais antigas são removidas primeiro; depois, a conversa é resumida. O CLAUDE.md da raiz do projeto e a memória automática sobrevivem à compactação e são recarregados do disco; instruções dadas apenas na conversa podem se perder. Execute `/compact` para acionar manualmente, opcionalmente com um foco, como `/compact focus on the API changes`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "compaction-operation-2"
+              ],
+              "text": {
+                "en": "If a single file or tool result is so large that context fills again immediately after each summary, Claude Code stops auto-compaction after a few attempts and shows an error instead of looping. See [Auto-compaction stops with a thrashing error](https://code.claude.com/docs/en/troubleshooting#auto-compaction-stops-with-a-thrashing-error) for recovery steps.",
+                "pt": "Se um único arquivo ou resultado de ferramenta for tão grande que o contexto se preencha novamente logo após cada resumo, Claude Code interrompe a compactação automática após algumas tentativas e mostra um erro em vez de entrar em um ciclo. Consulte [Auto-compaction stops with a thrashing error](https://code.claude.com/docs/en/troubleshooting#auto-compaction-stops-with-a-thrashing-error) para os passos de recuperação."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "compaction-claude-5"
+              ],
+              "text": {
+                "en": "To control what compaction preserves, add a \"Compact Instructions\" section to CLAUDE.md or run `/compact` with a focus (such as `/compact focus on the API changes`).",
+                "pt": "Para controlar o que é preservado durante a compactação, adicione uma seção \"Compact Instructions\" ao CLAUDE.md ou execute `/compact` com um foco (como `/compact focus on the API changes`)."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "compaction-operation-3"
+              ],
+              "text": {
+                "en": "When the window approaches capacity, Cursor compresses older parts of the conversation into a summary to leave more room for new messages.",
+                "pt": "Quando a janela se aproxima da capacidade máxima, Cursor comprime as partes mais antigas da conversa em um resumo para deixar mais espaço para novas mensagens."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "compaction-cursor-6"
+              ],
+              "text": {
+                "en": "Select files and folders to include in context with @. Free space in the context window by running `/summarize`. `/compress` remains an alias.",
+                "pt": "Selecione arquivos e pastas para incluir no contexto com @. Libere espaço na janela de contexto executando `/summarize`. `/compress` continua sendo um alias."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-monitoring",
+              "level": 4,
+              "text": {
+                "en": "Editor · Monitoring",
+                "pt": "Editor · Acompanhamento"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "compaction-depth-35"
+              ],
+              "text": {
+                "en": "The circular indicator beside the prompt shows usage; clicking it opens a breakdown of tokens by category.",
+                "pt": "O indicador circular junto ao prompt mostra a ocupação; clicar nele abre o detalhamento de tokens por categoria."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,310 @@
+{
+  "id": "multi-agent",
+  "order": 19,
+  "group": "coordination",
+  "title": {
+    "en": "Multi-agent coordination",
+    "pt": "Multiagentes"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "multi-agent-concept-1"
+          ],
+          "text": {
+            "en": "Multi-agent coding means running more than one AI agent at a time, each working on a different task or a different part of the same task. As models run longer and take on more work, you move from steering one agent to coordinating several.",
+            "pt": "Programação multiagente é executar mais de um agente de IA ao mesmo tempo, cada um trabalhando em uma tarefa diferente ou em uma parte diferente da mesma tarefa. À medida que os modelos executam por mais tempo e assumem mais trabalho, você passa de orientar um agente a coordenar vários."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "heading",
+          "id": "operation-orchestrating-results",
+          "level": 3,
+          "text": {
+            "en": "Orchestrating results",
+            "pt": "Orquestração dos resultados"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "multi-agent-depth-131"
+          ],
+          "text": {
+            "en": "Orchestration includes starting subagents, forwarding follow-up instructions, waiting for results and closing their threads. When multiple agents run, the coordinator waits for the requested results and returns a consolidated response.",
+            "pt": "A orquestração inclui iniciar subagentes, encaminhar instruções de acompanhamento, aguardar resultados e encerrar suas conversas. Quando vários agentes estão em execução, o coordenador aguarda os resultados solicitados e retorna uma resposta consolidada."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-coordination-cost",
+          "level": 3,
+          "text": {
+            "en": "Coordination cost",
+            "pt": "Custo de coordenação"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "multi-agent-concept-2"
+          ],
+          "text": {
+            "en": "Coordinating team executions adds coordination overhead and consumes significantly more tokens than a single session. This arrangement works best when members can operate independently.",
+            "pt": "Coordenar execuções em equipe acrescenta sobrecarga de coordenação e consome significativamente mais tokens do que uma única sessão. Essa organização funciona melhor quando os integrantes podem operar de forma independente."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-codex-3"
+              ],
+              "text": {
+                "en": "ChatGPT Work and Codex can run subagent workflows by starting specialized agents in parallel and collecting their results in one response. This can be particularly useful for complex, highly parallel tasks, such as codebase exploration or implementing a multistep feature plan.",
+                "pt": "ChatGPT Work e Codex podem executar fluxos de trabalho com subagentes iniciando agentes especializados em paralelo e depois reunindo seus resultados em uma resposta. Isso pode ser particularmente útil para tarefas complexas com alto grau de paralelismo, como explorar uma base de código ou implementar um plano de funcionalidades com várias etapas."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-ide-extension",
+              "level": 4,
+              "text": {
+                "en": "IDE extension",
+                "pt": "Extensão de IDE"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-codex-4"
+              ],
+              "text": {
+                "en": "Ask Codex in an IDE chat to delegate independent parts of the work to subagents. Codex can also follow applicable `AGENTS.md` or skill instructions requesting delegation. When the background-agent interface is available, active subagents appear above the composer. Expand the panel to see their status, stop all active subagents or open an individual subagent thread.",
+                "pt": "Peça ao Codex em um chat da IDE que delegue partes independentes do trabalho a subagentes. Codex também pode seguir instruções aplicáveis de `AGENTS.md` ou de skills que solicitem delegação. Quando a interface de agentes em segundo plano está disponível, subagentes ativos aparecem acima do campo de composição. Expanda o painel para ver seu status, parar todos os subagentes ativos ou abrir a conversa de um subagente individual."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-explicit-parallel-work-request",
+              "level": 4,
+              "text": {
+                "en": "Explicit parallel work request",
+                "pt": "Solicitação explícita de trabalho paralelo"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "multi-agent-depth-132"
+              ],
+              "language": "text",
+              "code": "I would like to review the following points on the current PR (this branch vs main). Spawn one agent per point, wait for all of them, and summarize the result for each point.\n1. Security issue\n2. Code quality\n3. Bugs\n4. Race\n5. Test flakiness\n6. Maintainability of the code"
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-configuration-and-concurrency",
+              "level": 4,
+              "text": {
+                "en": "Configuration and concurrency",
+                "pt": "Configuração e concorrência"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-depth-181"
+              ],
+              "text": {
+                "en": "`agents.enabled` enables or disables multi-agent tools. `agents.max_concurrent_threads_per_session` caps concurrently open spawned-agent threads, excluding the primary agent.",
+                "pt": "`agents.enabled` habilita ou desabilita as ferramentas multiagentes. `agents.max_concurrent_threads_per_session` limita as conversas de agentes iniciados que podem permanecer abertas simultaneamente, sem contar o agente principal."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-depth-182"
+              ],
+              "text": {
+                "en": "`agents.enabled` defaults to `true`. If `agents.max_concurrent_threads_per_session` is unset, Codex chooses the default; existing configurations can keep using `agents.max_threads` as a legacy alias.",
+                "pt": "`agents.enabled` é `true` por padrão. Se `agents.max_concurrent_threads_per_session` não estiver definido, Codex escolhe o padrão; configurações existentes podem continuar usando `agents.max_threads` como alias legado."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-depth-185"
+              ],
+              "text": {
+                "en": "Global subagent settings live under `[agents]` in the [configuration](configuration.md) file.",
+                "pt": "As configurações globais de subagentes ficam na seção `[agents]` do arquivo de [configuração](configuration.md)."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-operation-2"
+              ],
+              "text": {
+                "en": "Agent teams add coordination overhead and use significantly more tokens than a single session. They work best when members can operate independently. For sequential tasks, edits in the same file or work with many dependencies, a single session or [subagents](subagents.md) are more effective.",
+                "pt": "Equipes de agentes adicionam sobrecarga de coordenação e usam significativamente mais tokens do que uma única sessão. Funcionam melhor quando os integrantes podem operar de forma independente. Para tarefas sequenciais, edições no mesmo arquivo ou trabalho com muitas dependências, uma única sessão ou [subagentes](subagents.md) são mais eficazes."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-claude-5"
+              ],
+              "text": {
+                "en": "Agent teams are experimental and disabled by default. Enable them by setting `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `settings.json` or the environment. Without this variable, no team is configured at session start, no team directory is written, and Claude does not start or propose teammates. Agent teams have [known limitations](https://code.claude.com/docs/en/agent-teams#limitations) involving session resumption, task coordination and shutdown behavior.",
+                "pt": "Equipes de agentes são experimentais e estão desabilitadas por padrão. Habilite-as definindo `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` em `settings.json` ou no ambiente. Sem essa variável, nenhuma equipe é configurada no início da sessão, nenhum diretório de equipe é escrito, e Claude não inicia nem propõe integrantes. Equipes de agentes têm [limitações conhecidas](https://code.claude.com/docs/en/agent-teams#limitations) relacionadas à retomada de sessões, à coordenação de tarefas e ao comportamento de encerramento."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-claude-6"
+              ],
+              "text": {
+                "en": "Agent teams coordinate multiple Claude Code instances working together. One session acts as lead, coordinating work, assigning tasks and synthesizing results. Members work independently, each in its own context window, and communicate directly with each other. You can also talk directly to any teammate without going through the lead.",
+                "pt": "Equipes de agentes permitem coordenar várias instâncias do Claude Code trabalhando juntas. Uma sessão atua como líder, coordenando o trabalho, atribuindo tarefas e sintetizando resultados. Os integrantes trabalham de forma independente, cada um em sua própria janela de contexto, e se comunicam diretamente entre si. Você também pode falar diretamente com qualquer integrante sem passar pelo líder."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-interactive-cli-configuration",
+              "level": 4,
+              "text": {
+                "en": "Interactive CLI · Configuration",
+                "pt": "CLI interativa · Configuração"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "multi-agent-depth-133"
+              ],
+              "language": "json",
+              "code": "{\n  \"env\": {\n    \"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS\": \"1\"\n  }\n}"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-depth-134"
+              ],
+              "text": {
+                "en": "Enabling teams also changes ordinary delegation: a subagent Claude names is launched as a teammate, so teams may appear without an explicit request. Creating teammates requires an interactive session; in `-p` mode or the Agent SDK, a named subagent remains an ordinary subagent even with teams enabled.",
+                "pt": "Habilitar equipes também altera a delegação comum: um subagente que Claude nomeia passa a ser iniciado como integrante de equipe, portanto equipes podem surgir sem uma solicitação explícita. A criação de integrantes exige uma sessão interativa; em modo `-p` ou no Agent SDK, um subagente nomeado continua sendo um subagente comum, mesmo com equipes habilitadas."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-tasks-and-confirmation",
+              "level": 4,
+              "text": {
+                "en": "Tasks and confirmation",
+                "pt": "Tarefas e confirmação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-depth-135"
+              ],
+              "text": {
+                "en": "The shared list coordinates pending, in-progress and completed tasks. A pending task with unresolved dependencies cannot be claimed until those dependencies finish. Agents without Task tools coordinate through messages instead of the shared list.",
+                "pt": "A lista compartilhada coordena tarefas pendentes, em andamento e concluídas. Uma tarefa pendente com dependências não resolvidas não pode ser assumida até que elas terminem. Agentes sem as ferramentas Task coordenam por mensagens, em vez da lista compartilhada."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-depth-136"
+              ],
+              "text": {
+                "en": "After enabling teams, describe the task and desired teammates in natural language. Claude starts them and coordinates work from the prompt.",
+                "pt": "Depois de habilitar equipes, descreva em linguagem natural a tarefa e os integrantes desejados. Claude os inicia e coordena o trabalho a partir do prompt."
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "multi-agent-depth-137"
+              ],
+              "language": "text",
+              "code": "I'm designing a CLI tool that helps developers track TODO comments across\ntheir codebase. Spawn three teammates to explore this from different angles:\none on UX, one on technical architecture, one playing devil's advocate."
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-depth-138"
+              ],
+              "text": {
+                "en": "Claude may use subagents instead of creating a team. Because both appear in the same panel, the panel alone does not confirm that a team was created. If subagents were started, ask again and explicitly request an agent team.",
+                "pt": "Claude pode usar subagentes em vez de criar uma equipe. Como ambos aparecem no mesmo painel, o painel sozinho não confirma a criação de uma equipe. Se foram iniciados subagentes, peça novamente e solicite explicitamente uma equipe de agentes."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-agents-window",
+              "level": 4,
+              "text": {
+                "en": "Agents Window",
+                "pt": "Agents Window"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-cursor-7"
+              ],
+              "text": {
+                "en": "Use the Agents Window, Cursor's agent-centered workspace for running and managing multiple agents across repositories and environments. You can start parallel cloud agents, work with them through web, mobile, Slack, GitHub and Linear, and move a task between local and cloud with one click.",
+                "pt": "Use a Agents Window, o workspace do Cursor centrado em agentes para executar e gerenciar vários agentes em repositórios e ambientes. Você pode iniciar agentes em paralelo na nuvem, trabalhar com eles pela web, por dispositivos móveis, Slack, GitHub e Linear, e mover uma tarefa entre local e nuvem com um clique."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "multi-agent-cursor-8"
+              ],
+              "text": {
+                "en": "Type `/multitask` to have Cursor run asynchronous subagents in parallel instead of queuing your requests. From a plan, click **Build in Parallel**, and Cursor runs independent steps simultaneously while keeping dependent steps ordered. This helps when tasks last long enough that waiting for each in sequence slows you down.",
+                "pt": "Digite `/multitask` para que Cursor execute subagentes assíncronos em paralelo em vez de colocar suas solicitações na fila. A partir de um plano, clique em **Build in Parallel**, e Cursor executa etapas independentes ao mesmo tempo, mantendo em ordem as etapas dependentes. Isso ajuda quando as tarefas duram o suficiente para que esperar por cada uma em sequência atrase você."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

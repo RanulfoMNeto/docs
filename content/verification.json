@@ -1,0 +1,258 @@
+{
+  "id": "verification",
+  "order": 12,
+  "group": "execution",
+  "title": {
+    "en": "Verification",
+    "pt": "Verificação"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "verification-concept-1"
+          ],
+          "text": {
+            "en": "A check returns a signal the agent can read in the conversation: a test suite, a build's exit code, a linter, a script comparing output with a fixture or a screenshot compared with a design.",
+            "pt": "Uma verificação retorna um sinal que o agente pode ler na conversa: uma suíte de testes, o código de saída de um build, um linter, um script que compare a saída com uma fixture ou uma captura de tela comparada a um design."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "verification-concept-2"
+          ],
+          "text": {
+            "en": "Without a runnable check, “looks done” is the only available signal, and every mistake depends on someone observing the work noticing it. With a check that produces success or failure, the agent does the work, runs the check, reads the result and iterates until it passes.",
+            "pt": "Sem uma verificação que possa executar, “parece concluído” é o único sinal disponível, e cada erro depende de ser percebido por quem acompanha o trabalho. Com uma verificação que produz sucesso ou falha, o agente faz o trabalho, executa a verificação, lê o resultado e itera até que ela passe."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-observable-evidence",
+          "level": 3,
+          "text": {
+            "en": "Observable evidence",
+            "pt": "Evidência observável"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "verification-depth-82"
+          ],
+          "text": {
+            "en": "Ask the agent to present evidence: test output, the command run and its result, or a screenshot of the outcome. Reviewing this evidence also lets you follow sessions you did not observe while they ran.",
+            "pt": "Peça ao agente que apresente evidências: a saída dos testes, o comando executado e seu retorno, ou uma captura de tela do resultado. A revisão dessas evidências também permite acompanhar sessões que você não observou durante a execução."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-fixing-bugs",
+              "level": 4,
+              "text": {
+                "en": "CLI · Fixing bugs",
+                "pt": "CLI · correção de erros"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "verification-codex-3-item-1"
+              ],
+              "text": {
+                "en": "Codex should rerun the reproduction steps after the fix.",
+                "pt": "Codex deve executar novamente os passos de reprodução após a correção."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "verification-codex-3-item-2"
+              ],
+              "text": {
+                "en": "If you have a standard check pipeline, ask it to run it:",
+                "pt": "Se você tem um pipeline padrão de verificações, peça que o execute:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "verification-codex-3-part-2"
+              ],
+              "language": "text",
+              "code": "After the fix, run lint + the smallest relevant test suite. Report the commands and results."
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-operation-2"
+              ],
+              "text": {
+                "en": "Run `/verify` yourself after Claude's check passes to confirm the change in the running application.",
+                "pt": "Execute `/verify` você mesmo depois que a verificação de Claude passar para confirmar a alteração na aplicação em execução."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-claude-4"
+              ],
+              "text": {
+                "en": "`/run` and `/verify` work without configuration. They infer how to start the application from the project type (CLI, server, TUI, browser-driven) and the contents of README, `package.json` or `Makefile`. This inference becomes unreliable for projects needing more than a standard launch: a database, an environment file, a graphical session or a multistep build.",
+                "pt": "`/run` e `/verify` funcionam sem configuração. Eles inferem como iniciar a aplicação pelo tipo do projeto (CLI, servidor, TUI, controlado por navegador) e pelo conteúdo de README, `package.json` ou `Makefile`. Essa inferência se torna pouco confiável em projetos que precisam de algo além de uma inicialização padrão: um banco de dados, um arquivo de ambiente, uma sessão gráfica, um build com várias etapas."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-invocation-and-project-recipe",
+              "level": 4,
+              "text": {
+                "en": "Invocation and project recipe",
+                "pt": "Acionamento e receita do projeto"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-depth-169"
+              ],
+              "text": {
+                "en": "Built-in skills are invoked by typing `/` followed by their name. Claude invokes some automatically when relevant; others, including `/verify`, run only when you invoke them, keeping the time and tokens spent on these longer checks under your control.",
+                "pt": "Skills integradas são invocadas digitando `/` seguido do nome. Claude invoca algumas automaticamente quando pertinentes; outras, incluindo `/verify`, só são executadas quando você as invoca, mantendo sob seu controle o tempo e os tokens usados nessas verificações mais longas."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-depth-170"
+              ],
+              "text": {
+                "en": "`/run-skill-generator` records how to run the project: it sets up the application in a clean environment, captures installation commands, environment variables and the startup script, and commits a skill in `.claude/skills/run-<name>/`. Then `/run`, `/verify` and other agents in the repository follow that recipe. Run the generator once per project and again if setup or startup changes.",
+                "pt": "`/run-skill-generator` registra como executar o projeto: prepara a aplicação em um ambiente limpo, captura comandos de instalação, variáveis de ambiente e script de inicialização e faz commit de uma skill em `.claude/skills/run-<name>/`. Depois, `/run`, `/verify` e outros agentes do repositório seguem essa receita. Execute o gerador uma vez por projeto e novamente se a preparação ou a inicialização mudar."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-cursor-5"
+              ],
+              "text": {
+                "en": "Control a browser to capture screenshots, test applications and verify visual changes. Agent can navigate pages, interact with elements and capture the current state for analysis. See the [Browser documentation](https://cursor.com/docs/agent/tools/browser) for details.",
+                "pt": "Controle um navegador para capturar telas, testar aplicações e verificar alterações visuais. Agent pode navegar pelas páginas, interagir com elementos e capturar o estado atual para análise. Consulte a [documentação de Browser](https://cursor.com/docs/agent/tools/browser) para mais detalhes."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-visual-results-and-approval",
+              "level": 4,
+              "text": {
+                "en": "Editor · Visual results and approval",
+                "pt": "Editor · Resultado visual e aprovação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-depth-83"
+              ],
+              "text": {
+                "en": "Agent shows browser actions and screenshots in chat, as well as the browser itself in a separate window or integrated panel.",
+                "pt": "Agent mostra as ações do navegador e capturas de tela no chat, além da própria janela do navegador, em uma janela separada ou em um painel integrado."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-depth-84"
+              ],
+              "text": {
+                "en": "You can use Browser without installing or configuring external tools.",
+                "pt": "Você pode usar Browser sem instalar ou configurar ferramentas externas."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-depth-85"
+              ],
+              "text": {
+                "en": "By default, browser tools require approval. Review each action before execution; this prevents unexpected navigation, data submission or script execution. Approval options are in Agent Settings.",
+                "pt": "Por padrão, as ferramentas do navegador exigem aprovação. Revise cada ação antes da execução; isso evita navegação, envio de dados ou execução de scripts inesperados. As opções de aprovação ficam em Agent Settings."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-test-procedure",
+              "level": 4,
+              "text": {
+                "en": "Editor · Test procedure",
+                "pt": "Editor · Procedimento de teste"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-depth-178"
+              ],
+              "text": {
+                "en": "Agent can run test suites and capture screenshots for visual regression tests. The official example requests form filling, workflow navigation, responsive tests, error validation and console inspection:",
+                "pt": "Agent pode executar suítes de testes e capturar telas para testes de regressão visual. O exemplo oficial solicita preenchimento de formulários, navegação por fluxos, testes responsivos, validação de erros e inspeção do console:"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "verification-depth-179"
+              ],
+              "text": {
+                "en": "`@browser Fill out forms with test data, click through workflows, test responsive designs, validate error messages, and monitor console for JavaScript errors`",
+                "pt": "`@browser Fill out forms with test data, click through workflows, test responsive designs, validate error messages, and monitor console for JavaScript errors`"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

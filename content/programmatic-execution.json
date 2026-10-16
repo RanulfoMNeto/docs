@@ -1,0 +1,318 @@
+{
+  "id": "programmatic-execution",
+  "order": 8,
+  "group": "execution",
+  "title": {
+    "en": "Programmatic execution",
+    "pt": "Execução programática"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "programmatic-execution-concept-1"
+          ],
+          "text": {
+            "en": "Non-interactive mode lets you run the agent from scripts, such as continuous integration jobs, without opening the interactive terminal interface.",
+            "pt": "O modo não interativo permite executar o agente a partir de scripts, como tarefas de integração contínua, sem abrir a interface interativa de terminal."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "programmatic-execution-depth-191"
+          ],
+          "text": {
+            "en": "Execution can be part of a CI pipeline, pre-merge checks or scheduled jobs. Its output can be piped into other tools; CLI workflows can feed command output to the agent and pass its result onward. It can also use explicit, preset sandbox and approval settings.",
+            "pt": "A execução pode integrar um pipeline de CI, verificações antes do merge ou tarefas agendadas. Sua saída pode ser encaminhada a outras ferramentas; fluxos de CLI podem fornecer a saída de comandos ao agente e repassar seu resultado adiante. Também pode usar configurações explícitas e previamente definidas de sandbox e aprovação."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-operation-2"
+              ],
+              "text": {
+                "en": "While `codex exec` runs, Codex streams progress to `stderr` and prints only the final agent message to `stdout`. This makes the final result easy to redirect or pipe.",
+                "pt": "Enquanto `codex exec` é executado, Codex transmite o progresso para `stderr` e imprime apenas a mensagem final do agente em `stdout`. Isso facilita redirecionar ou encaminhar o resultado final por um pipe."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-codex-3"
+              ],
+              "text": {
+                "en": "Pass the task prompt as a single argument:",
+                "pt": "Passe o prompt da tarefa como um único argumento:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "programmatic-execution-codex-3-part-2"
+              ],
+              "language": "bash",
+              "code": "codex exec \"summarize the repository structure and list the top 5 risky areas\""
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-codex-4"
+              ],
+              "text": {
+                "en": "By default, `codex exec` runs in a read-only sandbox. In automations, set the minimum permissions needed for the workflow.",
+                "pt": "Por padrão, `codex exec` é executado em uma sandbox somente leitura. Em automações, defina as menores permissões necessárias para o fluxo de trabalho."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-additional-input",
+              "level": 4,
+              "text": {
+                "en": "CLI · Additional input",
+                "pt": "CLI · Entrada adicional"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-depth-63"
+              ],
+              "text": {
+                "en": "When standard input receives piped content and a prompt is also supplied as an argument, Codex treats the prompt as the instruction and the piped content as additional context.",
+                "pt": "Quando a entrada padrão recebe conteúdo por um pipe e também é fornecido um prompt como argumento, Codex trata o prompt como instrução e o conteúdo recebido como contexto adicional."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-structured-events",
+              "level": 4,
+              "text": {
+                "en": "CLI · Structured events",
+                "pt": "CLI · Eventos estruturados"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-depth-64"
+              ],
+              "text": {
+                "en": "With `--json`, `stdout` becomes a JSON Lines stream that lets you capture events emitted during execution. Types include `thread.started`, `turn.started`, `turn.completed`, `turn.failed`, `item.*` and `error`. Items include agent messages, reasoning, commands, file changes, MCP calls, web searches and plan updates.",
+                "pt": "Com `--json`, `stdout` torna-se um fluxo JSON Lines que permite capturar os eventos emitidos durante a execução. Os tipos incluem `thread.started`, `turn.started`, `turn.completed`, `turn.failed`, `item.*` e `error`. Os itens incluem mensagens do agente, raciocínio, comandos, alterações em arquivos, chamadas MCP, buscas na web e atualizações do plano."
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "programmatic-execution-depth-65"
+              ],
+              "language": "bash",
+              "code": "codex exec --json \"summarize the repo structure\" | jq"
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-claude-5"
+              ],
+              "text": {
+                "en": "This example asks Claude a question about your codebase and prints the response:",
+                "pt": "Este exemplo faz ao Claude uma pergunta sobre sua base de código e imprime a resposta:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "programmatic-execution-claude-5-part-2"
+              ],
+              "language": "bash",
+              "code": "claude -p \"What does the auth module do?\""
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-claude-5-part-3"
+              ],
+              "text": {
+                "en": "Claude Code exits with code 0 on success and a nonzero code when the run fails, so scripts can branch on the exit status. If you pass an invalid flag, Claude Code reports the error to stderr before execution starts. When a failure occurs during execution, such as missing authentication, Claude Code prints the failure as a result to stdout.",
+                "pt": "Claude Code termina com código 0 em caso de sucesso e com um código diferente de zero quando a execução falha, para que seus scripts possam seguir caminhos diferentes conforme o status de saída. Se você passar uma flag inválida, Claude Code relata o erro em stderr antes do início da execução. Quando uma falha ocorre durante a execução, como falta de autenticação, Claude Code imprime a falha como resultado em stdout."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-loading-the-environment",
+              "level": 4,
+              "text": {
+                "en": "CLI · Loading the environment",
+                "pt": "CLI · Carregamento do ambiente"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-depth-66"
+              ],
+              "text": {
+                "en": "Add `--bare` to reduce startup by disabling automatic discovery of hooks, skills, custom commands, subagents, installed plugins, MCP servers, auto memory and CLAUDE.md. Without this option, `claude -p` discovers and loads these resources like an interactive session, including configuration in the working directory or `~/.claude`.",
+                "pt": "Adicione `--bare` para reduzir a inicialização, desativando a descoberta automática de hooks, skills, comandos personalizados, subagentes, plugins instalados, servidores MCP, memória automática e CLAUDE.md. Sem essa opção, `claude -p` descobre e carrega esses recursos como uma sessão interativa, incluindo o que estiver configurado no diretório de trabalho ou em `~/.claude`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-depth-67"
+              ],
+              "text": {
+                "en": "This example runs a summarization task in bare mode and preapproves the Read tool. Set `ANTHROPIC_API_KEY` before running it: bare mode does not use subscription login.",
+                "pt": "Este exemplo executa uma tarefa de resumo em modo bare e autoriza previamente a ferramenta Read. Defina `ANTHROPIC_API_KEY` antes de executá-lo: o modo bare não usa o login da assinatura."
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "programmatic-execution-depth-68"
+              ],
+              "language": "bash",
+              "code": "claude --bare -p \"Summarize README.md\" --allowedTools \"Read\""
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-cursor-6"
+              ],
+              "text": {
+                "en": "Use print mode (`-p, --print`) for non-interactive scripts and automations.",
+                "pt": "Use o modo de impressão (`-p, --print`) para scripts e automações não interativos."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-cursor-7"
+              ],
+              "text": {
+                "en": "The `--force` flag allows the agent to make direct file changes without confirmation.",
+                "pt": "A flag `--force` permite que o agente faça alterações diretas nos arquivos sem confirmação."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-cursor-limit"
+              ],
+              "text": {
+                "en": "Without `--force`, changes are only proposed, not applied.",
+                "pt": "Sem `--force`, as alterações são apenas propostas, não aplicadas."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-cursor-8"
+              ],
+              "text": {
+                "en": "Cursor has full write access in non-interactive mode.",
+                "pt": "Cursor tem acesso completo de escrita no modo não interativo."
+              }
+            },
+            {
+              "type": "note",
+              "references": [
+                "programmatic-execution-cursor-limit",
+                "programmatic-execution-cursor-8"
+              ],
+              "text": {
+                "en": "Documentary discrepancy: “Using Headless CLI” makes direct changes conditional on `--force`; “Using Agent in CLI” states that non-interactive mode has full write access. The snapshot does not clarify this difference.",
+                "pt": "Divergência no acervo: “Using Headless CLI” condiciona alterações diretas a `--force`; “Using Agent in CLI” declara acesso completo de escrita no modo não interativo. O snapshot não esclarece essa diferença."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli-final-response",
+              "level": 4,
+              "text": {
+                "en": "CLI · Final response",
+                "pt": "CLI · Resposta final"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "programmatic-execution-depth-69"
+              ],
+              "text": {
+                "en": "By default, `--print` uses the `text` format and returns only the final response:",
+                "pt": "Por padrão, `--print` usa o formato `text` e retorna apenas a resposta final:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "programmatic-execution-depth-70"
+              ],
+              "language": "bash",
+              "code": "#!/bin/bash\n# Simple codebase question - uses text format by default\n\nagent -p \"What does this codebase do?\""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

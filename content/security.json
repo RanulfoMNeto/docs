@@ -1,0 +1,241 @@
+{
+  "id": "security",
+  "order": 11,
+  "group": "execution",
+  "title": {
+    "en": "Security",
+    "pt": "Segurança"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "security-depth-78"
+          ],
+          "text": {
+            "en": "Security controls include two layers: a [sandbox](sandbox.md), which limits what model-generated commands can technically do, and an [approval](permissions.md) policy, which determines when authorization must be requested before an action runs.",
+            "pt": "Os controles de segurança incluem duas camadas: uma [sandbox](sandbox.md), que limita o que comandos gerados pelo modelo podem fazer tecnicamente, e uma política de [aprovação](permissions.md), que determina quando é necessário pedir autorização antes de executar uma ação."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "security-concept-2"
+          ],
+          "text": {
+            "en": "Hostile instructions inserted into a file, web page or tool result attempt to redirect the agent toward actions that were not requested.",
+            "pt": "Instruções hostis inseridas em um arquivo, página web ou resultado de ferramenta tentam redirecionar o agente para ações que não foram solicitadas."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-review-before-approval",
+          "level": 3,
+          "text": {
+            "en": "Review before approval",
+            "pt": "Revisão antes da autorização"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "security-depth-79"
+          ],
+          "text": {
+            "en": "You are responsible for reviewing proposed code and commands for safety before approving them.",
+            "pt": "Cabe a você revisar a segurança do código e dos comandos propostos antes de aprová-los."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "security-codex-3"
+              ],
+              "text": {
+                "en": "Set `web_search = \"indexed\"` when external web access should be gated by the search index. Use caution when enabling network access or web search in Codex. Prompt injection can cause the agent to fetch and follow untrusted instructions.",
+                "pt": "Defina `web_search = \"indexed\"` quando o acesso externo à web precisar ser condicionado ao índice de pesquisa. Tenha cautela ao habilitar acesso à rede ou pesquisa na web no Codex. Injeção de prompt pode levar o agente a buscar e seguir instruções não confiáveis."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-calls-with-external-effects",
+              "level": 4,
+              "text": {
+                "en": "Calls with external effects",
+                "pt": "Chamadas com efeitos externos"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "security-depth-80"
+              ],
+              "text": {
+                "en": "Codex can also request approval for app tool calls advertising side effects, even without a shell command or file change. Destructive app or MCP calls always require approval when the tool advertises a destructive annotation, unless it also advertises a read annotation, which takes priority.",
+                "pt": "Codex também pode solicitar aprovação para chamadas de ferramentas de apps que anunciem efeitos colaterais, mesmo sem comando de shell ou alteração de arquivo. Chamadas destrutivas de apps ou MCP sempre exigem aprovação quando a ferramenta anuncia uma anotação destrutiva, a menos que também anuncie uma anotação de leitura, que tem prioridade."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "security-claude-4-item-1"
+              ],
+              "text": {
+                "en": "**Permission system:** in Manual mode, sensitive operations require explicit approval.",
+                "pt": "**Sistema de permissões:** no modo Manual, operações sensíveis exigem aprovação explícita."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "security-claude-4-item-2"
+              ],
+              "text": {
+                "en": "**Network command approval:** commands fetching web content, such as `curl` and `wget`, are not automatically approved by default. In Manual mode, they request approval like any other non-read-only Bash command, so you can still approve once or add an explicit allow rule such as `Bash(curl *)`. To prevent Claude from running them, add them to `permissions.deny`. A deny rule matches the command as written; for network enforcement independent of command text, see [sandbox network isolation](https://code.claude.com/docs/en/sandboxing#network-isolation).",
+                "pt": "**Aprovação de comandos de rede:** comandos que buscam conteúdo na web, como `curl` e `wget`, não são aprovados automaticamente por padrão. No modo Manual, solicitam aprovação como qualquer outro comando Bash que não seja somente leitura; portanto, você ainda pode aprovar uma vez ou adicionar uma regra allow explícita como `Bash(curl *)`. Para impedir Claude de executá-los, adicione-os a `permissions.deny`. Uma regra deny corresponde ao comando como escrito; para controle de rede que não dependa do texto do comando, consulte [isolamento de rede da sandbox](https://code.claude.com/docs/en/sandboxing#network-isolation)."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-working-directory-boundary",
+              "level": 4,
+              "text": {
+                "en": "Working directory boundary",
+                "pt": "Limite do diretório de trabalho"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "security-depth-81"
+              ],
+              "text": {
+                "en": "In Manual mode, Claude Code asks before its file tools read or write outside the launch folder and its subfolders. This boundary is a permission prompt: an approved Bash command can still write anywhere your account permits. To restrict Bash commands at the operating-system level, enable the sandbox.",
+                "pt": "No modo Manual, Claude Code pergunta antes de suas ferramentas de arquivos lerem ou escreverem fora da pasta de inicialização e de suas subpastas. Esse limite é uma solicitação de permissão: um comando Bash aprovado ainda pode escrever em qualquer local permitido à sua conta. Para restringir comandos Bash no nível do sistema operacional, ative a sandbox."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "security-operation-2"
+              ],
+              "text": {
+                "en": "Ignored files are blocked for Agent. Terminal commands and [MCP tools](mcp.md) run outside Cursor's file-access controls, so they may still be able to read ignored files.",
+                "pt": "Arquivos ignorados são bloqueados para Agent. Comandos de terminal e [ferramentas MCP](mcp.md) são executados fora dos controles de acesso a arquivos do Cursor, então ainda podem conseguir ler arquivos ignorados."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-auto-review",
+              "level": 4,
+              "text": {
+                "en": "Auto-review",
+                "pt": "Auto-review"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "security-cursor-5"
+              ],
+              "text": {
+                "en": "The classifier can make mistakes. It may allow a call you would have blocked or block a call you would have allowed.",
+                "pt": "O classificador pode cometer erros. Ele pode permitir uma chamada que você teria bloqueado ou bloquear uma chamada que você teria permitido."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "security-cursor-6"
+              ],
+              "text": {
+                "en": "Cursor supports workspace trust, but it is disabled by default. When enabled, it asks you to choose normal or restricted mode for new workspaces. Restricted mode prevents AI features from operating. For untrusted repositories, use a basic text editor.",
+                "pt": "Cursor oferece suporte à confiança de workspace, mas ela está desativada por padrão. Quando habilitada, solicita que você escolha entre o modo normal e o restrito para novos workspaces. O modo restrito impede o funcionamento dos recursos de IA. Para repositórios não confiáveis, use um editor de texto básico."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "security-cursor-6-part-2"
+              ],
+              "text": {
+                "en": "To enable workspace trust:",
+                "pt": "Para habilitar a confiança de workspace:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "security-cursor-6-part-3-item-1"
+              ],
+              "text": {
+                "en": "Open your user settings.json file.",
+                "pt": "Abra seu arquivo settings.json de usuário."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "security-cursor-6-part-3-item-2"
+              ],
+              "text": {
+                "en": "Add the following setting:",
+                "pt": "Adicione a seguinte configuração:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "security-cursor-6-part-4"
+              ],
+              "language": "json",
+              "code": "\"security.workspace.trust.enabled\": true"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

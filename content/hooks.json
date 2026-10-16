@@ -1,0 +1,487 @@
+{
+  "id": "hooks",
+  "order": 15,
+  "group": "extensions",
+  "title": {
+    "en": "Hooks",
+    "pt": "Hooks"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "hooks-concept-1"
+          ],
+          "text": {
+            "en": "Hooks let you observe, control and extend the agent loop using custom scripts.",
+            "pt": "Hooks permitem observar, controlar e estender o ciclo do agente usando scripts personalizados."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "hooks-concept-2"
+          ],
+          "text": {
+            "en": "Command hooks run at specific points in the program's lifecycle. This provides deterministic control: certain actions always happen without depending on the model deciding to execute them.",
+            "pt": "Hooks de comando são executados em pontos específicos do ciclo de vida do programa. Isso dá controle determinístico: certas ações sempre acontecem sem depender de o modelo decidir executá-las."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-event-matching-and-execution",
+          "level": 3,
+          "text": {
+            "en": "Event, matching and execution",
+            "pt": "Evento, correspondência e execução"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "hooks-depth-89"
+          ],
+          "text": {
+            "en": "Hook configuration is organized in three levels: a lifecycle event; a matcher group deciding when that event matches; and one or more handlers executed when the match occurs.",
+            "pt": "A configuração de hooks é organizada em três níveis: um evento do ciclo de execução; um grupo de correspondência que decide quando o evento corresponde; e um ou mais manipuladores executados quando essa correspondência ocorre."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-input-and-response",
+          "level": 3,
+          "text": {
+            "en": "Input and response",
+            "pt": "Entrada e resposta"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "hooks-depth-90"
+          ],
+          "text": {
+            "en": "In the JSON-based hook interface, shell scripts receive input through standard input and return the response through standard output.",
+            "pt": "Na interface de hooks baseada em JSON, scripts de shell recebem a entrada pela entrada padrão e retornam a resposta pela saída padrão."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-codex-3"
+              ],
+              "text": {
+                "en": "Codex discovers hooks alongside active configuration layers in either form:",
+                "pt": "Codex descobre hooks junto às camadas de configuração ativas em qualquer uma destas formas:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-codex-3-part-2-item-1"
+              ],
+              "text": {
+                "en": "`hooks.json`",
+                "pt": "`hooks.json`"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-codex-3-part-2-item-2"
+              ],
+              "text": {
+                "en": "Inline `[hooks]` tables in `config.toml`",
+                "pt": "Tabelas `[hooks]` inline em `config.toml`"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-codex-4"
+              ],
+              "text": {
+                "en": "In practice, the four most useful locations are:",
+                "pt": "Na prática, os quatro locais mais úteis são:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-codex-4-part-2-item-1"
+              ],
+              "text": {
+                "en": "`~/.codex/hooks.json`",
+                "pt": "`~/.codex/hooks.json`"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-codex-4-part-2-item-2"
+              ],
+              "text": {
+                "en": "`~/.codex/config.toml`",
+                "pt": "`~/.codex/config.toml`"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-codex-4-part-2-item-3"
+              ],
+              "text": {
+                "en": "`<repo>/.codex/hooks.json`",
+                "pt": "`<repo>/.codex/hooks.json`"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-codex-4-part-2-item-4"
+              ],
+              "text": {
+                "en": "`<repo>/.codex/config.toml`",
+                "pt": "`<repo>/.codex/config.toml`"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-codex-4-part-3"
+              ],
+              "text": {
+                "en": "If multiple hook sources exist, Codex loads all matching hooks. Higher-precedence configuration layers do not replace lower-precedence hooks. If one layer contains both `hooks.json` and inline `[hooks]`, Codex merges them and warns at startup. Prefer one representation per layer.",
+                "pt": "Se existir mais de uma fonte de hooks, Codex carrega todos os hooks correspondentes. Camadas de configuração de maior precedência não substituem hooks de menor precedência. Se uma única camada contiver tanto `hooks.json` quanto `[hooks]` inline, Codex os mescla e avisa na inicialização. Prefira uma representação por camada."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-codex-5"
+              ],
+              "text": {
+                "en": "Project-local hooks load only when the project's `.codex/` layer is trusted. In untrusted projects, Codex still loads user and system hooks from their own active configuration layers.",
+                "pt": "Hooks locais do projeto só são carregados quando a camada `.codex/` do projeto é confiável. Em projetos não confiáveis, Codex ainda carrega hooks de usuário e sistema a partir de suas próprias camadas de configuração ativas."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-toml-example",
+              "level": 4,
+              "text": {
+                "en": "CLI · TOML example",
+                "pt": "CLI · Exemplo em TOML"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-91"
+              ],
+              "text": {
+                "en": "For an inline hook in `config.toml`, set `async = true` to run it in the background:",
+                "pt": "Para um hook inline em `config.toml`, defina `async = true` para executá-lo em segundo plano:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "hooks-depth-92"
+              ],
+              "language": "toml",
+              "code": "[[hooks.PostToolUse]]\nmatcher = \"Bash\"\n\n[[hooks.PostToolUse.hooks]]\ntype = \"command\"\ncommand = \"python3 ~/.codex/hooks/post_tool_use.py\"\nasync = true\ntimeout = 120"
+            },
+            {
+              "type": "note",
+              "references": [
+                "hooks-depth-92"
+              ],
+              "text": {
+                "en": "This is a configuration example. The Python file named in the command is a dependency; its contents are not supplied in this official excerpt.",
+                "pt": "Este é um exemplo de configuração. O arquivo Python indicado no comando é uma dependência; seu conteúdo não é fornecido neste trecho oficial."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-input-review-and-output",
+              "level": 4,
+              "text": {
+                "en": "Input, review and output",
+                "pt": "Entrada, revisão e retorno"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-93"
+              ],
+              "text": {
+                "en": "Each command hook receives a JSON object through standard input, `stdin`.",
+                "pt": "Cada hook de comando recebe um objeto JSON pela entrada padrão, `stdin`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-94"
+              ],
+              "text": {
+                "en": "Before running an unmanaged hook, Codex requires review and trust of the exact definition. Trust is tied to the current hash; new or changed hooks are skipped until approved. Use `/hooks` in the CLI to inspect sources, review changes, trust hooks or disable them. If review is pending at startup, Codex shows a notice.",
+                "pt": "Antes de executar um hook não gerenciado, Codex exige a revisão e a confiança na definição exata. A confiança fica associada ao hash atual; hooks novos ou alterados são ignorados até serem aprovados. Use `/hooks` na CLI para inspecionar as fontes, revisar alterações, confiar em hooks ou desativá-los. Se houver revisão pendente na inicialização, Codex mostra um aviso."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-95"
+              ],
+              "text": {
+                "en": "Exit code `0` with no output is treated as success, and Codex continues.",
+                "pt": "Uma saída com código `0` e sem conteúdo é tratada como sucesso, e Codex continua."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-operation-2-part-2"
+              ],
+              "text": {
+                "en": "For decisions requiring judgment rather than deterministic rules, you can also use prompt-based or agent-based hooks, which use a Claude model to evaluate conditions.",
+                "pt": "Para decisões que exigem julgamento em vez de regras determinísticas, você também pode usar hooks baseados em prompts ou em agentes, que usam um modelo Claude para avaliar condições."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-claude-6-item-1"
+              ],
+              "text": {
+                "en": "`~/.claude/settings.json`: all your projects; not shareable, local to your machine.",
+                "pt": "`~/.claude/settings.json`: todos os seus projetos; não compartilhável, local à sua máquina."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-claude-6-item-2"
+              ],
+              "text": {
+                "en": "`.claude/settings.json`: one project; shareable, can be committed to the repository.",
+                "pt": "`.claude/settings.json`: um único projeto; compartilhável, pode ser incluído no repositório."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "hooks-claude-6-item-3"
+              ],
+              "text": {
+                "en": "`.claude/settings.local.json`: one project; not shareable, ignored by Git when Claude Code saves a setting there.",
+                "pt": "`.claude/settings.local.json`: um único projeto; não compartilhável, ignorado pelo Git quando Claude Code salva uma configuração nele."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-claude-7"
+              ],
+              "text": {
+                "en": "Run `/hooks` in Claude Code to see all configured hooks, grouped by event.",
+                "pt": "Execute `/hooks` no Claude Code para consultar todos os hooks configurados, agrupados por evento."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-reinjection-after-compaction",
+              "level": 4,
+              "text": {
+                "en": "CLI · Reinjection after compaction",
+                "pt": "CLI · Reinjeção após compactação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-96"
+              ],
+              "text": {
+                "en": "When the context window fills, compaction summarizes the conversation and may lose important details. Use a `SessionStart` hook matching `compact` to reinject context after each compaction.",
+                "pt": "Quando a janela de contexto se preenche, a compactação resume a conversa e pode perder detalhes importantes. Use um hook `SessionStart` com correspondência `compact` para reinjetar contexto após cada compactação."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-97"
+              ],
+              "text": {
+                "en": "Claude Code appends plain text written by the command to stdout to the context. This example recalls project conventions and recent work; add it to `.claude/settings.json` at the project root:",
+                "pt": "Claude Code acrescenta ao contexto o texto simples escrito pelo comando em stdout. Este exemplo lembra convenções do projeto e trabalho recente; adicione-o a `.claude/settings.json` na raiz do projeto:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "hooks-depth-98"
+              ],
+              "language": "json",
+              "code": "{\n  \"hooks\": {\n    \"SessionStart\": [\n      {\n        \"matcher\": \"compact\",\n        \"hooks\": [\n          {\n            \"type\": \"command\",\n            \"command\": \"echo 'Reminder: use Bun, not npm. Run bun test before committing. Current sprint: auth refactor.'\"\n          }\n        ]\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-definition-1"
+              ],
+              "text": {
+                "en": "Hooks let you observe, control and extend the agent loop with custom scripts. Define hooks in project- or user-level `hooks.json` files, or install them through plugins in **Customize**. Hooks are spawned processes communicating over stdio with JSON in both directions. They run before or after defined steps in the agent loop and can observe, block or modify behavior.",
+                "pt": "Hooks permitem observar, controlar e estender o ciclo do agente usando scripts personalizados. Defina hooks em arquivos `hooks.json` no nível de projeto ou usuário, ou instale-os por plugins em **Customize**. Hooks são processos iniciados que se comunicam por stdio usando JSON nas duas direções. Eles são executados antes ou depois de etapas definidas do ciclo do agente e podem observar, bloquear ou modificar o comportamento."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-cursor-8"
+              ],
+              "text": {
+                "en": "For project-level hooks applying to a specific repository, create `<project>/.cursor/hooks.json`:",
+                "pt": "Para hooks no nível do projeto que se aplicam a um repositório específico, crie `<project>/.cursor/hooks.json`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "hooks-cursor-8-part-2"
+              ],
+              "language": "json",
+              "code": "{\n  \"version\": 1,\n  \"hooks\": {\n    \"afterFileEdit\": [{ \"command\": \".cursor/hooks/format.sh\" }]\n  }\n}"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-cursor-8-part-3"
+              ],
+              "text": {
+                "en": "Note: project hooks run from the **project root**, so use `.cursor/hooks/format.sh` (not `./hooks/format.sh`).",
+                "pt": "Nota: hooks de projeto são executados a partir da **raiz do projeto**, então use `.cursor/hooks/format.sh` (não `./hooks/format.sh`)."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-cursor-9"
+              ],
+              "text": {
+                "en": "Create your hook script at `<project>/.cursor/hooks/format.sh`:",
+                "pt": "Crie seu script de hook em `<project>/.cursor/hooks/format.sh`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "hooks-cursor-9-part-2"
+              ],
+              "language": "bash",
+              "code": "#!/bin/bash\n# Read input, do something, exit 0\ncat > /dev/null\nexit 0"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-cursor-9-part-3"
+              ],
+              "text": {
+                "en": "Make it executable:",
+                "pt": "Torne-o executável:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "hooks-cursor-9-part-4"
+              ],
+              "language": "bash",
+              "code": "chmod +x .cursor/hooks/format.sh"
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-exit-codes-and-inspection",
+              "level": 4,
+              "text": {
+                "en": "Exit codes and inspection",
+                "pt": "Códigos de saída e inspeção"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-99"
+              ],
+              "text": {
+                "en": "Exit code `0` indicates success and makes Cursor use the JSON output. For permission hooks, including `beforeShellExecution`, `beforeMCPExecution`, `beforeReadFile`, `beforeTabFileRead`, `subagentStart` and `preToolUse`, invalid JSON or a schema-incompatible response blocks the action.",
+                "pt": "O código de saída `0` indica sucesso e faz Cursor usar a saída JSON. Para hooks de permissão, incluindo `beforeShellExecution`, `beforeMCPExecution`, `beforeReadFile`, `beforeTabFileRead`, `subagentStart` e `preToolUse`, JSON inválido ou uma resposta incompatível com o esquema bloqueiam a ação."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-100"
+              ],
+              "text": {
+                "en": "Exit code `2` blocks the action, like a `permission: \"deny\"` response. Other codes indicate hook failure and, by default, the action proceeds.",
+                "pt": "O código de saída `2` bloqueia a ação, como uma resposta `permission: \"deny\"`. Outros códigos indicam falha do hook e, por padrão, a ação prossegue."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "hooks-depth-101"
+              ],
+              "text": {
+                "en": "The Hooks tab in **Customize** and the Hooks output channel let you inspect configured and executed hooks and view errors.",
+                "pt": "A aba Hooks em **Customize** e o canal de saída Hooks permitem inspecionar hooks configurados e executados e consultar erros."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

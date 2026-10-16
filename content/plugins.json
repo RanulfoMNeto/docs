@@ -1,0 +1,390 @@
+{
+  "id": "plugins",
+  "order": 16,
+  "group": "extensions",
+  "title": {
+    "en": "Plugins",
+    "pt": "Plugins"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "plugins-concept-1"
+          ],
+          "text": {
+            "en": "Plugins package [rules](instructions.md), [skills](skills.md), [agents](subagents.md), commands, [MCP servers](mcp.md) and [hooks](hooks.md) into distributable bundles.",
+            "pt": "Plugins empacotam [regras](instructions.md), [skills](skills.md), [agentes](subagents.md), comandos, [servidores MCP](mcp.md) e [hooks](hooks.md) em pacotes distribuíveis."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "plugins-concept-2"
+          ],
+          "text": {
+            "en": "A plugin is a directory of components, usually with a manifest. The manifest gives the plugin its name and can add a version, description and other metadata.",
+            "pt": "Um plugin é um diretório de componentes, normalmente com um manifesto. O manifesto dá ao plugin seu nome e pode adicionar versão, descrição e outros metadados."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-installation-as-a-unit",
+          "level": 3,
+          "text": {
+            "en": "Installation as a unit",
+            "pt": "Instalação como unidade"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "plugins-depth-114"
+          ],
+          "text": {
+            "en": "The program installs and loads a plugin's component directory as a unit. Most plugins come from a marketplace: a catalog listing plugins and where to obtain each one. You can also load a plugin from a folder.",
+            "pt": "O programa instala e carrega o diretório de componentes de um plugin como uma unidade. A maioria dos plugins vem de um marketplace: um catálogo que lista os plugins e o local de onde obter cada um. Também é possível carregar um plugin a partir de uma pasta."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-codex-3"
+              ],
+              "text": {
+                "en": "Plugins work in Chat and Work in ChatGPT on web, desktop and mobile, and in Codex in the ChatGPT desktop app. The Codex CLI also has a plugin browser for Codex environments. The IDE extension does not support plugins.",
+                "pt": "Plugins funcionam em Chat e Work no ChatGPT na web, desktop e dispositivos móveis, e no Codex no aplicativo desktop do ChatGPT. A CLI do Codex também tem um navegador de plugins para ambientes Codex. A extensão de IDE não oferece suporte a plugins."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-codex-4"
+              ],
+              "text": {
+                "en": "In the Codex CLI, run the following command to open the plugin browser:",
+                "pt": "Na CLI do Codex, execute o seguinte comando para abrir o navegador de plugins:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "plugins-codex-4-part-2"
+              ],
+              "language": "text",
+              "code": "codex\n/plugins"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-codex-4-part-3"
+              ],
+              "text": {
+                "en": "The CLI plugin browser groups plugins by marketplace. Use marketplace tabs to switch sources, open a plugin to inspect details, install or uninstall marketplace entries, and press Space on an installed plugin to enable or disable it.",
+                "pt": "O navegador de plugins da CLI agrupa plugins por marketplace. Use as abas de marketplace para alternar as fontes, abra um plugin para inspecionar detalhes, instale ou desinstale entradas do marketplace e pressione Space em um plugin instalado para ativá-lo ou desativá-lo."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-loading-and-external-access",
+              "level": 4,
+              "text": {
+                "en": "Loading and external access",
+                "pt": "Carregamento e acesso externo"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-depth-115"
+              ],
+              "text": {
+                "en": "Skills bundled in plugins become available when you start a new conversation or CLI session after installation. Bundled MCP servers may require additional configuration or authentication before use.",
+                "pt": "Skills incluídas em plugins ficam disponíveis quando você inicia uma nova conversa ou sessão de CLI após a instalação. Servidores MCP incluídos no plugin podem exigir configuração ou autenticação adicional antes do uso."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-depth-116"
+              ],
+              "text": {
+                "en": "When a plugin capability runs through a Codex host, that host's sandbox and approval policy apply. External connections use the service's own authentication and access controls.",
+                "pt": "Quando uma capacidade do plugin é executada por um host Codex, aplicam-se a sandbox e a política de aprovação desse host. Conexões externas usam a autenticação e os controles de acesso do próprio serviço."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-operation-2"
+              ],
+              "text": {
+                "en": "A plugin is a directory of components, usually with a manifest. The manifest, a JSON file at `.claude-plugin/plugin.json`, gives the plugin its name and can add a version, description and other metadata. Components are what the plugin adds to Claude Code, such as:",
+                "pt": "Um plugin é um diretório de componentes, normalmente com um manifesto. O manifesto, um arquivo JSON em `.claude-plugin/plugin.json`, dá ao plugin seu nome e pode adicionar versão, descrição e outros metadados. Os componentes são o que o plugin adiciona ao Claude Code, como:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "plugins-operation-2-part-2-item-1"
+              ],
+              "text": {
+                "en": "[**Skills:**](skills.md) `SKILL.md` instructions Claude loads when relevant and that you can also run as a command.",
+                "pt": "[**Skills:**](skills.md) instruções `SKILL.md` que Claude carrega quando relevantes e que você também pode executar como comando."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "plugins-operation-2-part-2-item-2"
+              ],
+              "text": {
+                "en": "[**Agents:**](subagents.md) subagent definitions to which Claude can delegate.",
+                "pt": "[**Agentes:**](subagents.md) definições de subagentes aos quais Claude pode delegar."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "plugins-operation-2-part-2-item-3"
+              ],
+              "text": {
+                "en": "[**Hooks:**](hooks.md) commands Claude Code runs at lifecycle points, such as after each edit.",
+                "pt": "[**Hooks:**](hooks.md) comandos que Claude Code executa em pontos do seu ciclo de vida, como após cada edição."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "plugins-operation-2-part-2-item-4"
+              ],
+              "text": {
+                "en": "**A hook module:** hooks written as JavaScript functions, which can also draw panels and add commands. A plugin with one is called a mod. Some mods are built into Claude Code.",
+                "pt": "**Um módulo de hooks:** hooks escritos como funções JavaScript, que também podem desenhar painéis e adicionar comandos. Um plugin que tem um desses é chamado de mod. Alguns mods são integrados ao Claude Code."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "plugins-operation-2-part-2-item-5"
+              ],
+              "text": {
+                "en": "[**MCP servers:**](mcp.md) tool servers Claude Code connects to while the plugin is enabled.",
+                "pt": "[**Servidores MCP:**](mcp.md) servidores de ferramentas aos quais Claude Code se conecta enquanto o plugin está habilitado."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-claude-5"
+              ],
+              "text": {
+                "en": "Claude Code adds Anthropic's official marketplace the first time you start an interactive terminal session, unless managed policy blocks it. Claude Code does not add Anthropic's community and demo marketplaces on its own. To distinguish Anthropic's three marketplaces, read [Anthropic’s marketplaces](https://code.claude.com/docs/en/plugins/anthropic-marketplaces). To see the official catalog, open the **Discover** tab of `/plugin` in a session or browse the [Claude Marketplace](https://claude.com/marketplace/plugins).",
+                "pt": "Claude Code adiciona o marketplace oficial da Anthropic na primeira vez que você inicia uma sessão interativa de terminal, a menos que uma política gerenciada o bloqueie. Claude Code não adiciona por conta própria os marketplaces de comunidade e demonstração da Anthropic. Para distinguir os três marketplaces da Anthropic, leia [Anthropic’s marketplaces](https://code.claude.com/docs/en/plugins/anthropic-marketplaces). Para ver o que o oficial lista, abra a aba **Discover** de `/plugin` em uma sessão ou navegue pelo [Claude Marketplace](https://claude.com/marketplace/plugins)."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-claude-6"
+              ],
+              "text": {
+                "en": "Run `/plugin install` with the plugin and marketplace name. Within a session, this command does not install immediately: it opens the `/plugin` panel at that plugin's details so you can review it and choose a scope first.",
+                "pt": "Execute `/plugin install` com o nome do plugin e do marketplace. Em uma sessão, esse comando não instala imediatamente: abre o painel `/plugin` nos detalhes daquele plugin para que você possa revisá-lo e escolher um escopo primeiro."
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "plugins-claude-6-part-2"
+              ],
+              "language": "text",
+              "code": "/plugin install commit-commands@claude-plugins-official"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-claude-7"
+              ],
+              "text": {
+                "en": "Regardless of category, an installed plugin can run code with your user privileges. Read [Plugin security and trust](https://code.claude.com/docs/en/plugins/security) to learn how to review one before installation.",
+                "pt": "Qualquer que seja a categoria, um plugin que você instala pode executar código com seus privilégios de usuário. Leia [Plugin security and trust](https://code.claude.com/docs/en/plugins/security) para saber como revisar um plugin antes de instalá-lo."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-scope-and-activation",
+              "level": 4,
+              "text": {
+                "en": "CLI · Scope and activation",
+                "pt": "CLI · Escopo e ativação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-depth-171"
+              ],
+              "text": {
+                "en": "Choose the scope: user, for all projects on this machine; project, for every repository collaborator; or local, only for you in this repository. After the choice, Claude Code installs the plugin and its declared dependencies and shows a summary.",
+                "pt": "Escolha o escopo: usuário, para todos os projetos desta máquina; projeto, para todos os colaboradores do repositório; ou local, apenas para você nesse repositório. Depois da escolha, Claude Code instala o plugin e suas dependências declaradas e mostra um resumo."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-confirming-installation",
+              "level": 4,
+              "text": {
+                "en": "CLI · Confirming installation",
+                "pt": "CLI · Confirmação da instalação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-depth-117"
+              ],
+              "text": {
+                "en": "Type `/` and look for the plugin's skills in the `/<plugin>:<skill>` format. For `commit-commands`, `/commit-commands:commit` appears. The **Installed** tab of `/plugin` lists the plugin and scope; in the shell, `claude plugin list` shows the same list with `Version`, `Scope` and `Status`.",
+                "pt": "Digite `/` e procure as skills do plugin no formato `/<plugin>:<skill>`. Para `commit-commands`, aparece `/commit-commands:commit`. A aba **Installed** de `/plugin` lista o plugin e seu escopo; no shell, `claude plugin list` mostra a mesma lista com `Version`, `Scope` e `Status`."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-cursor-8"
+              ],
+              "text": {
+                "en": "Install Agent Plugins and Cursor Plugins from a marketplace. Cursor detects the format from the manifest, so installation is the same for both:",
+                "pt": "Instale Agent Plugins e Cursor Plugins a partir de um marketplace. Cursor detecta o formato pelo manifesto do plugin, então o fluxo de instalação é o mesmo para ambos:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "plugins-cursor-8-part-2-item-1"
+              ],
+              "text": {
+                "en": "Open **Customize** in the sidebar.",
+                "pt": "Abra **Customize** na barra lateral."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "plugins-cursor-8-part-2-item-2"
+              ],
+              "text": {
+                "en": "Find the plugin you want to use.",
+                "pt": "Encontre o plugin que deseja usar."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "plugins-cursor-8-part-2-item-3"
+              ],
+              "text": {
+                "en": "Select **Install** and choose project or user scope.",
+                "pt": "Selecione **Install** e escolha o escopo de projeto ou usuário."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-management-and-scope",
+              "level": 4,
+              "text": {
+                "en": "Editor · Management and scope",
+                "pt": "Editor · Gerenciamento e escopo"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-depth-118"
+              ],
+              "text": {
+                "en": "Open **Customize** to manage Agent Plugins, Cursor Plugins, MCP servers, rules and skills on one page. Filter by user, workspace or team scope to see what is installed.",
+                "pt": "Abra **Customize** para gerenciar Agent Plugins, Cursor Plugins, servidores MCP, regras e skills em uma página. Filtre pelo escopo de usuário, workspace ou equipe para ver o que está instalado."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "plugins-depth-119"
+              ],
+              "text": {
+                "en": "In **Customize**, find the personal or team-distributed MCP server and use the toggle to enable or disable it. Disabled servers are not loaded and do not appear in chat.",
+                "pt": "Em **Customize**, encontre o servidor MCP pessoal ou distribuído pela equipe e use o controle para ativá-lo ou desativá-lo. Servidores desativados não são carregados nem aparecem no chat."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

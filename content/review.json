@@ -1,0 +1,31 @@
+{
+  "reviewer": "agent",
+  "scope": "English/Portuguese parity and source-backed content. This record identifies reviewed inputs; it is not an automated semantic assessment.",
+  "files": {
+    "content/agents.json": "61f9306476e22900846c4f2f3bfe6f503b7d02cd125803d168cd07533b9bc016",
+    "content/aliases.json": "29fa68d10862d1466602ab6075cc53587e5283fc0677e3710f0af3d2802e8f25",
+    "content/compaction.json": "b735cc2c91ade6b389465ded56dbccd4798d80a96f3aced9e3a2e96581763eaa",
+    "content/configuration.json": "390d65cfcd68be0384623feede8aab1e0d9114995343a1044ca7b03673b132d8",
+    "content/context.json": "fa37be7fd25cb928083d9c00208c0b797e535ea4dfa925e24d1d18a7f4445801",
+    "content/hooks.json": "d5a3270b91b2bbc77b1cf234ea6ea2d9699224c96bfaf2e454bc7818a3955b98",
+    "content/instructions.json": "c5ceb46ab8c801ab3d47940fd04a74478f0b60b6f488eae4d4f48dbb9e8bc370",
+    "content/mcp.json": "a5fc2a9af7cd1dc8d65ddb73f628516b2c25c52950c4befffb832f48643169a0",
+    "content/memory.json": "cbe2f1ed1303180d83fac809261082530338814ff6e2dd4800386520078dc6c6",
+    "content/multi-agent.json": "5bc2545021829e4a2e239ec781a3b349f13eba2ba187a89cec57189a64aabee9",
+    "content/permissions.json": "565054c2e27bd81a1c92794459ad43d9eed9e80431f8bae80e7cc663e3a58873",
+    "content/plugins.json": "1346807e6febb236bf5a9441bb8359b614941bf39f2f6f01fcffeebd2e4a870b",
+    "content/programmatic-execution.json": "2bdb2ee68d73cc5fa29b1880ebca0fa23d0936e9564a6d9c40187c5ff1314762",
+    "content/recovery.json": "f0d7222a54ca55f8b355384a4fd4bcf6d13c5125d5d3f4888f9cb57b3c6e1b61",
+    "content/references.json": "b9ec18263af9c89a2a2d96f60ab7c012bfb4c4b28354d39202fa0b398b22a583",
+    "content/sandbox.json": "a18c0645a905995cefd92b02a7a6ed8e4ebad796689095bb40a59798d86aa0d9",
+    "content/security.json": "32105b3c4a9a37200ceb4efd50c6b05157aca6d7a449229753c52e459ded7d69",
+    "content/sessions.json": "78534aa8501fd2bceffb666dbee79fff4cdfbc6a10061fc91256729347cfda41",
+    "content/skills.json": "beba5d62e23651d03e20d5acc040599a00fe7ec25ae432321c1813c82d897725",
+    "content/subagents.json": "d7c651b4d1d2a44c3ea03ca96f9fbe7370c76b17f95277198d18d7e6df3319a4",
+    "content/tools.json": "0045671125fa81a66f10d341210e0b824aa9b5357e84be90883f20cd5aec18a3",
+    "content/ui.json": "39e6bf22c904a5331cd9491eb669e7fb245a9e6be9fde24bba1fbf5944ff7fe5",
+    "content/verification.json": "9fc498e6a7e6159c73fa9598a4d59a7b05b0886ab341fcc9180241ef9d7a2ca6",
+    "content/worktrees.json": "21fb6a23809051511c7aa977958f72757713d269c68570674931c6c4161e724f",
+    "sources/manifest.json": "7a9e964ac74b59f832443ff4ca33aa745abbda8ed48308f607cf34b94c652a24"
+  }
+}

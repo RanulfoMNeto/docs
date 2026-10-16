@@ -1,0 +1,395 @@
+{
+  "id": "subagents",
+  "order": 18,
+  "group": "coordination",
+  "title": {
+    "en": "Subagents",
+    "pt": "Subagentes"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "subagents-concept-1"
+          ],
+          "text": {
+            "en": "Subagents are specialized AI assistants to which the main agent can delegate tasks. Each operates in its own [context window](context.md), handles specific kinds of work and returns its result to the main agent.",
+            "pt": "Subagentes são assistentes de IA especializados aos quais o agente principal pode delegar tarefas. Cada subagente opera em sua própria [janela de contexto](context.md), lida com tipos específicos de trabalho e retorna seu resultado ao agente principal."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "subagents-concept-2"
+          ],
+          "text": {
+            "en": "The subagent receives a prompt with the necessary context, works autonomously and returns a final message with its results.",
+            "pt": "O subagente recebe um prompt com o contexto necessário, trabalha de forma autônoma e retorna uma mensagem final com seus resultados."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-context-and-results",
+          "level": 3,
+          "text": {
+            "en": "Context and results",
+            "pt": "Contexto e retorno"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "subagents-depth-120"
+          ],
+          "text": {
+            "en": "Operations producing substantial intermediate output can consume significant context. When run by subagents, this output stays in the delegated context; the main agent receives the final summary.",
+            "pt": "Operações que produzem muita saída intermediária podem consumir contexto significativo. Quando executadas por subagentes, essa saída permanece no contexto delegado; o agente principal recebe o resumo final."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-foreground-and-background",
+          "level": 3,
+          "text": {
+            "en": "Foreground and background",
+            "pt": "Primeiro e segundo plano"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "subagents-depth-121"
+          ],
+          "text": {
+            "en": "In the foreground, execution waits for the subagent to finish and returns the result immediately, for sequential tasks depending on that output. In the background, the call returns immediately and the subagent works independently, for long-running tasks or parallel workstreams.",
+            "pt": "Em primeiro plano, a execução aguarda o subagente terminar e retorna o resultado imediatamente, para tarefas sequenciais que dependem dessa saída. Em segundo plano, a chamada retorna imediatamente e o subagente trabalha de forma independente, para tarefas longas ou frentes paralelas."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-desktop-cli-and-ide-extension",
+              "level": 4,
+              "text": {
+                "en": "Desktop, CLI and IDE extension",
+                "pt": "Desktop, CLI e extensão de IDE"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-codex-3"
+              ],
+              "text": {
+                "en": "Ask directly for subagents or parallel agent work. Codex can also delegate when applicable project or skill instructions request it.",
+                "pt": "Peça diretamente por subagentes ou trabalho de agentes em paralelo. Codex também pode delegar quando instruções aplicáveis do projeto ou de skills solicitam isso."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-codex-4"
+              ],
+              "text": {
+                "en": "To define custom agents, add standalone TOML files in `~/.codex/agents/` for personal agents or `.codex/agents/` for project-scoped agents.",
+                "pt": "Para definir seus próprios agentes personalizados, adicione arquivos TOML independentes em `~/.codex/agents/` para agentes pessoais ou `.codex/agents/` para agentes no escopo do projeto."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-codex-4-part-2"
+              ],
+              "text": {
+                "en": "Each file defines one custom agent. Custom agents can change model settings and instructions or disable supported capabilities. They inherit the main agent's permissions, provider and MCP servers; a custom agent file cannot override these settings.",
+                "pt": "Cada arquivo define um agente personalizado. Agentes personalizados podem alterar configurações do modelo e instruções ou desabilitar capacidades suportadas. Eles herdam as permissões, o provedor e os servidores MCP do agente principal; um arquivo de agente personalizado não pode substituir essas configurações."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-custom-agent-file",
+              "level": 4,
+              "text": {
+                "en": "Custom agent file",
+                "pt": "Arquivo de agente personalizado"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-depth-122"
+              ],
+              "text": {
+                "en": "Each standalone custom agent file must define `name`, `description` and `developer_instructions`.",
+                "pt": "Cada arquivo independente de agente personalizado deve definir `name`, `description` e `developer_instructions`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-depth-123"
+              ],
+              "text": {
+                "en": "The official exploration example uses `.codex/agents/pr-explorer.toml`:",
+                "pt": "O exemplo oficial de exploração usa `.codex/agents/pr-explorer.toml`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "subagents-depth-124"
+              ],
+              "language": "toml",
+              "code": "name = \"pr_explorer\"\ndescription = \"Read-only codebase explorer for gathering evidence before changes are proposed.\"\nmodel = \"gpt-6-luna\"\nmodel_reasoning_effort = \"high\"\ndeveloper_instructions = \"\"\"\nStay in exploration mode.\nDo not edit files.\nTrace the real execution path, cite files and symbols, and avoid proposing fixes unless the parent agent asks for them.\nPrefer fast search and targeted file reads over broad scans.\n\"\"\""
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-monitoring-and-control",
+              "level": 4,
+              "text": {
+                "en": "CLI · Monitoring and control",
+                "pt": "CLI · Acompanhamento e controle"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-depth-177"
+              ],
+              "text": {
+                "en": "Use `/subagents` in the CLI to switch between active agent threads and inspect ongoing work. Ask Codex directly to steer a running subagent, stop it or close completed agent threads.",
+                "pt": "Use `/subagents` na CLI para alternar entre conversas de agentes ativos e inspecionar o trabalho em andamento. Peça diretamente ao Codex para orientar um subagente em execução, pará-lo ou fechar conversas de agentes concluídas."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-claude-5"
+              ],
+              "text": {
+                "en": "Running `/agents` prints a reminder to ask Claude or edit `.claude/agents/` and `~/.claude/agents/` directly.",
+                "pt": "Executar `/agents` imprime um lembrete para pedir ao Claude ou editar diretamente `.claude/agents/` e `~/.claude/agents/`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-claude-5-part-2"
+              ],
+              "text": {
+                "en": "In Claude Code v2.1.197 and earlier, `/agents` opens an interactive wizard with a **Running** tab listing active subagents and a **Library** tab for creating, editing and deleting them.",
+                "pt": "No Claude Code v2.1.197 e anteriores, `/agents` abre um assistente interativo com uma aba **Running**, que lista subagentes ativos, e uma aba **Library**, para criá-los, editá-los e excluí-los."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-claude-6"
+              ],
+              "text": {
+                "en": "**Project subagents** (`.claude/agents/`) are ideal for codebase-specific subagents. Commit them so your team can use and improve them together.",
+                "pt": "**Subagentes de projeto** (`.claude/agents/`) são ideais para subagentes específicos de uma base de código. Inclua-os no controle de versão para que sua equipe possa usá-los e melhorá-los em conjunto."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-claude-6-part-2"
+              ],
+              "text": {
+                "en": "Project subagents are discovered by walking upward from the current working directory, examining each `.claude/agents/` between it and the repository root. When several nested directories define the same `name`, Claude Code uses the definition closest to the working directory.",
+                "pt": "Subagentes de projeto são descobertos percorrendo os diretórios acima do diretório de trabalho atual; assim, cada `.claude/agents/` entre ele e a raiz do repositório é examinado. Quando mais de um desses diretórios aninhados define o mesmo `name`, Claude Code usa a definição mais próxima do diretório de trabalho."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-definition-and-invocation",
+              "level": 4,
+              "text": {
+                "en": "CLI · Definition and invocation",
+                "pt": "CLI · Definição e acionamento"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-depth-186"
+              ],
+              "text": {
+                "en": "In Claude Code, describe the subagent you want and where to save it:",
+                "pt": "No Claude Code, descreva o subagente desejado e onde salvá-lo:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "subagents-depth-187"
+              ],
+              "language": "text",
+              "code": "Create a personal code-improver subagent in ~/.claude/agents/ that scans\nfiles and suggests improvements for readability, performance, and best\npractices. It should explain each issue, show the current code, and\nprovide an improved version. Make it read-only and have it use Sonnet."
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-depth-125"
+              ],
+              "text": {
+                "en": "Open `~/.claude/agents/code-improver.md` and confirm the frontmatter matches your request. The result has this structure:",
+                "pt": "Abra `~/.claude/agents/code-improver.md` e confira se o frontmatter corresponde ao que você pediu. O resultado tem esta estrutura:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "subagents-depth-126"
+              ],
+              "language": "markdown",
+              "code": "---\nname: code-improver\ndescription: Scans files and suggests improvements for readability, performance, and best practices. Use after writing or modifying code.\ntools: Read, Grep, Glob\nmodel: sonnet\n---\n\nYou are a code improvement specialist. For each issue you find, explain\nthe problem, show the current code, and provide an improved version."
+            },
+            {
+              "type": "code",
+              "references": [
+                "subagents-depth-127"
+              ],
+              "language": "text",
+              "code": "Use the code-improver agent to suggest improvements in this project"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-depth-128"
+              ],
+              "text": {
+                "en": "Claude delegates to the new subagent, which examines the codebase and returns suggestions. In the transcript, the call shows the subagent name and a short description, such as `code-improver(Suggest code improvements)`. If Claude cannot find it, restart the session: this happens when `~/.claude/agents/` did not exist at startup, because the running session does not detect a newly created `agents` directory.",
+                "pt": "Claude delega ao novo subagente, que examina a base de código e retorna sugestões. Na transcrição, a chamada mostra o nome do subagente e uma descrição breve, como `code-improver(Suggest code improvements)`. Se Claude não encontrá-lo, reinicie a sessão: isso ocorre quando `~/.claude/agents/` não existia na inicialização, pois a sessão em execução não detecta um diretório `agents` recém-criado."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-operation-2"
+              ],
+              "text": {
+                "en": "When Agent encounters a complex task, it may start a subagent automatically.",
+                "pt": "Quando Agent encontra uma tarefa complexa, pode iniciar um subagente automaticamente."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-operation-2-part-2"
+              ],
+              "text": {
+                "en": "Subagents start with fresh context. The main agent includes relevant information in the prompt because subagents cannot access the earlier conversation history.",
+                "pt": "Subagentes começam com um contexto novo. O agente principal inclui informações relevantes no prompt, pois os subagentes não têm acesso ao histórico anterior da conversa."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-cli-and-cloud-agents",
+              "level": 4,
+              "text": {
+                "en": "Editor, CLI and Cloud Agents",
+                "pt": "Editor, CLI e Cloud Agents"
+              }
+            },
+            {
+              "type": "table",
+              "references": [
+                "subagents-cursor-7"
+              ],
+              "text": {
+                "en": "| Type | Location | Scope |\n| --- | --- | --- |\n| **Project subagents** | `.cursor/agents/` | Current project only |\n| | `.claude/agents/` | Current project only (Claude compatibility) |\n| | `.codex/agents/` | Current project only (Codex compatibility) |\n| **User subagents** | `~/.cursor/agents/` | All projects for the current user |\n| | `~/.claude/agents/` | All projects for the current user (Claude compatibility) |\n| | `~/.codex/agents/` | All projects for the current user (Codex compatibility) |",
+                "pt": "| Tipo | Local | Escopo |\n| --- | --- | --- |\n| **Subagentes de projeto** | `.cursor/agents/` | Apenas o projeto atual |\n| | `.claude/agents/` | Apenas o projeto atual (compatibilidade com Claude) |\n| | `.codex/agents/` | Apenas o projeto atual (compatibilidade com Codex) |\n| **Subagentes de usuário** | `~/.cursor/agents/` | Todos os projetos do usuário atual |\n| | `~/.claude/agents/` | Todos os projetos do usuário atual (compatibilidade com Claude) |\n| | `~/.codex/agents/` | Todos os projetos do usuário atual (compatibilidade com Codex) |"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-cursor-7-part-2"
+              ],
+              "text": {
+                "en": "Project subagents take precedence when names conflict. When multiple locations contain subagents with the same name, `.cursor/` takes precedence over `.claude/` or `.codex/`.",
+                "pt": "Subagentes de projeto têm precedência quando os nomes entram em conflito. Quando vários locais contêm subagentes com o mesmo nome, `.cursor/` tem precedência sobre `.claude/` ou `.codex/`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-cursor-8"
+              ],
+              "text": {
+                "en": "Each subagent is a Markdown file with YAML frontmatter.",
+                "pt": "Cada subagente é um arquivo Markdown com frontmatter YAML."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-definition-and-permissions",
+              "level": 4,
+              "text": {
+                "en": "Definition and permissions",
+                "pt": "Definição e permissões"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "subagents-depth-129"
+              ],
+              "language": "markdown",
+              "code": "---\nname: security-auditor\ndescription: Security specialist. Use when implementing auth, payments, or handling sensitive data.\nmodel: inherit\nreadonly: true\n---\n\nYou are a security expert auditing code for vulnerabilities.\n\nWhen invoked:\n1. Identify security-sensitive code paths\n2. Check for common vulnerabilities (injection, XSS, auth bypass)\n3. Verify secrets are not hardcoded\n4. Review input validation and sanitization\n\nReport findings by severity:\n- Critical (must fix before deploy)\n- High (fix soon)\n- Medium (address when possible)"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "subagents-depth-130"
+              ],
+              "text": {
+                "en": "The `description` appears in Task tool information and guides delegation. The `model` field defaults to `inherit` or accepts a specific identifier. With `readonly` set to `true`, the subagent receives restricted write permissions, with no file edits or state-changing shell commands. Setting `is_background` to `true` enables background execution without blocking the main agent.",
+                "pt": "A `description` aparece nas informações da ferramenta Task e orienta a delegação. O campo `model` usa `inherit` por padrão ou aceita um identificador específico. Com `readonly` definido como `true`, o subagente recebe permissões de escrita restritas, sem edições de arquivos nem comandos de shell que alterem estado. `is_background` definido como `true` permite executar em segundo plano sem bloquear o agente principal."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,346 @@
+{
+  "id": "memory",
+  "order": 5,
+  "group": "context",
+  "title": {
+    "en": "Memory",
+    "pt": "Memória"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "memory-concept-1"
+          ],
+          "text": {
+            "en": "Memories let useful context from earlier work carry into future work.",
+            "pt": "Memórias permitem levar contexto útil de trabalhos anteriores para trabalhos futuros."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "memory-depth-41"
+          ],
+          "text": {
+            "en": "Instruction files are written by you and contain instructions and rules. Auto memory records learning and patterns written by the agent, such as preferences, corrections you provide and project context it cannot derive from the code.",
+            "pt": "Arquivos de instruções são escritos por você e contêm instruções e regras. A memória automática registra aprendizados e padrões escritos pelo agente, como preferências, correções fornecidas e contexto do projeto que ele não consegue derivar do código."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-memory-and-required-guidance",
+          "level": 3,
+          "text": {
+            "en": "Memory and required guidance",
+            "pt": "Memória e orientação obrigatória"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "memory-depth-190"
+          ],
+          "text": {
+            "en": "Keep required team guidance in [instruction files](instructions.md) or version-controlled documentation. Treat memories as a recall resource, not the only source for rules that must always apply.",
+            "pt": "Mantenha orientações obrigatórias da equipe em [arquivos de instruções](instructions.md) ou documentação incluída no controle de versão. Trate memórias como um recurso de recuperação de contexto, não como a única fonte de regras que devem sempre ser aplicadas."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-operation-2"
+              ],
+              "text": {
+                "en": "After you enable memories, Codex can turn useful context from eligible earlier conversations into local memory files. Codex skips active or short-lived sessions, redacts secrets from generated memory fields and updates memories in the background rather than immediately at the end of each conversation.",
+                "pt": "Depois que você habilita as memórias, Codex pode transformar contexto útil de conversas anteriores elegíveis em arquivos locais de memória. Codex ignora sessões ativas ou de curta duração, remove segredos dos campos de memória gerados e atualiza as memórias em segundo plano, em vez de imediatamente ao final de cada conversa."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-desktop-and-local-configuration",
+              "level": 4,
+              "text": {
+                "en": "Desktop and local configuration",
+                "pt": "Desktop e configuração local"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-codex-3"
+              ],
+              "text": {
+                "en": "Local Codex memories are disabled by default. In the ChatGPT desktop app, open **Settings > Personalization** and turn on **Enable Codex memories**.",
+                "pt": "As memórias locais do Codex estão desativadas por padrão. No aplicativo desktop do ChatGPT, abra **Settings > Personalization** e ative **Enable Codex memories**."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-codex-3-part-2"
+              ],
+              "text": {
+                "en": "To configure through a file, add the feature flag to `config.toml`:",
+                "pt": "Para configurar por arquivo, adicione a flag de recurso ao `config.toml`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "memory-codex-3-part-3"
+              ],
+              "language": "toml",
+              "code": "[features]\nmemories = true"
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-codex-4"
+              ],
+              "text": {
+                "en": "In the Codex CLI, use `/memories` in an interactive session to control whether the current conversation can use existing local memories or become input for future memories. See [Configure local memories](https://learn.chatgpt.com/docs/customization/memories#configure-local-memories) if the command is unavailable.",
+                "pt": "Na CLI do Codex, use `/memories` em uma sessão interativa para controlar se a conversa atual pode usar memórias locais existentes ou servir de entrada para memórias futuras. Consulte [Configure local memories](https://learn.chatgpt.com/docs/customization/memories#configure-local-memories) se o comando não estiver disponível."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-storage-and-inspection",
+              "level": 4,
+              "text": {
+                "en": "Storage and inspection",
+                "pt": "Armazenamento e inspeção"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-depth-42"
+              ],
+              "text": {
+                "en": "The main files live in `~/.codex/memories/` and include summaries, durable records, recent entries and evidence from previous conversations. Treat them as generated state: you can inspect them to investigate issues or before sharing the Codex directory, but manual editing should not be the primary control.",
+                "pt": "Os arquivos principais ficam em `~/.codex/memories/` e incluem resumos, registros duráveis, entradas recentes e evidências de conversas anteriores. Trate-os como estado gerado: você pode inspecioná-los para investigar problemas ou antes de compartilhar o diretório do Codex, mas a edição manual não deve ser a principal forma de controle."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-desktop-and-cli-control-scope",
+              "level": 4,
+              "text": {
+                "en": "Desktop and CLI · Control scope",
+                "pt": "Desktop e CLI · Escopo do controle"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-depth-189"
+              ],
+              "text": {
+                "en": "In the ChatGPT desktop app and Codex TUI, `/memories` controls whether the current conversation can use existing memories and contribute to future memories. These choices do not change global memory settings.",
+                "pt": "No aplicativo desktop do ChatGPT e na TUI do Codex, `/memories` controla se a conversa atual pode usar memórias existentes e servir para gerar memórias futuras. Essas escolhas não alteram as configurações globais de memória."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-claude-5"
+              ],
+              "text": {
+                "en": "Auto memory is enabled by default in local sessions. Outside Claude Tag sessions, a session in a self-hosted environment runs with auto memory disabled by default.",
+                "pt": "A memória automática está ativada por padrão nas sessões locais. Fora das sessões do Claude Tag, uma sessão em um ambiente auto-hospedado é executada com a memória automática desativada por padrão."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-claude-5-part-2"
+              ],
+              "text": {
+                "en": "To toggle it, open `/memory` in a session and use the auto memory toggle, which saves `autoMemoryEnabled` to your user settings in `~/.claude/settings.json`.",
+                "pt": "Para alterná-la, abra `/memory` em uma sessão e use o controle de memória automática, que salva `autoMemoryEnabled` nas suas configurações de usuário em `~/.claude/settings.json`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-claude-5-part-3"
+              ],
+              "text": {
+                "en": "The toggle disables auto memory but does not reenable it in these sessions:",
+                "pt": "O controle desativa a memória automática, mas não a reativa nestas sessões:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "memory-claude-5-part-4-item-1"
+              ],
+              "text": {
+                "en": "A background session.",
+                "pt": "Uma sessão em segundo plano."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "memory-claude-5-part-4-item-2"
+              ],
+              "text": {
+                "en": "A session started by another Claude Code session, such as when Claude runs `claude` through the Bash tool.",
+                "pt": "Uma sessão iniciada por outra sessão do Claude Code, como quando Claude executa `claude` pela ferramenta Bash."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-claude-5-part-5"
+              ],
+              "text": {
+                "en": "While auto memory is disabled in these cases, the toggle shows `off · can't be turned on here; use a session started outside Claude Code`. To reenable it, run `claude` directly in the terminal and use the `/memory` toggle in that session.",
+                "pt": "Enquanto a memória automática está desativada nesses casos, o controle mostra `off · can't be turned on here; use a session started outside Claude Code`. Para reativá-la, execute `claude` diretamente no terminal e use o controle `/memory` nessa sessão."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-storage-and-loading",
+              "level": 4,
+              "text": {
+                "en": "Storage and loading",
+                "pt": "Armazenamento e carregamento"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-depth-43"
+              ],
+              "text": {
+                "en": "Each project has a memory directory at `~/.claude/projects/<project>/memory/`. The `<project>` path derives from the Git repository: worktrees and subdirectories of the same repository share the auto memory directory. Outside a Git repository, the project root is used.",
+                "pt": "Cada projeto tem um diretório de memória em `~/.claude/projects/<project>/memory/`. O caminho `<project>` deriva do repositório Git: worktrees e subdiretórios do mesmo repositório compartilham o diretório de memória automática. Fora de um repositório Git, usa-se a raiz do projeto."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-depth-44"
+              ],
+              "text": {
+                "en": "The first 200 lines of `MEMORY.md`, or the first 25KB, whichever comes first, are loaded at the start of every conversation. Content beyond that limit is not loaded at startup. Claude keeps the index concise by moving detailed notes into separate topic files.",
+                "pt": "As primeiras 200 linhas de `MEMORY.md`, ou os primeiros 25KB, o que ocorrer antes, são carregados no início de cada conversa. Conteúdo além desse limite não é carregado na inicialização. Claude mantém o índice conciso, movendo notas detalhadas para arquivos de tópicos separados."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-depth-45"
+              ],
+              "text": {
+                "en": "Topic files, such as `user_role.md` and `feedback_testing.md`, are not loaded at startup. Claude reads them on demand with its file tools when it needs the information.",
+                "pt": "Arquivos de tópicos, como `user_role.md` e `feedback_testing.md`, não são carregados na inicialização. Claude os lê sob demanda com suas ferramentas de arquivos quando precisa da informação."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-inspection-and-editing",
+              "level": 4,
+              "text": {
+                "en": "Inspection and editing",
+                "pt": "Inspeção e edição"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-depth-46"
+              ],
+              "text": {
+                "en": "Auto memory files are plain Markdown that you can edit or delete at any time. Run `/memory` to browse the files and open them during a session.",
+                "pt": "Arquivos de memória automática são Markdown simples, que você pode editar ou excluir a qualquer momento. Execute `/memory` para navegar pelos arquivos e abri-los durante uma sessão."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-automations",
+              "level": 4,
+              "text": {
+                "en": "Automations",
+                "pt": "Automações"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-cursor-6"
+              ],
+              "text": {
+                "en": "Memories let the agent read and write persistent notes across runs of the same automation. Use this to build agents that remember and improve over time. Each memory is stored as a named entry (`MEMORIES.md` by default) outside the agent's working filesystem.",
+                "pt": "As memórias permitem que o agente leia e escreva notas persistentes entre execuções da mesma automação. Use isso para criar agentes que lembram e melhoram ao longo do tempo. Cada memória é armazenada como uma entrada nomeada (`MEMORIES.md` por padrão) que existe fora do sistema de arquivos de trabalho do agente."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-cursor-6-part-2"
+              ],
+              "text": {
+                "en": "Memories are enabled by default but can be disabled. They can be viewed and edited in the tool configuration interface.",
+                "pt": "As memórias estão ativadas por padrão, mas podem ser desativadas. Elas podem ser visualizadas e editadas na interface de configuração de ferramentas."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "memory-cursor-7"
+              ],
+              "text": {
+                "en": "Memories persist between runs and should be used with caution if your automation handles untrusted inputs. Inputs can lead to misleading or malicious memories that unintentionally affect future automation runs.",
+                "pt": "As memórias persistem entre execuções e devem ser usadas com cautela se a sua automação lida com entradas não confiáveis. As entradas podem levar a memórias enganosas ou maliciosas que afetam involuntariamente futuras execuções da automação."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

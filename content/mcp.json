@@ -1,0 +1,460 @@
+{
+  "id": "mcp",
+  "order": 17,
+  "group": "extensions",
+  "title": {
+    "en": "MCP",
+    "pt": "MCP"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "mcp-concept-1"
+          ],
+          "text": {
+            "en": "Model Context Protocol (MCP) lets agents use [tools](tools.md) and information from other systems.",
+            "pt": "Model Context Protocol (MCP) permite que agentes usem [ferramentas](tools.md) e informações de outros sistemas."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "mcp-concept-2"
+          ],
+          "text": {
+            "en": "An MCP server describes the available tools and handles their requests—for example, looking up a ticket or retrieving documentation.",
+            "pt": "Um servidor MCP descreve as ferramentas disponíveis e trata suas solicitações — por exemplo, consultar um chamado ou recuperar documentação."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-client-and-server",
+          "level": 3,
+          "text": {
+            "en": "Client and server",
+            "pt": "Cliente e servidor"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "mcp-depth-102"
+          ],
+          "text": {
+            "en": "MCP servers are not specific to a single client. Their setup instructions may target another client and provide a URL, startup command or JSON block.",
+            "pt": "Servidores MCP não são específicos de um único cliente. Suas instruções de configuração podem ser destinadas a outro cliente e fornecer uma URL, um comando de inicialização ou um bloco JSON."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-exposed-capabilities",
+          "level": 3,
+          "text": {
+            "en": "Exposed capabilities",
+            "pt": "Capacidades expostas"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "mcp-depth-103"
+          ],
+          "text": {
+            "en": "The protocol distinguishes tools—functions executed by the model—prompts—templated messages and workflows for users—and resources—structured data sources that can be read and referenced.",
+            "pt": "O protocolo distingue ferramentas — funções executadas pelo modelo —, prompts — mensagens e fluxos de trabalho parametrizados para os usuários — e recursos — fontes de dados estruturados que podem ser lidas e referenciadas."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-ide-extension",
+              "level": 4,
+              "text": {
+                "en": "IDE extension",
+                "pt": "Extensão de IDE"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "mcp-codex-3-item-1"
+              ],
+              "text": {
+                "en": "Open the gear menu and select **MCP servers**.",
+                "pt": "Abra o menu de engrenagem e selecione **MCP servers**."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "mcp-codex-3-item-2"
+              ],
+              "text": {
+                "en": "Select **Add server**.",
+                "pt": "Selecione **Add server**."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "mcp-codex-3-item-3"
+              ],
+              "text": {
+                "en": "Enter a name, choose **STDIO** or **Streamable HTTP**, and supply the server command or URL.",
+                "pt": "Insira um nome, escolha **STDIO** ou **Streamable HTTP** e forneça o comando ou a URL do servidor."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "mcp-codex-3-item-4"
+              ],
+              "text": {
+                "en": "Save the server and select **Restart extension**.",
+                "pt": "Salve o servidor e selecione **Restart extension**."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-codex-3-part-2"
+              ],
+              "text": {
+                "en": "The MCP server list shows which servers are enabled and which require OAuth. Select **Authenticate** when an OAuth server needs authentication.",
+                "pt": "A lista de servidores MCP mostra quais estão habilitados e quais exigem OAuth. Selecione **Authenticate** quando um servidor OAuth exigir autenticação."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-desktop-cli-and-ide-extension",
+              "level": 4,
+              "text": {
+                "en": "Desktop, CLI and IDE extension",
+                "pt": "Desktop, CLI e extensão de IDE"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-codex-4"
+              ],
+              "text": {
+                "en": "For finer control, edit `~/.codex/config.toml` or a project-scoped `.codex/config.toml`. See the [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference) for a searchable list of supported MCP options.",
+                "pt": "Para um controle mais granular, edite `~/.codex/config.toml` ou um `.codex/config.toml` no escopo do projeto. Consulte a [referência de configuração](https://learn.chatgpt.com/docs/config-file/config-reference) para uma lista pesquisável de todas as opções MCP suportadas."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-codex-4-part-2"
+              ],
+              "text": {
+                "en": "Configure each MCP server with an `[mcp_servers.<server-name>]` table in the configuration file.",
+                "pt": "Configure cada servidor MCP com uma tabela `[mcp_servers.<server-name>]` no arquivo de configuração."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-adding-authenticating-and-inspecting",
+              "level": 4,
+              "text": {
+                "en": "CLI · Adding, authenticating and inspecting",
+                "pt": "CLI · Adição, autenticação e inspeção"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-depth-104"
+              ],
+              "text": {
+                "en": "The official example adds Context7, an MCP documentation server for developers:",
+                "pt": "O exemplo oficial adiciona Context7, um servidor MCP de documentação para desenvolvedores:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "mcp-depth-105"
+              ],
+              "language": "bash",
+              "code": "codex mcp add context7 -- npx -y @upstash/context7-mcp"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-depth-106"
+              ],
+              "text": {
+                "en": "Run `codex mcp list` to inspect configured servers and `codex mcp --help` to see available commands. For an OAuth-capable server, run `codex mcp login <server-name>`.",
+                "pt": "Execute `codex mcp list` para consultar os servidores configurados e `codex mcp --help` para consultar os comandos disponíveis. Para um servidor que aceita OAuth, execute `codex mcp login <server-name>`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-depth-107"
+              ],
+              "text": {
+                "en": "In the `codex` TUI, use `/mcp` to see active MCP servers.",
+                "pt": "Na TUI do `codex`, use `/mcp` para ver os servidores MCP ativos."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-claude-5"
+              ],
+              "text": {
+                "en": "Project-scoped servers enable team collaboration by storing settings in a `.mcp.json` file at the project root. When you add a server at this scope, Claude Code automatically creates or updates the file with the appropriate configuration structure. Commit `.mcp.json` so everyone on the team has the same MCP tools and services.",
+                "pt": "Servidores no escopo do projeto permitem colaboração da equipe armazenando as configurações em um arquivo `.mcp.json` no diretório raiz do projeto. Quando você adiciona um servidor nesse escopo, Claude Code cria ou atualiza automaticamente esse arquivo com a estrutura de configuração apropriada. Inclua `.mcp.json` no controle de versão para que todos na equipe tenham as mesmas ferramentas e serviços MCP."
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "mcp-claude-5-part-2"
+              ],
+              "language": "bash",
+              "code": "# Add a project-scoped server\nclaude mcp add --transport http shared-server --scope project https://example.com/mcp"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-claude-6"
+              ],
+              "text": {
+                "en": "Once configured, you can manage your MCP servers with these commands:",
+                "pt": "Depois de configurados, você pode gerenciar seus servidores MCP com estes comandos:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "mcp-claude-6-part-2"
+              ],
+              "language": "bash",
+              "code": "# List all configured servers\nclaude mcp list\n\n# Get details for a specific server\nclaude mcp get notion\n\n# Remove a server\nclaude mcp remove notion\n\n# (within Claude Code) Check server status\n/mcp"
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-connection-status",
+              "level": 4,
+              "text": {
+                "en": "CLI · Connection status",
+                "pt": "CLI · Estado da conexão"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-depth-108"
+              ],
+              "text": {
+                "en": "`claude mcp list` shows each server's status, such as `✔ Connected`, `! Needs authentication` or `✘ Failed to connect`. A failed status means Claude Code could not connect to that server; it does not mean the listing command failed.",
+                "pt": "`claude mcp list` mostra o estado de cada servidor, como `✔ Connected`, `! Needs authentication` ou `✘ Failed to connect`. Um estado de falha indica que Claude Code não conseguiu conectar àquele servidor; não significa que o comando de listagem falhou."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-depth-109"
+              ],
+              "text": {
+                "en": "Use `/mcp` to authenticate with remote servers requiring OAuth 2.0.",
+                "pt": "Use `/mcp` para autenticar em servidores remotos que exigem OAuth 2.0."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-operation-2-part-2"
+              ],
+              "text": {
+                "en": "Cursor supports three transport methods:",
+                "pt": "Cursor oferece suporte a três métodos de transporte:"
+              }
+            },
+            {
+              "type": "table",
+              "references": [
+                "mcp-operation-2-part-3"
+              ],
+              "text": {
+                "en": "| Transport | Runtime environment | Deployment | Users | Input | Authentication |\n| --- | --- | --- | --- | --- | --- |\n| **`stdio`** | Local | Managed by Cursor | Single user | shell command | Manual |\n| **`SSE`** | Local/Remote | Deploy as server | Multiple users | SSE endpoint URL | OAuth |\n| **`Streamable HTTP`** | Local/Remote | Deploy as server | Multiple users | HTTP endpoint URL | OAuth |",
+                "pt": "| Transporte | Ambiente de execução | Implantação | Usuários | Entrada | Autenticação |\n| --- | --- | --- | --- | --- | --- |\n| **`stdio`** | Local | Cursor gerencia | Um usuário | comando de shell | Manual |\n| **`SSE`** | Local/Remoto | Implantar como servidor | Vários usuários | URL de um endpoint SSE | OAuth |\n| **`Streamable HTTP`** | Local/Remoto | Implantar como servidor | Vários usuários | URL de um endpoint HTTP | OAuth |"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-cursor-7"
+              ],
+              "text": {
+                "en": "Create `.cursor/mcp.json` in your project for project-specific tools.",
+                "pt": "Crie `.cursor/mcp.json` no seu projeto para ferramentas específicas do projeto."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-cursor-8"
+              ],
+              "text": {
+                "en": "Create `~/.cursor/mcp.json` in your home directory for tools available everywhere.",
+                "pt": "Crie `~/.cursor/mcp.json` no seu diretório pessoal para ferramentas disponíveis em todos os lugares."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-cursor-9"
+              ],
+              "text": {
+                "en": "MCP servers use environment variables for authentication. Pass API keys and tokens through configuration.",
+                "pt": "Servidores MCP usam variáveis de ambiente para autenticação. Passe chaves de API e tokens pela configuração."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-cursor-9-part-2"
+              ],
+              "text": {
+                "en": "Cursor supports OAuth for servers that require it.",
+                "pt": "Cursor oferece suporte a OAuth para servidores que o exigem."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-cursor-10"
+              ],
+              "text": {
+                "en": "Cursor automatically uses MCP tools listed in `Available Tools` when relevant. This includes Plan Mode. Request a specific tool by name or describe what you need. Enable or disable MCP servers in **Customize** in the sidebar.",
+                "pt": "Cursor usa automaticamente ferramentas MCP listadas em `Available Tools` quando relevantes. Isso inclui Plan Mode. Peça uma ferramenta específica pelo nome ou descreva o que precisa. Habilite ou desabilite servidores MCP em **Customize** na barra lateral."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-and-cli-local-python-server",
+              "level": 4,
+              "text": {
+                "en": "Editor and CLI · Local Python server",
+                "pt": "Editor e CLI · Servidor local Python"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "mcp-depth-110"
+              ],
+              "language": "json",
+              "code": "{\n  \"mcpServers\": {\n    \"server-name\": {\n      \"command\": \"python\",\n      \"args\": [\"mcp-server.py\"],\n      \"env\": {\n        \"API_KEY\": \"value\"\n      }\n    }\n  }\n}"
+            },
+            {
+              "type": "note",
+              "references": [
+                "mcp-depth-110"
+              ],
+              "text": {
+                "en": "The original supplies a configuration template with illustrative names and credentials. The server program and its installation are dependencies outside this example.",
+                "pt": "O original fornece um modelo de configuração com nomes e credenciais ilustrativos. O programa do servidor e sua instalação são dependências externas a esse exemplo."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-depth-111"
+              ],
+              "text": {
+                "en": "The CLI automatically detects and respects `mcp.json` configuration, enabling the same MCP servers and tools configured for the editor.",
+                "pt": "A CLI detecta e respeita automaticamente a configuração `mcp.json`, habilitando os mesmos servidores e ferramentas MCP configurados para o editor."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-arguments-and-response",
+              "level": 4,
+              "text": {
+                "en": "Editor · Arguments and response",
+                "pt": "Editor · Argumentos e resposta"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-depth-112"
+              ],
+              "text": {
+                "en": "By default, Cursor asks for approval before using MCP tools. Click the arrow beside the tool name to see the arguments.",
+                "pt": "Por padrão, Cursor pede aprovação antes de usar ferramentas MCP. Clique na seta ao lado do nome da ferramenta para ver os argumentos."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "mcp-depth-113"
+              ],
+              "text": {
+                "en": "Cursor displays the response in chat, with expandable views of arguments and results.",
+                "pt": "Cursor mostra a resposta no chat, com visualizações expansíveis dos argumentos e dos resultados."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

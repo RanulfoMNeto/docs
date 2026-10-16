@@ -1,0 +1,286 @@
+{
+  "id": "sessions",
+  "order": 4,
+  "group": "context",
+  "title": {
+    "en": "Sessions",
+    "pt": "Sessões"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "sessions-concept-1"
+          ],
+          "text": {
+            "en": "A session is a saved conversation tied to a project directory.",
+            "pt": "Uma sessão é uma conversa salva vinculada a um diretório de projeto."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "sessions-concept-2"
+          ],
+          "text": {
+            "en": "A new session begins with a fresh context window, without the conversation history of previous sessions.",
+            "pt": "Uma nova sessão começa com uma janela de contexto nova, sem o histórico de conversa das sessões anteriores."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-branching-history",
+          "level": 3,
+          "text": {
+            "en": "Branching history",
+            "pt": "Ramificação do histórico"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "sessions-depth-36"
+          ],
+          "text": {
+            "en": "Branching creates a copy of the conversation up to that point and switches you to it, leaving the original intact. This lets you try another approach without losing the previous path.",
+            "pt": "Ramificar cria uma cópia da conversa até aquele momento e transfere você para ela, deixando o original intacto. Isso permite tentar outra abordagem sem perder o percurso anterior."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-codex-3"
+              ],
+              "text": {
+                "en": "Continue an interactive session by ID or resume the most recent conversation. `codex resume` restricts `--last` to the current working directory unless you pass `--all`. It accepts model and sandbox overrides, but not `--worktree`.",
+                "pt": "Continue uma sessão interativa pelo ID ou retome a conversa mais recente. `codex resume` restringe `--last` ao diretório de trabalho atual, a menos que você passe `--all`. Ele aceita substituições de modelo e sandbox, mas não `--worktree`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-new-conversation",
+              "level": 4,
+              "text": {
+                "en": "CLI · New conversation",
+                "pt": "CLI · Nova conversa"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-depth-37"
+              ],
+              "text": {
+                "en": "Type `/new` and press Enter. If Codex offers a checkout choice, select the current directory or a new worktree. Codex starts a fresh conversation in the same CLI session, letting you switch conversations without leaving the terminal.",
+                "pt": "Digite `/new` e pressione Enter. Se Codex oferecer uma escolha de checkout, selecione o diretório atual ou uma nova worktree. Codex inicia uma conversa nova na mesma sessão de CLI, permitindo alternar entre conversas sem sair do terminal."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-directory-and-branching",
+              "level": 4,
+              "text": {
+                "en": "CLI · Directory and branching",
+                "pt": "CLI · Diretório e ramificação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-depth-150"
+              ],
+              "text": {
+                "en": "If the current directory differs from the one saved in the session, Codex asks which to use. Set `tui.resume_cwd` to `\"current\"` or `\"session\"` to reuse that choice without asking. An explicit `--cd` or `-C` override takes precedence.",
+                "pt": "Se o diretório atual diferir daquele salvo na sessão, Codex pergunta qual usar. Defina `tui.resume_cwd` como `\"current\"` ou `\"session\"` para reutilizar essa escolha sem perguntar. Uma substituição explícita por `--cd` ou `-C` tem precedência."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-depth-151"
+              ],
+              "text": {
+                "en": "Use `codex fork` to start a new conversation from a previous interactive session. By default it opens the session picker; add `--last` to fork the most recent session.",
+                "pt": "Use `codex fork` para criar uma conversa nova a partir de uma sessão interativa anterior. Por padrão, ele abre o seletor de sessões; acrescente `--last` para ramificar a sessão mais recente."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-definition-1"
+              ],
+              "text": {
+                "en": "Claude Code stores the session locally as you work, so you can resume where you left off, branch to try another approach or switch between tasks.",
+                "pt": "Claude Code armazena a sessão localmente enquanto você trabalha, para que possa retomar de onde parou, criar uma ramificação para tentar outra abordagem ou alternar entre tarefas."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-operation-2"
+              ],
+              "text": {
+                "en": "Claude can preserve learning between sessions using [auto memory](memory.md), and you can add your own persistent instructions in CLAUDE.md.",
+                "pt": "Claude pode preservar aprendizados entre sessões usando a [memória automática](memory.md), e você pode adicionar suas próprias instruções persistentes em CLAUDE.md."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-claude-4"
+              ],
+              "text": {
+                "en": "Run `/resume` inside a session, or `claude --resume` without arguments, to open the interactive session picker.",
+                "pt": "Execute `/resume` dentro de uma sessão, ou `claude --resume` sem argumentos, para abrir o seletor interativo de sessões."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-continuity-and-restoration",
+              "level": 4,
+              "text": {
+                "en": "CLI · Continuity and restoration",
+                "pt": "CLI · Continuidade e restauração"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-depth-38"
+              ],
+              "text": {
+                "en": "Use `claude --continue` to reopen the most recent session in the current directory, `claude --resume` to open the picker, `claude --resume <name>` to resume by name or `claude --resume <transcript-path>` to resume from the absolute path of the `.jsonl` file.",
+                "pt": "Use `claude --continue` para reabrir a sessão mais recente do diretório atual, `claude --resume` para abrir o seletor, `claude --resume <name>` para retomar pelo nome ou `claude --resume <transcript-path>` para retomar pelo caminho absoluto do arquivo `.jsonl`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-depth-39"
+              ],
+              "text": {
+                "en": "Resuming restores the full history, including tool calls and results. A tool still running when the previous process ended does not finish or run again simply because you resume. Claude sees the interrupted call and is instructed to check whether it took effect before rerunning it, unless `CLAUDE_CODE_RESUME_INTERRUPTED_TURN` is set.",
+                "pt": "A retomada restaura o histórico completo, incluindo chamadas de ferramentas e resultados. Uma ferramenta ainda em execução quando o processo anterior terminou não conclui nem é executada novamente só por retomar a sessão. Claude vê a chamada interrompida e recebe a instrução de verificar se ela produziu efeito antes de executá-la outra vez, a menos que `CLAUDE_CODE_RESUME_INTERRUPTED_TURN` esteja definido."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-depth-40"
+              ],
+              "text": {
+                "en": "If you resume the same session in two terminals without branching, messages from both interleave in one transcript. To return to a checkpoint within the same session, see [Recovery](recovery.md).",
+                "pt": "Se você retomar a mesma sessão em dois terminais sem criar uma ramificação, as mensagens de ambos se intercalam em uma única transcrição. Para retornar a um checkpoint dentro da mesma sessão, consulte [Recuperação](recovery.md)."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-configuration-when-resuming",
+              "level": 4,
+              "text": {
+                "en": "CLI · Configuration when resuming",
+                "pt": "CLI · Configuração na retomada"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-depth-180"
+              ],
+              "text": {
+                "en": "Not every flag from the original launch is restored. If the session depended on `--mcp-config`, `--settings`, `--plugin-dir`, `--fallback-model` or directories added with `--add-dir`, pass them again when resuming. Directories added with `/add-dir` during the session are not restored either, although the picker still uses them to locate the session. Standard files such as `settings.json` and `settings.local.json` are reread at launch; their settings do not need to be passed again.",
+                "pt": "Nem todas as flags da inicialização original são restauradas. Se a sessão dependia de `--mcp-config`, `--settings`, `--plugin-dir`, `--fallback-model` ou diretórios adicionados com `--add-dir`, passe-os novamente ao retomar. Diretórios adicionados com `/add-dir` durante a sessão também não são restaurados, embora o seletor ainda os use para localizar a sessão. Os arquivos padrão, como `settings.json` e `settings.local.json`, são relidos na inicialização; suas configurações não precisam ser passadas novamente."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-cursor-5"
+              ],
+              "text": {
+                "en": "Continue from an existing conversation with `--resume [thread id]` to load prior context.",
+                "pt": "Continue a partir de uma conversa existente com `--resume [thread id]` para carregar o contexto anterior."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-cursor-5-part-2"
+              ],
+              "text": {
+                "en": "To resume the latest conversation, use `agent resume`, `--continue` or the `/resume` command.",
+                "pt": "Para retomar a conversa mais recente, use `agent resume`, `--continue` ou o comando `/resume`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sessions-cursor-5-part-3"
+              ],
+              "text": {
+                "en": "You can also run `agent ls` to open previous conversations and resume one.",
+                "pt": "Você também pode executar `agent ls` para abrir conversas anteriores e retomar uma delas."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

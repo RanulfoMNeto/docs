@@ -1,0 +1,380 @@
+{
+  "id": "recovery",
+  "order": 13,
+  "group": "execution",
+  "title": {
+    "en": "Recovery",
+    "pt": "Recuperação"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "recovery-concept-1"
+          ],
+          "text": {
+            "en": "Tracking file edits lets you undo changes and return to earlier states.",
+            "pt": "O acompanhamento de edições de arquivos permite desfazer alterações e retornar a estados anteriores."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "recovery-concept-2"
+          ],
+          "text": {
+            "en": "File checkpoints cover only file changes. Actions affecting remote systems, such as databases, APIs and deployments, cannot be included in these checkpoints.",
+            "pt": "Checkpoints de arquivos cobrem apenas alterações em arquivos. Ações que afetam sistemas remotos, como bancos de dados, APIs e implantações, não podem ser incluídas nesses checkpoints."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-capture-timing",
+          "level": 3,
+          "text": {
+            "en": "Capture timing",
+            "pt": "Momento da captura"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "recovery-depth-86"
+          ],
+          "text": {
+            "en": "Before a file edit, the checkpoint mechanism captures its current contents, allowing a return to an earlier state.",
+            "pt": "Antes de uma edição de arquivo, o mecanismo de checkpoints captura seu conteúdo atual, permitindo retornar a um estado anterior."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-desktop-reverting-git-changes",
+              "level": 4,
+              "text": {
+                "en": "Desktop · Reverting Git changes",
+                "pt": "Desktop · reversão de alterações Git"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-codex-3"
+              ],
+              "text": {
+                "en": "The review pane requires a project inside a Git repository. If your project is not yet a Git repository, the app prompts you to create one.",
+                "pt": "O painel de revisão exige um projeto dentro de um repositório Git. Se seu projeto ainda não for um repositório Git, o aplicativo solicita que você crie um."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-codex-4"
+              ],
+              "text": {
+                "en": "The review pane includes Git actions so you can adjust the diff before committing.",
+                "pt": "O painel de revisão inclui ações do Git para que você possa ajustar o diff antes do commit."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-codex-4-part-2"
+              ],
+              "text": {
+                "en": "You can stage, unstage or revert changes at these levels:",
+                "pt": "Você pode adicionar à área de staging, retirar dela ou reverter alterações nestes níveis:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-codex-4-part-3-item-1"
+              ],
+              "text": {
+                "en": "**Entire diff:** use the action buttons in the review header, such as **Stage all** or **Revert all**.",
+                "pt": "**Diff completo:** use os botões de ação no cabeçalho da revisão, como **Stage all** ou **Revert all**."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-codex-4-part-3-item-2"
+              ],
+              "text": {
+                "en": "**Per file:** stage, unstage or revert an individual file.",
+                "pt": "**Por arquivo:** adicione à área de staging, retire dela ou reverta um arquivo individual."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-codex-4-part-3-item-3"
+              ],
+              "text": {
+                "en": "**Per hunk:** stage, unstage or revert a single hunk.",
+                "pt": "**Por trecho:** adicione à área de staging, retire dela ou reverta um único trecho."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-codex-4-part-4"
+              ],
+              "text": {
+                "en": "Use staging when you want to accept part of the work and reverting when you want to discard it.",
+                "pt": "Use staging quando quiser aceitar parte do trabalho e reversão quando quiser descartá-lo."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-definition-1"
+              ],
+              "text": {
+                "en": "Claude Code automatically tracks Claude's file edits as you work, allowing you to undo changes quickly and return to earlier states if something goes off track.",
+                "pt": "Claude Code acompanha automaticamente as edições de arquivos feitas por Claude enquanto você trabalha, permitindo desfazer alterações rapidamente e retornar a estados anteriores se algo sair do caminho."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-operation-2"
+              ],
+              "text": {
+                "en": "Checkpoints are separate from Git and remain available when you resume a conversation. They cover only file changes, and restoration skips symlinked or hard-linked files. Actions affecting remote systems (databases, APIs, deployments) cannot be checkpointed. You control them through the permission mode and permission rules.",
+                "pt": "Checkpoints são separados do Git e continuam disponíveis quando você retoma uma conversa. Eles cobrem apenas alterações em arquivos, e uma restauração ignora arquivos com links simbólicos ou hard links. Ações que afetam sistemas remotos (bancos de dados, APIs, implantações) não podem ser incluídas em checkpoints. Você as controla pelo modo de permissão e pelas regras de permissão."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-claude-5"
+              ],
+              "text": {
+                "en": "Run `/rewind`, or press `Esc` twice when the prompt input is empty, to open the rewind menu.",
+                "pt": "Execute `/rewind`, ou pressione `Esc` duas vezes quando o campo do prompt estiver vazio, para abrir o menu de retorno."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-claude-6"
+              ],
+              "text": {
+                "en": "The rewind menu lists prompts you sent during the session. Select the point to act on and choose an action:",
+                "pt": "O menu de retorno lista os prompts que você enviou durante a sessão. Selecione o ponto sobre o qual deseja agir e escolha uma ação:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-claude-6-part-2-item-1"
+              ],
+              "text": {
+                "en": "**Restore code and conversation:** revert code and conversation to that point.",
+                "pt": "**Restore code and conversation:** reverter código e conversa para aquele ponto."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-claude-6-part-2-item-2"
+              ],
+              "text": {
+                "en": "**Restore conversation:** return to that message while keeping the current code.",
+                "pt": "**Restore conversation:** voltar àquela mensagem mantendo o código atual."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-claude-6-part-2-item-3"
+              ],
+              "text": {
+                "en": "**Restore code:** revert file changes while keeping the conversation.",
+                "pt": "**Restore code:** reverter alterações de arquivos mantendo a conversa."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-claude-6-part-2-item-4"
+              ],
+              "text": {
+                "en": "**Summarize from here:** compress the conversation from that point into a summary, freeing context-window space.",
+                "pt": "**Summarize from here:** comprimir a conversa a partir desse ponto em um resumo, liberando espaço na janela de contexto."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-claude-6-part-2-item-5"
+              ],
+              "text": {
+                "en": "**Summarize up to here:** compress the conversation before that point into a summary, leaving later messages intact.",
+                "pt": "**Summarize up to here:** comprimir a conversa anterior a esse ponto em um resumo, mantendo intactas as mensagens posteriores."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-claude-6-part-2-item-6"
+              ],
+              "text": {
+                "en": "**Never mind:** return to the message list without changes.",
+                "pt": "**Never mind:** retornar à lista de mensagens sem fazer alterações."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-claude-6-part-3"
+              ],
+              "text": {
+                "en": "The two code restoration options appear only when the selected checkpoint has tracked file changes to revert. If no file edits were captured after that point, the menu offers only **Restore conversation**, the summary options and **Never mind**.",
+                "pt": "As duas opções de restauração de código aparecem apenas quando o checkpoint selecionado tem alterações de arquivos rastreadas para reverter. Se nenhuma edição de arquivo foi capturada após aquele ponto, o menu oferece apenas **Restore conversation**, as opções de resumo e **Never mind**."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-claude-7"
+              ],
+              "text": {
+                "en": "The checkpoint mechanism does not track files modified by Bash commands.",
+                "pt": "O mecanismo de checkpoints não acompanha arquivos modificados por comandos Bash."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-claude-8"
+              ],
+              "text": {
+                "en": "A [subagent](subagents.md) edits files with Claude's file-editing tools, but Claude Code normally does not capture those edits in your session's checkpoints. Whether rewind restores them depends on how the subagent runs:",
+                "pt": "Um [subagente](subagents.md) faz edições com as ferramentas de edição de arquivos de Claude, mas Claude Code normalmente não captura essas edições nos checkpoints da sua sessão. Se o retorno as restaura depende de como o subagente é executado:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-claude-8-part-2-item-1"
+              ],
+              "text": {
+                "en": "**Foreground forked skill:** a skill with `context: fork` running in the foreground edits your working tree during its own turn, so rewind restores its edits normally. Set `background: false` to run a fork in the foreground; some situations, [listed on the skills page](https://code.claude.com/docs/en/skills#run-skills-in-a-subagent), do this regardless of the setting.",
+                "pt": "**Skill bifurcada em primeiro plano:** uma skill com `context: fork` que roda em primeiro plano edita sua árvore de trabalho durante seu próprio turno; portanto, o retorno restaura suas edições normalmente. Defina `background: false` para executar uma bifurcação em primeiro plano; algumas situações, [listadas na página de skills](https://code.claude.com/docs/en/skills#run-skills-in-a-subagent), fazem isso independentemente da configuração."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "recovery-claude-8-part-2-item-2"
+              ],
+              "text": {
+                "en": "**Any other subagent:** rewind restores only files Claude had already edited in your conversation. The subagent's edits to other files remain; use Git to revert them. This includes a forked skill running in the background, the default, and a background `/code-review --fix` run.",
+                "pt": "**Qualquer outro subagente:** o retorno restaura apenas os arquivos que Claude já havia editado na sua conversa. As edições do subagente em outros arquivos permanecem; use Git para revertê-las. Isso inclui uma skill bifurcada que roda em segundo plano, o padrão, e uma execução de `/code-review --fix` em segundo plano."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-cursor-9"
+              ],
+              "text": {
+                "en": "If Agent takes a wrong turn, click any checkpoint in the chat timeline to preview your files at that point, then restore to revert all files to that state. You can also restore through the `Restore Checkpoint` button on earlier requests or the + button when hovering over a message. Restoring a checkpoint reverts only files; it does not remove conversation messages.",
+                "pt": "Se Agent seguir um caminho errado, clique em qualquer checkpoint na linha do tempo do chat para visualizar seus arquivos naquele ponto e depois restaure para reverter todos os arquivos àquele estado. Você também pode restaurar pelo botão `Restore Checkpoint` em solicitações anteriores ou pelo botão + ao passar o cursor sobre uma mensagem. Restaurar um checkpoint reverte apenas arquivos; não remove mensagens da conversa."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-cursor-10"
+              ],
+              "text": {
+                "en": "Checkpoints are stored locally and separately from Git. Use them only to undo Agent changes; use Git for permanent version control.",
+                "pt": "Checkpoints são armazenados localmente e separados do Git. Use-os apenas para desfazer alterações do Agent; use Git para controle de versão permanente."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-creating-checkpoints",
+              "level": 4,
+              "text": {
+                "en": "Editor · Creating checkpoints",
+                "pt": "Editor · Criação dos checkpoints"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "recovery-depth-87"
+              ],
+              "text": {
+                "en": "Checkpoints save codebase snapshots during a session. Agent creates them automatically before significant changes, capturing the state of all modified files.",
+                "pt": "Checkpoints salvam snapshots da base de código durante uma sessão. Agent os cria automaticamente antes de alterações significativas, capturando o estado de todos os arquivos modificados."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

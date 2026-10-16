@@ -1,0 +1,338 @@
+{
+  "id": "agents",
+  "order": 0,
+  "group": "architecture",
+  "title": {
+    "en": "Agents",
+    "pt": "Agentes"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "agents-depth-173"
+          ],
+          "text": {
+            "en": "The agent loop is powered by two components: models that reason and [tools](tools.md) that act.",
+            "pt": "O ciclo de execução do agente é movido por dois componentes: modelos que raciocinam e [ferramentas](tools.md) que agem."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "definition-model-and-runtime",
+          "level": 3,
+          "text": {
+            "en": "Model and runtime",
+            "pt": "Modelo e programa de execução"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "agents-depth-17"
+          ],
+          "text": {
+            "en": "The runtime brings together the tools, context management and environment that make a language model capable of acting as a coding agent. It provides file access, shell execution, permission controls, memory loading and the loop that chains actions together.",
+            "pt": "O programa de execução reúne as ferramentas, o gerenciamento de contexto e o ambiente que tornam um modelo de linguagem capaz de atuar como agente de programação. Ele fornece acesso a arquivos, execução de shell, controle de permissões, carregamento de memória e o ciclo que encadeia ações."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "agents-concept-2"
+          ],
+          "text": {
+            "en": "The loop moves through three phases: **gather context**, **take action** and [**verify results**](verification.md). These phases blend together. Tools are used throughout, whether searching files to understand code, editing to make changes or running tests to check the work.",
+            "pt": "O ciclo passa por três fases: **reunir contexto**, **agir** e [**verificar os resultados**](verification.md). Essas fases se misturam. As ferramentas são usadas durante todo o processo, seja para pesquisar arquivos e entender o código, editar para fazer alterações ou executar testes para conferir o trabalho."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-decisions-and-continuity",
+          "level": 3,
+          "text": {
+            "en": "Decisions and continuity",
+            "pt": "Decisão e continuidade"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "agents-depth-1"
+          ],
+          "text": {
+            "en": "The loop adapts to the request. A question about the codebase may only require gathering context. A bug fix repeatedly cycles through all three phases. A refactoring may involve extensive verification. The agent decides what each step requires based on what it learned in the previous step, chaining dozens of actions and correcting its course during execution.",
+            "pt": "O ciclo se adapta ao que é solicitado. Uma pergunta sobre a base de código pode exigir apenas reunir contexto. Uma correção de erro percorre repetidamente as três fases. Uma refatoração pode envolver verificação extensa. O agente decide o que cada etapa exige com base no que aprendeu na etapa anterior, encadeando dezenas de ações e corrigindo o percurso durante a execução."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-steering-the-execution",
+          "level": 3,
+          "text": {
+            "en": "Steering the execution",
+            "pt": "Participação na execução"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "agents-depth-2"
+          ],
+          "text": {
+            "en": "You are part of this loop too. You can interrupt at any point to steer the agent in another direction, provide additional context or ask for a different approach. The agent works autonomously but remains responsive to your instructions.",
+            "pt": "Você também participa desse ciclo. Pode interromper a qualquer momento para orientar o agente em outra direção, fornecer contexto adicional ou pedir uma abordagem diferente. O agente trabalha de forma autônoma, mas permanece receptivo às suas instruções."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-codex-3"
+              ],
+              "text": {
+                "en": "Open a project directory and run `codex`. The first time you run Codex, choose **Sign in with ChatGPT** or another available authentication method.",
+                "pt": "Abra um diretório de projeto e execute `codex`. Na primeira vez que executar Codex, escolha **Sign in with ChatGPT** ou outro método de autenticação disponível."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-task-and-progress",
+              "level": 4,
+              "text": {
+                "en": "CLI · Task and progress",
+                "pt": "CLI · Tarefa e acompanhamento"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-depth-18"
+              ],
+              "text": {
+                "en": "Describe what you want to accomplish. For example, ask Codex to explain the project, make a scoped change or help investigate a problem.",
+                "pt": "Descreva o que deseja realizar. Por exemplo, peça ao Codex para explicar o projeto, fazer uma alteração delimitada ou ajudar a investigar um problema."
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "agents-depth-19"
+              ],
+              "language": "text",
+              "code": "Tell me about this project"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-depth-20"
+              ],
+              "text": {
+                "en": "Start Codex in a repository to explore unfamiliar code, plan a change, edit files and run local development tools. Steer the active turn, inspect commands and diffs as they appear, and keep follow-up work in the same session.",
+                "pt": "Inicie Codex em um repositório para explorar código desconhecido, planejar uma alteração, editar arquivos e executar ferramentas locais de desenvolvimento. Oriente o turno ativo, inspecione comandos e diffs conforme aparecem e mantenha o trabalho subsequente na mesma sessão."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-claude-4"
+              ],
+              "text": {
+                "en": "The agent loop, tools and capabilities are the same everywhere you use Claude Code. What changes is where the code runs and how you interact with it.",
+                "pt": "O ciclo de execução do agente, as ferramentas e as capacidades são os mesmos em todos os lugares em que você usa Claude Code. O que muda é onde o código é executado e como você interage com ele."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-claude-5"
+              ],
+              "text": {
+                "en": "You can access Claude Code through the terminal, desktop app, IDE extensions, [claude.ai/code](https://claude.ai/code), Remote Control, Slack and CI/CD pipelines. The interface determines how you see and interact with Claude, but the underlying agent loop is identical. See [Use Claude Code everywhere](https://code.claude.com/docs/en/overview#use-claude-code-everywhere) for the complete list.",
+                "pt": "Você pode acessar Claude Code pelo terminal, pelo aplicativo desktop, pelas extensões de IDE, por [claude.ai/code](https://claude.ai/code), pelo Remote Control, pelo Slack e por pipelines de CI/CD. A interface determina como você vê Claude e interage com ele, mas o ciclo de execução do agente subjacente é idêntico. Consulte [Use Claude Code everywhere](https://code.claude.com/docs/en/overview#use-claude-code-everywhere) para a lista completa."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-model-and-tools",
+              "level": 4,
+              "text": {
+                "en": "Model and tools",
+                "pt": "Modelo e ferramentas"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-depth-21"
+              ],
+              "text": {
+                "en": "Claude Code uses Claude models to understand your code and reason about tasks. Claude can read code in any language, understand how components connect and determine what needs to change to achieve your goal. For complex tasks, it breaks the work into steps, executes them and adjusts its approach based on what it learns.",
+                "pt": "Claude Code usa modelos Claude para entender seu código e raciocinar sobre tarefas. Claude pode ler código em qualquer linguagem, entender como os componentes se conectam e determinar o que precisa mudar para atingir seu objetivo. Para tarefas complexas, divide o trabalho em etapas, executa-as e ajusta a abordagem com base no que aprende."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-session-and-first-task",
+              "level": 4,
+              "text": {
+                "en": "CLI · Session and first task",
+                "pt": "CLI · Sessão e primeira tarefa"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-depth-146"
+              ],
+              "text": {
+                "en": "Open your terminal in a project directory and start Claude Code:",
+                "pt": "Abra o terminal em um diretório de projeto e inicie Claude Code:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "agents-depth-147"
+              ],
+              "language": "bash",
+              "code": "cd /path/to/your/project\nclaude"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-depth-148"
+              ],
+              "text": {
+                "en": "On first use, Claude Code prompts you to log in. For Claude subscription or Console accounts, follow the browser authentication instructions. If `ANTHROPIC_API_KEY` is set and you approve its use when prompted, Claude Code skips the login prompt.",
+                "pt": "No primeiro uso, Claude Code solicita login. Para contas de assinatura Claude ou Console, siga as instruções de autenticação no navegador. Se `ANTHROPIC_API_KEY` estiver definida e você aprovar seu uso quando solicitado, Claude Code pula o pedido de login."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-depth-149"
+              ],
+              "text": {
+                "en": "The prompt appears with the version, current model and working directory above it. Use `/help` to see available commands, `/resume` to continue a previous conversation and `/login` to switch accounts or authenticate again.",
+                "pt": "O prompt aparece com a versão, o modelo atual e o diretório de trabalho acima dele. Use `/help` para consultar os comandos disponíveis, `/resume` para continuar uma conversa anterior e `/login` para trocar de conta ou autenticar novamente."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-cursor-6"
+              ],
+              "text": {
+                "en": "Agent is Cursor's assistant that can complete complex coding tasks independently, run terminal commands and edit code. Access it in the side panel with Cmd+I.",
+                "pt": "Agent é o assistente do Cursor que pode concluir tarefas complexas de programação de forma independente, executar comandos no terminal e editar código. Acesse-o no painel lateral com Cmd+I."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-cursor-7"
+              ],
+              "text": {
+                "en": "Start a conversation with the agent to describe your goals, review proposed changes and approve commands:",
+                "pt": "Inicie uma sessão de conversa com o agente para descrever seus objetivos, revisar as alterações propostas e aprovar comandos:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "agents-cursor-7-part-2"
+              ],
+              "language": "bash",
+              "code": "# Start interactive session\nagent\n\n# Start with initial prompt\nagent \"refactor the auth module to use JWT tokens\""
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-components-and-progress",
+              "level": 4,
+              "text": {
+                "en": "Editor · Components and progress",
+                "pt": "Editor · Componentes e acompanhamento"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-depth-22"
+              ],
+              "text": {
+                "en": "The agent is built from three components: instructions—the system prompt and rules that guide its behavior—tools for editing, searching and terminal execution, and the model chosen for the task. Cursor coordinates these components and tunes the instructions and tools specifically for each supported model.",
+                "pt": "O agente é construído a partir de três componentes: instruções — o prompt de sistema e as regras que orientam seu comportamento —, ferramentas de edição, pesquisa e execução de terminal, e o modelo escolhido para a tarefa. Cursor coordena esses componentes e ajusta as instruções e ferramentas especificamente para cada modelo suportado."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "agents-depth-23"
+              ],
+              "text": {
+                "en": "There are two ways to communicate with an agent while it works. Queue a message to wait for the current task to finish, or send a follow-up immediately to steer the active turn at the next tool call.",
+                "pt": "Há duas formas de se comunicar com um agente enquanto ele trabalha. Coloque uma mensagem na fila para aguardar o término da tarefa atual, ou envie uma instrução de acompanhamento imediatamente para orientar o turno ativo na próxima chamada de ferramenta."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

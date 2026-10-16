@@ -1,0 +1,334 @@
+{
+  "id": "configuration",
+  "order": 7,
+  "group": "execution",
+  "title": {
+    "en": "Configuration",
+    "pt": "Configuração"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "configuration-concept-1"
+          ],
+          "text": {
+            "en": "Settings change program behavior: the initial model, what it can run without asking, files it cannot read, its terminal appearance and what the organization enforces.",
+            "pt": "Configurações alteram o comportamento do programa: o modelo inicial, o que pode executar sem perguntar, os arquivos que não pode ler, sua aparência no terminal e o que a organização impõe."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "configuration-concept-2"
+          ],
+          "text": {
+            "en": "Each configuration source has a scope: the people and projects to which a setting saved there applies, whether one person, everyone in a project or everyone in an organization.",
+            "pt": "Cada fonte de configuração tem um escopo: o conjunto de pessoas e projetos aos quais uma configuração salva nela se aplica, seja apenas uma pessoa, todos em um projeto ou todos em uma organização."
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "configuration-concept-3"
+          ],
+          "text": {
+            "en": "Configuration details can be read from more than one location, with personal defaults and project overrides.",
+            "pt": "Detalhes de configuração podem ser lidos de mais de um local, com padrões pessoais e substituições por projeto."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-defaults-and-constraints",
+          "level": 3,
+          "text": {
+            "en": "Defaults and constraints",
+            "pt": "Padrões e restrições"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "configuration-depth-53"
+          ],
+          "text": {
+            "en": "Requirements constrain behavior; configuration values supply defaults.",
+            "pt": "Requisitos restringem o comportamento; valores de configuração fornecem padrões."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-operation-2"
+              ],
+              "text": {
+                "en": "Codex reads configuration details from more than one location. Your personal defaults live in `~/.codex/config.toml`, and you can add project overrides through `.codex/config.toml` files. For security, Codex loads project `.codex/` layers only when you trust the project.",
+                "pt": "Codex lê detalhes de configuração de mais de um local. Seus padrões pessoais ficam em `~/.codex/config.toml`, e você pode adicionar substituições por projeto com arquivos `.codex/config.toml`. Por segurança, Codex carrega camadas `.codex/` do projeto apenas quando você confia nele."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-and-ide-extension",
+              "level": 4,
+              "text": {
+                "en": "CLI and IDE extension",
+                "pt": "CLI e extensão de IDE"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-codex-3"
+              ],
+              "text": {
+                "en": "To open the configuration file from the Codex IDE extension, select the gear icon in the upper-right corner, then **Codex Settings > Open config.toml**.",
+                "pt": "Para abrir o arquivo de configuração pela extensão de IDE do Codex, selecione o ícone de engrenagem no canto superior direito e depois **Codex Settings > Open config.toml**."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-codex-3-part-2"
+              ],
+              "text": {
+                "en": "The CLI and IDE extension share the same configuration layers. You can use them to:",
+                "pt": "A CLI e a extensão de IDE compartilham as mesmas camadas de configuração. Você pode usá-las para:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "configuration-codex-3-part-3-item-1"
+              ],
+              "text": {
+                "en": "Set the default model and provider.",
+                "pt": "Definir o modelo e o provedor padrão."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "configuration-codex-3-part-3-item-2"
+              ],
+              "text": {
+                "en": "Configure approval policies and sandbox settings.",
+                "pt": "Configurar políticas de aprovação e configurações de sandbox."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "configuration-codex-3-part-3-item-3"
+              ],
+              "text": {
+                "en": "Configure MCP servers.",
+                "pt": "Configurar servidores MCP."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-precedence-and-example",
+              "level": 4,
+              "text": {
+                "en": "Precedence and example",
+                "pt": "Precedência e exemplo"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-depth-54"
+              ],
+              "text": {
+                "en": "Codex resolves values in this order, from highest to lowest precedence: CLI flags and `--config` overrides; `.codex/config.toml` files in trusted projects, prioritizing the one closest to the working directory; profiles selected with `--profile profile-name`; user configuration; cloud-managed defaults; system configuration, when present; and built-in defaults.",
+                "pt": "Codex resolve valores nesta ordem, da maior para a menor precedência: flags da CLI e substituições `--config`; arquivos `.codex/config.toml` de projetos confiáveis, com prioridade para o mais próximo do diretório de trabalho; perfis selecionados com `--profile profile-name`; configuração de usuário; padrões gerenciados pela nuvem; configuração de sistema, quando presente; e padrões internos."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-depth-55"
+              ],
+              "text": {
+                "en": "Control when Codex should pause to request approval before running generated commands:",
+                "pt": "Controle quando Codex deve pausar para pedir aprovação antes de executar comandos gerados:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "configuration-depth-56"
+              ],
+              "language": "toml",
+              "code": "approval_policy = \"on-request\""
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-checking-active-configuration",
+              "level": 4,
+              "text": {
+                "en": "CLI · Checking active configuration",
+                "pt": "CLI · Conferência da configuração ativa"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-depth-57"
+              ],
+              "text": {
+                "en": "Type `/status` to check the active model, approval policy, writable roots and current token usage. For remote connections, the output also shows the server address and version.",
+                "pt": "Digite `/status` para conferir o modelo ativo, a política de aprovação, as raízes com permissão de escrita e o uso atual de tokens. Em conexão remota, a saída também mostra o endereço e a versão do servidor."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "table",
+              "references": [
+                "configuration-claude-4"
+              ],
+              "text": {
+                "en": "| Scope | File | Who it affects | Purpose |\n| --- | --- | --- | --- |\n| User | `~/.claude/settings.json` | You, across all projects on this machine | Personal preferences: theme, editor mode, default model, your own permission rules |\n| Shared project | `.claude/settings.json` | Everyone working in the containing folder. In a Git repository, commit it so teammates receive it | Team permissions, hooks, plugins and environment variables the project needs |\n| Project local | `.claude/settings.local.json` | You, only in this project. Claude Code keeps it out of Git when it creates the file; if you create it manually, add it to `.gitignore` | Personal project overrides and testing before sharing |\n| Managed | `managed-settings.json` and other managed sources | Everyone your organization distributes it to; [Settings precedence](https://code.claude.com/docs/en/settings#settings-precedence) explains what can override it | Security policy and compliance requirements |",
+                "pt": "| Escopo | Arquivo | Quem afeta | Finalidade |\n| --- | --- | --- | --- |\n| Usuário | `~/.claude/settings.json` | Você, em todos os projetos nesta máquina | Preferências pessoais: tema, modo do editor, modelo padrão, suas próprias regras de permissão |\n| Projeto compartilhado | `.claude/settings.json` | Todos que trabalham na pasta que o contém. Em um repositório Git, faça commit para que os colegas o recebam | Permissões da equipe, hooks, plugins e as variáveis de ambiente de que o projeto precisa |\n| Local do projeto | `.claude/settings.local.json` | Você, apenas neste projeto. Claude Code o mantém fora do Git quando cria o arquivo; se você o criar manualmente, adicione-o ao `.gitignore` | Substituições pessoais para um projeto e testes antes de compartilhar |\n| Gerenciado | `managed-settings.json` e outras fontes gerenciadas | Todos para quem sua organização o distribui; [Settings precedence](https://code.claude.com/docs/en/settings#settings-precedence) informa o que pode substituí-lo | Política de segurança e requisitos de conformidade |"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-claude-4-part-2"
+              ],
+              "text": {
+                "en": "In the File column, `~/.claude` is the `.claude` folder in your home directory, and `.claude` without a prefix is the `.claude` folder inside your project.",
+                "pt": "Na coluna Arquivo, `~/.claude` é a pasta `.claude` no seu diretório pessoal, e `.claude` sem prefixo é a pasta `.claude` dentro do seu projeto."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-editing-and-confirmation",
+              "level": 4,
+              "text": {
+                "en": "Editing and confirmation",
+                "pt": "Edição e confirmação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-depth-58"
+              ],
+              "text": {
+                "en": "Open the file for the desired scope in your editor and add or change a key. Files require strict JSON: `//` comments and trailing commas are syntax errors, reported as Settings Error on the next launch. The example allows lint and tests without asking and blocks the read tool for `.env` files; add it to `~/.claude/settings.json`:",
+                "pt": "Abra no editor o arquivo do escopo desejado e adicione ou altere uma chave. Os arquivos exigem JSON estrito: comentários `//` e vírgulas finais são erros de sintaxe, reportados como Settings Error na próxima inicialização. O exemplo permite executar lint e testes sem perguntar e bloqueia a ferramenta de leitura para arquivos `.env`; adicione-o a `~/.claude/settings.json`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "configuration-depth-59"
+              ],
+              "language": "json",
+              "code": "{\n  \"$schema\": \"https://json.schemastore.org/claude-code-settings.json\",\n  \"permissions\": {\n    \"allow\": [\n      \"Bash(npm run lint)\",\n      \"Bash(npm run test *)\"\n    ],\n    \"deny\": [\n      \"Read(./.env)\",\n      \"Read(./.env.*)\"\n    ]\n  }\n}"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-depth-60"
+              ],
+              "text": {
+                "en": "After saving, run `/status` in Claude Code to confirm the file loaded.",
+                "pt": "Depois de salvar, execute `/status` no Claude Code para confirmar que o arquivo foi carregado."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "table",
+              "references": [
+                "configuration-cursor-5"
+              ],
+              "text": {
+                "en": "| Type | Platform | Path |\n| --- | --- | --- |\n| Global | macOS/Linux | `~/.cursor/cli-config.json` |\n| Global | Windows | `$env:USERPROFILE\\.cursor\\cli-config.json` |\n| Project | All | `<project>/.cursor/cli.json` |",
+                "pt": "| Tipo | Plataforma | Caminho |\n| --- | --- | --- |\n| Global | macOS/Linux | `~/.cursor/cli-config.json` |\n| Global | Windows | `$env:USERPROFILE\\.cursor\\cli-config.json` |\n| Projeto | Todas | `<project>/.cursor/cli.json` |"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-cursor-5-part-2"
+              ],
+              "text": {
+                "en": "Only permissions can be configured at the project level. All other CLI settings must be defined globally.",
+                "pt": "Apenas permissões podem ser configuradas no nível do projeto. Todas as outras configurações da CLI devem ser definidas globalmente."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli-configuration-file",
+              "level": 4,
+              "text": {
+                "en": "CLI · Configuration file",
+                "pt": "CLI · Arquivo de configuração"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "configuration-depth-61"
+              ],
+              "language": "json",
+              "code": "{\n  \"version\": 1,\n  \"editor\": { \"vimMode\": false },\n  \"permissions\": { \"allow\": [\"Shell(ls)\"], \"deny\": [] }\n}"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "configuration-depth-62"
+              ],
+              "text": {
+                "en": "If changes do not persist, check JSON validity and write permissions. Some fields are managed by the CLI and may be overwritten. The format is JSON without comments; the CLI repairs missing fields and preserves corrupted files with a `.bad` extension before recreating them.",
+                "pt": "Se as alterações não persistirem, confira a validade do JSON e as permissões de escrita. Alguns campos são gerenciados pela CLI e podem ser sobrescritos. O formato é JSON sem comentários; a CLI repara campos ausentes e preserva arquivos corrompidos com a extensão `.bad` antes de recriá-los."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

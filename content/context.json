@@ -1,0 +1,263 @@
+{
+  "id": "context",
+  "order": 2,
+  "group": "context",
+  "title": {
+    "en": "Context",
+    "pt": "Contexto"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "context-concept-1"
+          ],
+          "text": {
+            "en": "Context is the information the agent can use while working, such as files, prior messages, tool results and instructions.",
+            "pt": "Contexto é a informação que o agente pode usar enquanto trabalha, como arquivos, mensagens anteriores, resultados de ferramentas e instruções."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "context-concept-2"
+          ],
+          "text": {
+            "en": "Tokens are small units of information the model reads and writes. The prompt, files, chat history, tool results and response all use tokens.",
+            "pt": "Tokens são pequenas unidades de informação lidas e escritas pelo modelo. O prompt, os arquivos, o histórico de conversa, os resultados de ferramentas e a resposta usam tokens."
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "context-concept-3"
+          ],
+          "text": {
+            "en": "Each conversation shares a fixed context window with the model. As files are added, tools run and messages are exchanged, these tokens accumulate.",
+            "pt": "Cada conversa compartilha uma janela de contexto fixa com o modelo. À medida que arquivos são adicionados, ferramentas são executadas e mensagens são trocadas, esses tokens se acumulam."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-selecting-information",
+          "level": 3,
+          "text": {
+            "en": "Selecting information",
+            "pt": "Seleção de informação"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "context-depth-27"
+          ],
+          "text": {
+            "en": "Reference specific files, mention constraints and point to example patterns.",
+            "pt": "Referencie arquivos específicos, mencione restrições e aponte padrões de exemplo."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-ide-extension-and-cli",
+              "level": 4,
+              "text": {
+                "en": "IDE extension and CLI",
+                "pt": "Extensão de IDE e CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "context-codex-3"
+              ],
+              "text": {
+                "en": "The IDE extension automatically includes your open files as context. In the CLI, mention paths explicitly or attach files with `/mention` and `@` path completion.",
+                "pt": "A extensão de IDE inclui automaticamente seus arquivos abertos como contexto. Na CLI, mencione caminhos explicitamente ou anexe arquivos com `/mention` e o preenchimento automático de caminhos com `@`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-attaching-and-inspecting",
+              "level": 4,
+              "text": {
+                "en": "CLI · Attaching and inspecting",
+                "pt": "CLI · Anexar e inspecionar"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "context-depth-28"
+              ],
+              "text": {
+                "en": "Type `/mention` followed by a path, such as `/mention src/lib/api.ts`, and select the matching result. Codex adds the file to the conversation so subsequent turns can reference it directly.",
+                "pt": "Digite `/mention` seguido de um caminho, como `/mention src/lib/api.ts`, e selecione o resultado correspondente. Codex adiciona o arquivo à conversa, permitindo que os turnos seguintes o referenciem diretamente."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "context-depth-29"
+              ],
+              "text": {
+                "en": "In any conversation, type `/status`. The output shows the active model, approval policy, writable roots and current token usage. When the TUI connects remotely, it also shows the remote address and server version.",
+                "pt": "Em qualquer conversa, digite `/status`. A saída mostra o modelo ativo, a política de aprovação, as raízes com permissão de escrita e o uso atual de tokens. Quando a TUI se conecta remotamente, também mostra o endereço remoto e a versão do servidor."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "context-claude-4"
+              ],
+              "text": {
+                "en": "Claude's context window contains your conversation history, file contents, command output, CLAUDE.md, auto memory, loaded skills and system instructions. Context fills as you work. Claude [automatically compacts](compaction.md), but instructions from early in the conversation can be lost. Put [persistent rules](instructions.md) in CLAUDE.md and run `/context` to see what is taking up space.",
+                "pt": "A janela de contexto de Claude contém seu histórico de conversa, conteúdo dos arquivos, saídas de comandos, CLAUDE.md, memória automática, skills carregadas e instruções do sistema. Conforme você trabalha, o contexto se preenche. Claude [compacta automaticamente](compaction.md), mas instruções do início da conversa podem se perder. Coloque [regras persistentes](instructions.md) em CLAUDE.md e execute `/context` para ver o que está ocupando espaço."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-inspection-and-on-demand-loading",
+              "level": 4,
+              "text": {
+                "en": "Inspection and on-demand loading",
+                "pt": "Inspeção e carregamento sob demanda"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "context-depth-30"
+              ],
+              "text": {
+                "en": "MCP tool definitions are deferred by default and loaded on demand through tool search. Until Claude uses a specific tool, only tool names and server instructions consume context.",
+                "pt": "As definições de ferramentas MCP têm o carregamento adiado por padrão e são carregadas sob demanda pela pesquisa de ferramentas. Até que Claude use uma ferramenta específica, apenas seus nomes e as instruções dos servidores consomem contexto."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "context-cursor-5"
+              ],
+              "text": {
+                "en": "Type `@` in the chat input to attach specific context to your conversation. This helps Agent focus on the right files and information.",
+                "pt": "Digite `@` no campo de entrada do chat para anexar contexto específico à sua conversa. Isso ajuda Agent a se concentrar nos arquivos e nas informações corretos."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "context-cursor-6-item-1"
+              ],
+              "text": {
+                "en": "**Files and folders:** `@auth.ts` or `@src/components/` to include files or folders (type `/` after selecting a folder to navigate deeper).",
+                "pt": "**Arquivos e pastas:** `@auth.ts` ou `@src/components/` para incluir arquivos ou pastas (digite `/` depois de selecionar uma pasta para navegar mais profundamente)."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "context-cursor-6-item-2"
+              ],
+              "text": {
+                "en": "**Terminals:** `@Terminals` to include terminal output as context.",
+                "pt": "**Terminais:** `@Terminals` para incluir a saída do terminal como contexto."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "context-cursor-6-item-3"
+              ],
+              "text": {
+                "en": "**Chats:** `@Chats` to reference context from a previous conversation.",
+                "pt": "**Chats:** `@Chats` para referenciar contexto de uma conversa anterior."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "context-cursor-6-item-4"
+              ],
+              "text": {
+                "en": "**Git diffs:** `@Commit (Diff of Working State)` for uncommitted changes, or `@Branch (Diff with Main)` for your branch's full diff.",
+                "pt": "**Diferenças do Git:** `@Commit (Diff of Working State)` para alterações sem commit, ou `@Branch (Diff with Main)` para o diff completo da sua branch."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "context-cursor-6-item-5"
+              ],
+              "text": {
+                "en": "**Browser:** `@Browser` to attach context from the integrated browser.",
+                "pt": "**Navegador:** `@Browser` para anexar contexto do navegador integrado."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-inspecting-usage",
+              "level": 4,
+              "text": {
+                "en": "Editor · Inspecting usage",
+                "pt": "Editor · Inspeção do consumo"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "context-depth-31"
+              ],
+              "text": {
+                "en": "The circular indicator beside the prompt input shows how much of the window is occupied. Click it to open a breakdown of total tokens by category.",
+                "pt": "O indicador circular ao lado do campo do prompt mostra quanto da janela está ocupado. Clique nele para abrir o detalhamento do total de tokens por categoria."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

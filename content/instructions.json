@@ -1,0 +1,391 @@
+{
+  "id": "instructions",
+  "order": 6,
+  "group": "context",
+  "title": {
+    "en": "Persistent instructions",
+    "pt": "Instruções persistentes"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "instructions-concept-1"
+          ],
+          "text": {
+            "en": "Rules provide persistent, reusable context at the prompt level.",
+            "pt": "Regras fornecem contexto persistente e reutilizável no nível do prompt."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "instructions-concept-2"
+          ],
+          "text": {
+            "en": "Large language models do not retain memory between completions.",
+            "pt": "Modelos de linguagem de grande porte não retêm memória entre gerações."
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "instructions-concept-3"
+          ],
+          "text": {
+            "en": "When applied, rule contents are included at the start of the model context. This gives the AI consistent guidance for generating code, interpreting edits or helping with workflows.",
+            "pt": "Quando aplicadas, as regras têm seu conteúdo incluído no início do contexto do modelo. Isso dá à IA orientação consistente para gerar código, interpretar edições ou ajudar com fluxos de trabalho."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-codex-3"
+              ],
+              "text": {
+                "en": "Codex builds an instruction chain when it starts (once per run; in the TUI, this usually means once per launched session). Discovery follows this precedence order:",
+                "pt": "Codex constrói uma cadeia de instruções ao iniciar (uma vez por execução; na TUI, isso geralmente significa uma vez por sessão iniciada). A descoberta segue esta ordem de precedência:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "instructions-codex-3-part-2-item-1"
+              ],
+              "text": {
+                "en": "**Global scope:** in the Codex home directory (defaulting to `~/.codex` unless you set `CODEX_HOME`), Codex reads `AGENTS.override.md` if it exists. Otherwise, it reads `AGENTS.md`. Codex uses only the first nonempty file at this level.",
+                "pt": "**Escopo global:** no diretório inicial do Codex (por padrão, `~/.codex`, a menos que você defina `CODEX_HOME`), Codex lê `AGENTS.override.md` se ele existir. Caso contrário, lê `AGENTS.md`. Codex usa apenas o primeiro arquivo não vazio nesse nível."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "instructions-codex-3-part-2-item-2"
+              ],
+              "text": {
+                "en": "**Project scope:** starting at the project root (typically the Git root), Codex walks down to the current working directory. If it cannot find a project root, it checks only the current directory. In each directory along the path, it checks `AGENTS.override.md`, then `AGENTS.md`, then fallback names in `project_doc_fallback_filenames`. Codex includes at most one file per directory.",
+                "pt": "**Escopo do projeto:** partindo da raiz do projeto (normalmente a raiz do Git), Codex percorre os diretórios até o diretório de trabalho atual. Se não encontrar uma raiz de projeto, verifica apenas o diretório atual. Em cada diretório ao longo do caminho, verifica `AGENTS.override.md`, depois `AGENTS.md` e, por fim, os nomes alternativos em `project_doc_fallback_filenames`. Codex inclui no máximo um arquivo por diretório."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "instructions-codex-3-part-2-item-3"
+              ],
+              "text": {
+                "en": "**Merge order:** Codex concatenates files from the root down, joining them with blank lines. Files closer to the current directory override earlier guidance because they appear later in the combined prompt.",
+                "pt": "**Ordem de mesclagem:** Codex concatena os arquivos da raiz para baixo, separando-os por linhas em branco. Arquivos mais próximos do diretório atual substituem orientações anteriores porque aparecem depois no prompt combinado."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-repository-file",
+              "level": 4,
+              "text": {
+                "en": "Repository file",
+                "pt": "Arquivo do repositório"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-152"
+              ],
+              "text": {
+                "en": "At the repository root, add an `AGENTS.md` with setup instructions:",
+                "pt": "Na raiz do repositório, adicione um `AGENTS.md` com as instruções de preparação:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "instructions-depth-153"
+              ],
+              "language": "md",
+              "code": "   # AGENTS.md\n\n   ## Repository expectations\n\n   - Run `npm run lint` before opening a pull request.\n   - Document public utilities in `docs/` when you change behavior."
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-154"
+              ],
+              "text": {
+                "en": "Codex skips empty files and stops adding files when the combined size reaches `project_doc_max_bytes`, which defaults to 32 KiB. When you hit that limit, raise it or distribute instructions across nested directories.",
+                "pt": "Codex ignora arquivos vazios e deixa de adicionar arquivos quando o tamanho combinado atinge `project_doc_max_bytes`, cujo padrão é 32 KiB. Ao atingir esse limite, aumente-o ou distribua as instruções em diretórios aninhados."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-checking-loaded-instructions",
+              "level": 4,
+              "text": {
+                "en": "CLI · Checking loaded instructions",
+                "pt": "CLI · Conferência do carregamento"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-174"
+              ],
+              "text": {
+                "en": "To audit loaded instruction files, enable the plaintext TUI log with `codex -c log_dir=./.codex-log` and check `./.codex-log/codex-tui.log`, or inspect the most recent `session-*.jsonl` file if session logging is enabled. If instructions look stale, restart Codex in the target directory: the instruction chain is rebuilt on every run and at the start of each TUI session, with no cache to clear manually.",
+                "pt": "Para auditar os arquivos de instruções carregados, habilite o log de texto da TUI com `codex -c log_dir=./.codex-log` e confira `./.codex-log/codex-tui.log`, ou inspecione o arquivo `session-*.jsonl` mais recente se o registro de sessões estiver habilitado. Se as instruções parecerem desatualizadas, reinicie Codex no diretório de destino: a cadeia de instruções é reconstruída em cada execução e no início de cada sessão da TUI, sem um cache que precise ser limpo manualmente."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-definition-1"
+              ],
+              "text": {
+                "en": "CLAUDE.md files are Markdown files that give Claude persistent instructions for a project, your personal workflow or your entire organization. You write them in plain text; Claude reads them at the start of each session. If your repository uses `AGENTS.md` instead, see [AGENTS.md](https://code.claude.com/docs/en/memory#agents-md).",
+                "pt": "Arquivos CLAUDE.md são arquivos Markdown que fornecem ao Claude instruções persistentes para um projeto, seu fluxo de trabalho pessoal ou toda a sua organização. Você escreve esses arquivos em texto simples; Claude os lê no início de cada sessão. Se seu repositório usa `AGENTS.md` em vez disso, consulte [AGENTS.md](https://code.claude.com/docs/en/memory#agents-md)."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-claude-4"
+              ],
+              "text": {
+                "en": "Put Markdown files in your project's `.claude/rules/` directory. Each file should cover one topic, with a descriptive name such as `testing.md` or `api-design.md`. All `.md` files are discovered recursively, so you can organize rules in subdirectories such as `frontend/` or `backend/`.",
+                "pt": "Coloque arquivos Markdown no diretório `.claude/rules/` do seu projeto. Cada arquivo deve abordar um tópico, com um nome descritivo como `testing.md` ou `api-design.md`. Todos os arquivos `.md` são descobertos recursivamente, então você pode organizar regras em subdiretórios como `frontend/` ou `backend/`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-claude-5"
+              ],
+              "text": {
+                "en": "Rules without `paths` in the frontmatter are loaded at startup with the same priority as `.claude/CLAUDE.md`.",
+                "pt": "Regras sem `paths` no frontmatter são carregadas na inicialização com a mesma prioridade que `.claude/CLAUDE.md`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-loading-by-scope",
+              "level": 4,
+              "text": {
+                "en": "Loading by scope",
+                "pt": "Carregamento por escopo"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-47"
+              ],
+              "text": {
+                "en": "Claude also discovers `CLAUDE.md` and `CLAUDE.local.md` in subdirectories of the working directory. Instead of loading them at startup, Claude Code loads them when Claude reads, writes or edits another file in that subdirectory. This includes Bash commands classified as reads, such as `cat` or `head` on a single file.",
+                "pt": "Claude também descobre `CLAUDE.md` e `CLAUDE.local.md` nos subdiretórios do diretório de trabalho. Em vez de carregá-los na inicialização, Claude Code os carrega quando Claude lê, escreve ou edita outro arquivo naquele subdiretório. Isso inclui comandos Bash considerados leitura, como `cat` ou `head` sobre um único arquivo."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-loading-order",
+              "level": 4,
+              "text": {
+                "en": "Loading order",
+                "pt": "Ordem de carregamento"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-48"
+              ],
+              "text": {
+                "en": "All discovered files are concatenated into context. In the directory tree, content is ordered from the filesystem root to the working directory; instructions closest to the launch location are read last. Within each directory, `CLAUDE.local.md` is appended after `CLAUDE.md`.",
+                "pt": "Todos os arquivos descobertos são concatenados ao contexto. Na árvore de diretórios, o conteúdo é ordenado da raiz do sistema de arquivos até o diretório de trabalho; instruções próximas ao local de inicialização são lidas por último. Em cada diretório, `CLAUDE.local.md` é acrescentado depois de `CLAUDE.md`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-inspecting-loaded-instructions",
+              "level": 4,
+              "text": {
+                "en": "Inspecting loaded instructions",
+                "pt": "Inspeção das instruções carregadas"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-49"
+              ],
+              "text": {
+                "en": "The `/memory` command lists paths to `CLAUDE.md`, `CLAUDE.local.md` and other memory files at user and project scopes, including files that do not yet exist. Select a file to open it in the editor; if it does not exist, it is created. The command also lets you toggle auto memory and open its folder. To check which `CLAUDE.md` files and rules loaded at startup, run `/context`.",
+                "pt": "O comando `/memory` lista os caminhos de `CLAUDE.md`, `CLAUDE.local.md` e outros arquivos de memória nos escopos de usuário e projeto, inclusive arquivos ainda inexistentes. Selecione um arquivo para abri-lo no editor; se ele não existir, será criado. O comando também permite alternar a memória automática e abrir sua pasta. Para conferir quais arquivos `CLAUDE.md` e regras foram carregados na inicialização, execute `/context`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-path-scoped-rules",
+              "level": 4,
+              "text": {
+                "en": "Path-scoped rules",
+                "pt": "Regras condicionais por caminho"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-155"
+              ],
+              "text": {
+                "en": "Rules can be scoped to specific files through YAML frontmatter with the `paths` field. They apply when Claude works with files matching the patterns:",
+                "pt": "Regras podem ser limitadas a arquivos específicos por frontmatter YAML com o campo `paths`. Elas se aplicam quando Claude trabalha com arquivos que correspondem aos padrões:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "instructions-depth-156"
+              ],
+              "language": "markdown",
+              "code": "---\npaths:\n  - \"src/api/**/*.ts\"\n---\n\n# API Development Rules\n\n- All API endpoints must include input validation\n- Use the standard error response format\n- Include OpenAPI documentation comments"
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-cursor-6"
+              ],
+              "text": {
+                "en": "Project rules live in `.cursor/rules` as version-controlled `.mdc` files. They are scoped by path patterns, invoked manually or included based on relevance.",
+                "pt": "As regras do projeto ficam em `.cursor/rules` como arquivos `.mdc` e são controladas por versão. Seu escopo é definido por padrões de caminho; elas são invocadas manualmente ou incluídas com base na relevância."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-cursor-7"
+              ],
+              "text": {
+                "en": "Each rule is a Markdown file with frontmatter metadata and content. Control how rules apply through the type selector, which changes the `description`, `globs` and `alwaysApply` properties.",
+                "pt": "Cada regra é um arquivo Markdown com metadados no frontmatter e conteúdo. Controle como as regras são aplicadas pelo seletor de tipo, que altera as propriedades `description`, `globs`, `alwaysApply`."
+              }
+            },
+            {
+              "type": "table",
+              "references": [
+                "instructions-cursor-7-part-2"
+              ],
+              "text": {
+                "en": "| Rule type | Description |\n| --- | --- |\n| `Always Apply` | Apply to every chat session |\n| `Apply Intelligently` | When Agent decides it is relevant based on the description |\n| `Apply to Specific Files` | When the file matches a specified pattern |\n| `Apply Manually` | When mentioned with @ in chat (for example, `@my-rule`) |",
+                "pt": "| Tipo de regra | Descrição |\n| --- | --- |\n| `Always Apply` | Aplicar a toda sessão de chat |\n| `Apply Intelligently` | Quando Agent decide que é relevante com base na descrição |\n| `Apply to Specific Files` | Quando o arquivo corresponde a um padrão especificado |\n| `Apply Manually` | Quando mencionada com @ no chat (por exemplo, `@my-rule`) |"
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli-rule-discovery",
+              "level": 4,
+              "text": {
+                "en": "CLI · Rule discovery",
+                "pt": "CLI · Descoberta de regras"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-50"
+              ],
+              "text": {
+                "en": "The CLI uses the same rules system as the editor. Rules in `.cursor/rules` are loaded and applied according to their configuration, for specific project areas or file types. The CLI also reads `AGENTS.md` and `CLAUDE.md` at the project root when present, applying them alongside `.cursor/rules`.",
+                "pt": "A CLI usa o mesmo sistema de regras do editor. Regras em `.cursor/rules` são carregadas e aplicadas conforme sua configuração, para partes específicas do projeto ou tipos de arquivo. A CLI também lê `AGENTS.md` e `CLAUDE.md` na raiz do projeto, quando presentes, e os aplica junto às regras de `.cursor/rules`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-file-pattern-rule",
+              "level": 4,
+              "text": {
+                "en": "Editor · File-pattern rule",
+                "pt": "Editor · Regra por padrão de arquivo"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "instructions-depth-157"
+              ],
+              "language": "md",
+              "code": "---\nglobs: src/components/**/*.tsx\nalwaysApply: false\n---\n\n- Use named exports, not default exports\n- Co-locate styles in a module CSS file next to the component\n- Keep components under 200 lines. Extract subcomponents into the same\n  directory when a file grows beyond that\n- Prefer composition over prop drilling. Pass children or render props\n  instead of threading data through multiple layers"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-158"
+              ],
+              "text": {
+                "en": "Each project rule must use the `.mdc` extension. A plain `.md` file in `.cursor/rules` is ignored by the rules system because it lacks frontmatter specifying `description`, `globs` and `alwaysApply`. For plain Markdown, use `AGENTS.md`.",
+                "pt": "Cada regra do projeto deve usar a extensão `.mdc`. Um arquivo `.md` simples em `.cursor/rules` é ignorado pelo sistema de regras porque não tem o frontmatter que especifica `description`, `globs` e `alwaysApply`. Para Markdown simples, use `AGENTS.md`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-creation-and-inspection",
+              "level": 4,
+              "text": {
+                "en": "Editor · Creation and inspection",
+                "pt": "Editor · Criação e inspeção"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "instructions-depth-175"
+              ],
+              "text": {
+                "en": "Type `/create-rule` in Agent and describe the rule; the agent generates the file with frontmatter and saves it in `.cursor/rules`. Alternatively, open **Customize** in the sidebar, go to **Rules** and click **Add Rule**. Customize shows all rules and their status.",
+                "pt": "Digite `/create-rule` no Agent e descreva a regra; o agente gera o arquivo com o frontmatter e o salva em `.cursor/rules`. Outra opção é abrir **Customize** na lateral, acessar **Rules** e clicar em **Add Rule**. Customize mostra todas as regras e seus estados."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

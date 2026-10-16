@@ -1,0 +1,466 @@
+{
+  "id": "worktrees",
+  "order": 20,
+  "group": "coordination",
+  "title": {
+    "en": "Worktrees",
+    "pt": "Worktrees"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "worktrees-concept-1"
+          ],
+          "text": {
+            "en": "A worktree lets you create a second checkout of the repository.",
+            "pt": "Uma worktree permite criar uma segunda cópia (*checkout*) do repositório."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "worktrees-concept-2"
+          ],
+          "text": {
+            "en": "Each worktree has its own copy of repository files, but all share metadata about commits, branches and other Git objects. This lets you check out and work on multiple branches in parallel.",
+            "pt": "Cada worktree tem sua própria cópia dos arquivos do repositório, mas todas compartilham os metadados sobre commits, branches e outros elementos do Git. Isso permite fazer checkout e trabalhar em várias branches em paralelo."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-branch-and-working-copy",
+          "level": 3,
+          "text": {
+            "en": "Branch and working copy",
+            "pt": "Branch e cópia de trabalho"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "worktrees-depth-172"
+          ],
+          "text": {
+            "en": "Git prevents the same branch from being checked out in multiple worktrees simultaneously. A branch represents a mutable reference; commits, resets, rebases and merges must advance it in an orderly way. This rule keeps one working copy responsible for each branch, while other worktrees can reference the same commits through detached HEAD or separate branches.",
+            "pt": "Git impede que a mesma branch esteja em checkout em mais de uma worktree ao mesmo tempo. A branch representa uma referência mutável; commits, resets, rebases e merges devem avançá-la de forma ordenada. A regra mantém uma cópia de trabalho responsável por cada branch, enquanto outras worktrees podem referenciar os mesmos commits por detached HEAD ou por branches distintas."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-desktop",
+              "level": 4,
+              "text": {
+                "en": "Desktop",
+                "pt": "Desktop"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "worktrees-codex-3-item-1"
+              ],
+              "text": {
+                "en": "**Select \"Worktree\".** In the new conversation view, select **Worktree** below the composer. Optionally choose a local environment to run worktree setup scripts.",
+                "pt": "**Selecione \"Worktree\".** Na visualização de nova conversa, selecione **Worktree** abaixo do campo de composição. Opcionalmente, escolha um ambiente local para executar scripts de preparação da worktree."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "worktrees-codex-3-item-2"
+              ],
+              "text": {
+                "en": "**Select the starting branch.** Below the composer, choose the Git branch to base the worktree on. This can be your `main` / `master` branch, a feature branch or your current branch with unstaged local changes.",
+                "pt": "**Selecione a branch inicial.** Abaixo do campo de composição, escolha a branch Git na qual basear a worktree. Pode ser sua branch `main` / `master`, uma branch de funcionalidade ou sua branch atual com alterações locais fora da área de staging."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "worktrees-codex-3-item-3"
+              ],
+              "text": {
+                "en": "**Send your prompt.** Send the prompt, and Codex creates a Git worktree based on the selected branch. By default, Codex works with \"detached HEAD\".",
+                "pt": "**Envie seu prompt.** Envie seu prompt, e Codex cria uma worktree Git com base na branch selecionada. Por padrão, Codex trabalha com \"detached HEAD\"."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-desktop-handoff-to-the-local-checkout",
+              "level": 4,
+              "text": {
+                "en": "Desktop · Handoff to the local checkout",
+                "pt": "Desktop · Transferência para o checkout local"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-depth-140"
+              ],
+              "text": {
+                "en": "Select **Hand off** in the conversation header and move it to **Local** to continue in your usual working environment. Codex performs the Git operations needed to transfer between the worktree and local checkout. Each conversation keeps the same associated worktree; if handed back, it returns to the same environment.",
+                "pt": "Selecione **Hand off** no cabeçalho da conversa e mova-a para **Local** para continuar no ambiente de trabalho habitual. Codex executa as operações Git necessárias à transferência entre a worktree e o checkout local. Cada conversa mantém a mesma worktree associada; se for transferida de volta, retorna ao mesmo ambiente."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-desktop-cleanup-and-restoration",
+              "level": 4,
+              "text": {
+                "en": "Desktop · Cleanup and restoration",
+                "pt": "Desktop · Limpeza e restauração"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-depth-188"
+              ],
+              "text": {
+                "en": "By default, Codex keeps the 15 most recent managed worktrees; you can change this limit or disable automatic deletion in settings. Worktrees tied to a pinned or ongoing conversation, or permanent worktrees, are not deleted automatically. Others may be deleted when the associated conversation is archived or when older worktrees must be removed to stay within the limit. Before deletion, Codex saves a snapshot of the work; reopening the conversation offers a restore option.",
+                "pt": "Por padrão, Codex conserva as 15 worktrees gerenciadas mais recentes; você pode alterar esse limite ou desativar a exclusão automática nas configurações. Worktrees vinculadas a uma conversa fixada, ainda em andamento ou permanentes não são excluídas automaticamente. As demais podem ser excluídas quando a conversa associada é arquivada ou quando é necessário remover worktrees antigas para respeitar o limite. Antes da exclusão, Codex salva um snapshot do trabalho; ao reabrir a conversa, oferece a opção de restaurá-lo."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-claude-4"
+              ],
+              "text": {
+                "en": "Pass `--worktree` or `-w` with a name to create an isolated worktree and start Claude in it. By default, the worktree is created at `.claude/worktrees/<name>/` in the repository root, on a new branch named `worktree-<name>`:",
+                "pt": "Passe `--worktree` ou `-w` com um nome para criar uma worktree isolada e iniciar Claude nela. Por padrão, a worktree é criada em `.claude/worktrees/<name>/` na raiz do repositório, em uma nova branch chamada `worktree-<name>`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "worktrees-claude-4-part-2"
+              ],
+              "language": "bash",
+              "code": "claude --worktree feature-auth"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-claude-4-part-3"
+              ],
+              "text": {
+                "en": "Run the command again with another name in a second terminal to start another isolated session. If you omit the name, Claude generates one, such as `bright-running-fox`.",
+                "pt": "Execute o comando novamente com outro nome em outro terminal para iniciar uma segunda sessão isolada. Se omitir o nome, Claude gera um, como `bright-running-fox`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-claude-4-part-4"
+              ],
+              "text": {
+                "en": "Interactive runs require workspace trust: if you have not run Claude in the directory before, run `claude` there once to accept the trust dialog; otherwise, `--worktree` exits with an error asking you to do so. Non-interactive runs with `-p` skip the trust check, so `claude -p --worktree` proceeds without it.",
+                "pt": "Execuções interativas exigem confiança no workspace: se você ainda não executou Claude no diretório, execute `claude` ali uma vez para aceitar a caixa de diálogo de confiança; caso contrário, `--worktree` termina com um erro pedindo isso. Execuções não interativas com `-p` pulam a verificação de confiança, então `claude -p --worktree` prossegue sem ela."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-exit-and-retention",
+              "level": 4,
+              "text": {
+                "en": "CLI · Exit and retention",
+                "pt": "CLI · Encerramento e conservação"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-depth-141"
+              ],
+              "text": {
+                "en": "When you exit an interactive session, Claude checks changed or untracked files, uncommitted submodule work and new commits. In a Claude-created Git worktree, an unnamed session with no pending work has its worktree and branch removed automatically; named sessions ask for confirmation. If work exists, Claude asks whether to keep or remove it. Keeping preserves directory and branch; removing deletes both and all work. To return, use the `claude --worktree <name> --resume` command shown on exit.",
+                "pt": "Ao sair de uma sessão interativa, Claude verifica arquivos alterados ou não rastreados, trabalho não commitado em submódulos e novos commits. Em uma worktree Git criada por Claude, uma sessão sem nome e sem trabalho pendente tem a worktree e a branch removidas automaticamente; sessões nomeadas pedem confirmação. Se houver trabalho, Claude pergunta se deve manter ou remover. Manter preserva diretório e branch; remover exclui ambos e todo o trabalho. Para retornar, use o comando `claude --worktree <name> --resume` mostrado na saída."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-depth-142"
+              ],
+              "text": {
+                "en": "Non-interactive `-p` runs do not show an exit confirmation and do not clean up their worktrees. The created lock remains until a later stale-lock cleanup. To remove one, use `git worktree remove`; if Git refuses because it is locked, run `git worktree unlock` first.",
+                "pt": "Execuções não interativas com `-p` não mostram uma confirmação de saída e não limpam suas worktrees. O bloqueio criado permanece até uma limpeza posterior de bloqueios antigos. Para remover uma delas, use `git worktree remove`; se o Git recusar por estar bloqueada, execute antes `git worktree unlock`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-access-restrictions",
+              "level": 4,
+              "text": {
+                "en": "Access restrictions",
+                "pt": "Restrições de acesso"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-operation-2"
+              ],
+              "text": {
+                "en": "While a session is isolated in a worktree, Claude Code blocks tool calls defined by the checks below. The same rules apply when you start with `--worktree`, when Claude enters a worktree with `EnterWorktree` or when you resume a worktree session.",
+                "pt": "Enquanto uma sessão está isolada em uma worktree, Claude Code bloqueia as chamadas de ferramentas definidas pelas verificações abaixo. As mesmas regras se aplicam quando você inicia a sessão com `--worktree`, quando Claude entra em uma worktree com `EnterWorktree` ou quando você retoma uma sessão de worktree."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-operation-2-part-2"
+              ],
+              "text": {
+                "en": "The same enforcement covers all subagents Claude starts from the isolated session. This applies to interactive and background sessions. Subagents running in their own worktrees have the same checks. Their version history is in [Write subagent files](https://code.claude.com/docs/en/sub-agents#write-subagent-files).",
+                "pt": "A mesma aplicação das regras cobre todos os subagentes que Claude inicia a partir da sessão isolada. Isso se aplica tanto a sessões interativas quanto em segundo plano. Subagentes que executam em suas próprias worktrees têm as mesmas verificações. Seu histórico de versões está em [Write subagent files](https://code.claude.com/docs/en/sub-agents#write-subagent-files)."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-operation-2-part-3"
+              ],
+              "text": {
+                "en": "Claude Code applies four checks:",
+                "pt": "Claude Code aplica quatro verificações:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "worktrees-operation-2-part-4-item-1"
+              ],
+              "text": {
+                "en": "**File edits:** Claude Code blocks `Edit`, `Write` or `NotebookEdit` targeting a path in the main checkout.",
+                "pt": "**Edições de arquivos:** Claude Code bloqueia `Edit`, `Write` ou `NotebookEdit` que tenha como alvo um caminho no checkout principal."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "worktrees-operation-2-part-4-item-2"
+              ],
+              "text": {
+                "en": "**Command working directory:** Claude Code blocks a Bash, PowerShell or Monitor command whose working directory resolves to the main checkout, or whose working directory it cannot verify stays outside it.",
+                "pt": "**Diretório de trabalho do comando:** Claude Code bloqueia um comando Bash, PowerShell ou Monitor cujo diretório de trabalho seja resolvido para o checkout principal, ou cujo diretório de trabalho não possa verificar que permanece fora dele."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "worktrees-operation-2-part-4-item-3"
+              ],
+              "text": {
+                "en": "**Git redirection:** Claude Code blocks a Bash or Monitor command redirecting Git to the main checkout. Redirection can happen through `git -C`, `--git-dir`, a `GIT_DIR` or `GIT_WORK_TREE` variable, or a `cd` to the main checkout before running Git.",
+                "pt": "**Redirecionamentos do Git:** Claude Code bloqueia um comando Bash ou Monitor que redirecione Git para o checkout principal. O redirecionamento pode ocorrer por `git -C`, `--git-dir`, uma variável `GIT_DIR` ou `GIT_WORK_TREE`, ou um `cd` para o checkout principal antes de executar Git."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "worktrees-operation-2-part-4-item-4"
+              ],
+              "text": {
+                "en": "**Command shape:** Claude Code blocks a Bash or Monitor command when it cannot verify from the command text that any Git execution stays within the worktree. This happens, for example, when the command name is computed at runtime, syntax cannot be parsed, or an expansion such as `${!name}` or `${ command; }` can run a command the text does not reveal. Claude Code tells Claude how to rewrite the refused command, such as splitting it into separate simple commands. You cannot disable this check.",
+                "pt": "**Forma do comando:** Claude Code bloqueia um comando Bash ou Monitor quando não consegue verificar, pelo texto do comando, que qualquer execução de Git permanece dentro da worktree. Isso acontece, por exemplo, quando o nome do comando é calculado em tempo de execução, quando a sintaxe não pode ser analisada ou quando uma expansão como `${!name}` ou `${ command; }` pode executar um comando que o texto não explicita. Claude Code informa ao Claude como reescrever o comando recusado, como dividi-lo em comandos simples e separados. Você não pode desativar essa verificação."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-operation-2-part-5"
+              ],
+              "text": {
+                "en": "These checks read an edit's target path, a command's working directory and the command text. None tracks which files a shell command writes; therefore a command writing to the main checkout without running Git there, such as `cp` or shell redirection, is not refused by these checks. Claude Code treats it like any other shell command under your [permission](permissions.md) and [sandbox](sandbox.md) settings.",
+                "pt": "Essas verificações leem o caminho que uma edição tem como alvo, o diretório em que um comando é executado e o texto do comando. Nenhuma delas rastreia em quais arquivos um comando de shell escreve; portanto, um comando que escreve no checkout principal sem executar Git ali, como `cp` ou um redirecionamento de shell, não é recusado por elas. Claude Code trata esse comando como qualquer outro comando de shell segundo suas configurações de [permissões](permissions.md) e [sandbox](sandbox.md)."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-operation-2-part-6"
+              ],
+              "text": {
+                "en": "The checks apply to the repository from which you started Claude Code. They also cover the main checkout associated with a linked worktree. For PowerShell commands, Claude Code applies only the working-directory check.",
+                "pt": "As verificações se aplicam ao repositório a partir do qual você iniciou Claude Code. Também cobrem o checkout principal ao qual uma worktree vinculada está associada. Para comandos PowerShell, Claude Code aplica apenas a verificação do diretório de trabalho."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-agents-window",
+              "level": 4,
+              "text": {
+                "en": "Agents Window",
+                "pt": "Agents Window"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-cursor-5"
+              ],
+              "text": {
+                "en": "When you start or move an agent into a worktree through the Agents Window, Cursor creates a separate checkout for that agent. The agent continues the task inside the worktree, keeping changes separate from the main checkout.",
+                "pt": "Quando você inicia ou move um agente para uma worktree pela Agents Window, Cursor cria um checkout separado para esse agente. O agente continua a tarefa dentro da worktree, de modo que as alterações permaneçam separadas do checkout principal."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-cursor-5-part-2"
+              ],
+              "text": {
+                "en": "After the agent finishes, review the result in the Agents Window. You can continue working in the worktree, create a commit or PR from that checkout, or bring the result back to the main workspace.",
+                "pt": "Depois que o agente terminar, revise o resultado na Agents Window. Você pode continuar trabalhando na worktree, criar um commit ou PR a partir desse checkout ou trazer o resultado de volta para o workspace principal."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-cursor-6"
+              ],
+              "text": {
+                "en": "Pass `-w` or `--worktree [name]` to run the agent in a new Git worktree instead of editing the current checkout directly. Cursor creates these checkouts in `~/.cursor/worktrees/<reponame>/<name>`, alongside editor-created worktrees. If you omit `name`, Cursor generates one.",
+                "pt": "Passe `-w` ou `--worktree [name]` para executar o agente em uma nova worktree Git em vez de editar diretamente o checkout atual. Cursor cria esses checkouts em `~/.cursor/worktrees/<reponame>/<name>`, junto às worktrees criadas pelo editor. Se omitir `name`, Cursor gera um."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-cursor-6-part-2"
+              ],
+              "text": {
+                "en": "Cursor cleans CLI worktrees using the same retention rules as editor worktrees. For cleanup settings and limits, see [How are old worktrees cleaned up?](https://cursor.com/docs/configuration/worktrees#worktrees-cleanup).",
+                "pt": "Cursor limpa worktrees da CLI com as mesmas regras de retenção usadas para worktrees do editor. Para configurações e limites de limpeza, consulte [How are old worktrees cleaned up?](https://cursor.com/docs/configuration/worktrees#worktrees-cleanup)."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-cursor-6-part-3"
+              ],
+              "text": {
+                "en": "Combine with `--workspace <path>` when you need an explicit repository root. Otherwise, the CLI uses the current working directory. `--worktree` changes only where the agent makes file edits within that project.",
+                "pt": "Combine com `--workspace <path>` quando precisar de uma raiz de repositório explícita. Caso contrário, a CLI usa o diretório de trabalho atual. `--worktree` altera apenas onde o agente faz edições de arquivos dentro desse projeto."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-ide",
+              "level": 4,
+              "text": {
+                "en": "IDE",
+                "pt": "IDE"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-cursor-7"
+              ],
+              "text": {
+                "en": "In the IDE, you can use `/worktree` and `/best-of-n` to run tasks in isolated worktrees.",
+                "pt": "Na IDE, você pode usar os comandos `/worktree` e `/best-of-n` para executar tarefas em worktrees isoladas."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-retention-on-the-machine",
+              "level": 4,
+              "text": {
+                "en": "Retention on the machine",
+                "pt": "Retenção na máquina"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-depth-143"
+              ],
+              "text": {
+                "en": "In Cursor 3.5 and later, periodic cleanup may remove old worktrees to limit disk use. It keeps the most recent ones up to the machine's configured maximum, considering all workspaces on the device.",
+                "pt": "No Cursor 3.5 e posteriores, a limpeza periódica pode remover worktrees antigas para limitar o uso de disco. Ela preserva as mais recentes até o máximo configurado para a máquina, considerando todos os workspaces do dispositivo."
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "worktrees-depth-144"
+              ],
+              "language": "json",
+              "code": "{\n  \"cursor.worktreeCleanupIntervalHours\": 6,\n  \"cursor.worktreeMaxCount\": 25\n}"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "worktrees-depth-145"
+              ],
+              "text": {
+                "en": "Cursor rediscovers worktree roots on each cleanup; worktrees created outside the manager, including through `/worktree` skills or `git worktree add`, may also be deleted. If creating a worktree exceeds the limit, Cursor batches nearby events and starts cleanup without waiting for the next interval.",
+                "pt": "Cursor redescobre a raiz de worktrees a cada limpeza; worktrees criadas fora do gerenciador, inclusive por skills `/worktree` ou por `git worktree add`, também podem ser excluídas. Se criar uma worktree ultrapassar o limite, Cursor agrupa eventos próximos e inicia uma limpeza sem esperar o próximo intervalo."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

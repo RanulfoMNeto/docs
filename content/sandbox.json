@@ -1,0 +1,382 @@
+{
+  "id": "sandbox",
+  "order": 10,
+  "group": "execution",
+  "title": {
+    "en": "Sandbox",
+    "pt": "Sandbox"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "sandbox-concept-1"
+          ],
+          "text": {
+            "en": "A command sandbox is an operating-system-enforced boundary around shell commands running on the machine.",
+            "pt": "Uma sandbox de comandos é um limite aplicado pelo sistema operacional ao redor dos comandos de shell executados na máquina."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "sandbox-concept-2"
+          ],
+          "text": {
+            "en": "It limits the files and network domains commands can access. The operating system enforces the boundaries during execution.",
+            "pt": "Ela delimita os arquivos e domínios de rede que os comandos podem acessar. O sistema operacional aplica os limites durante a execução."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-commands-and-child-processes",
+          "level": 3,
+          "text": {
+            "en": "Commands and child processes",
+            "pt": "Comandos e processos filhos"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "sandbox-depth-159"
+          ],
+          "text": {
+            "en": "Filesystem and network boundaries apply to commands and child processes. The permission profile defines readable and writable paths and whether network access is available. The approval policy separately controls when the agent asks to run commands with more access.",
+            "pt": "Os limites do sistema de arquivos e da rede são aplicados aos comandos e aos processos filhos. O perfil de permissões define quais caminhos podem ser lidos ou escritos e se há acesso à rede. A política de aprovação controla separadamente quando o agente pede para executar comandos com mais acesso."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-and-ide-extension",
+              "level": 4,
+              "text": {
+                "en": "CLI and IDE extension",
+                "pt": "CLI e extensão de IDE"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-codex-3"
+              ],
+              "text": {
+                "en": "**Codex CLI / IDE extension:** operating-system mechanisms enforce sandbox policies. Defaults include no network access and write permissions limited to the active workspace. You can configure the sandbox, approval policy and network settings based on your risk tolerance.",
+                "pt": "**Codex CLI / extensão de IDE:** mecanismos do sistema operacional aplicam as políticas de sandbox. Os padrões incluem ausência de acesso à rede e permissões de escrita limitadas ao workspace ativo. Você pode configurar a sandbox, a política de aprovação e as configurações de rede com base na sua tolerância a risco."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-interactive-read-only-mode",
+              "level": 4,
+              "text": {
+                "en": "CLI · Interactive read-only mode",
+                "pt": "CLI · somente leitura interativo"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "sandbox-codex-4"
+              ],
+              "language": "toml",
+              "code": "sandbox_mode = \"read-only\"\napproval_policy = \"on-request\""
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-codex-4-part-2"
+              ],
+              "text": {
+                "en": "Or run `codex --sandbox read-only --ask-for-approval on-request`.",
+                "pt": "Ou execute `codex --sandbox read-only --ask-for-approval on-request`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-windows-native-implementation",
+              "level": 4,
+              "text": {
+                "en": "Windows · Native implementation",
+                "pt": "Windows · Implementação nativa"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-depth-160"
+              ],
+              "text": {
+                "en": "Codex offers three Windows sandbox implementations: `mxc`, with native process isolation on supported devices and no administrator-approved setup; `elevated`, a legacy fallback requiring administrator setup but running commands without administrator privileges; and `unelevated`, a legacy fallback with weaker network isolation and no support for denied read paths, when organizational policy permits.",
+                "pt": "Codex oferece três implementações de sandbox no Windows: `mxc`, com isolamento nativo de processos em dispositivos compatíveis, sem preparação aprovada por administrador; `elevated`, alternativa legada que exige preparação administrativa, mas executa comandos sem privilégios de administrador; e `unelevated`, alternativa legada com isolamento de rede mais fraco e sem suporte a caminhos de leitura negados, quando a política organizacional permitir."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-depth-161"
+              ],
+              "text": {
+                "en": "The desktop app automatically prefers MXC for consumer accounts when the device supports it. For enterprise deployment or standalone CLI use, enable the same behavior in `config.toml`:",
+                "pt": "O aplicativo desktop prefere MXC automaticamente para contas de consumidores quando o dispositivo é compatível. Em implantação empresarial ou uso independente da CLI, habilite o mesmo comportamento em `config.toml`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "sandbox-depth-162"
+              ],
+              "language": "toml",
+              "code": "[features]\nprefer_mxc = true"
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-windows-cli-inspecting-access",
+              "level": 4,
+              "text": {
+                "en": "Windows CLI · Inspecting access",
+                "pt": "Windows CLI · Inspeção do acesso"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-depth-176"
+              ],
+              "text": {
+                "en": "When a command cannot read a directory, check the active permission profile, managed requirements and Windows file permissions. In the CLI, use `/status` and `/debug-config` to inspect the active session and configuration. Ask an administrator to review a managed restriction instead of disabling the sandbox.",
+                "pt": "Quando um comando não consegue ler um diretório, confira o perfil de permissões ativo, os requisitos gerenciados e as permissões de arquivo do Windows. Na CLI, use `/status` e `/debug-config` para inspecionar a sessão e a configuração ativas. Peça ao administrador que revise uma restrição gerenciada, em vez de desativar a sandbox."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-definition-1"
+              ],
+              "text": {
+                "en": "The Bash sandbox is an operating-system-enforced boundary around shell commands Claude runs on your machine. You define which files and network domains those commands can access, and the boundaries apply to Bash, PowerShell and Monitor commands and the processes they start. Because the operating system enforces boundaries while a command runs, Claude Code can run sandboxed commands without asking you to approve each one.",
+                "pt": "A sandbox do Bash é um limite que o sistema operacional aplica ao redor dos comandos de shell que Claude executa na sua máquina. Você define quais arquivos e domínios de rede esses comandos podem acessar, e os limites se aplicam aos comandos Bash, PowerShell e Monitor e aos processos que eles iniciam. Como o sistema operacional aplica os limites enquanto um comando é executado, Claude Code pode executar comandos na sandbox sem pedir que você aprove cada um."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-operation-2"
+              ],
+              "text": {
+                "en": "The sandbox surrounds shell commands. These tools and processes run outside it:",
+                "pt": "A sandbox envolve comandos de shell. Estas ferramentas e processos são executados fora dela:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "sandbox-operation-2-part-2-item-1"
+              ],
+              "text": {
+                "en": "**Built-in file and web tools:** tools such as Read, Edit, Write, WebFetch and WebSearch follow [permission rules](permissions.md). A `denyRead` entry does not prevent the Read tool, and `allowedDomains` does not limit WebFetch.",
+                "pt": "**Ferramentas integradas de arquivos e web:** ferramentas como Read, Edit, Write, WebFetch e WebSearch seguem [regras de permissão](permissions.md). Uma entrada `denyRead` não impede a ferramenta Read, e `allowedDomains` não limita WebFetch."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "sandbox-operation-2-part-2-item-2"
+              ],
+              "text": {
+                "en": "**Other processes started by Claude Code:** command hooks, local MCP servers, plugin monitors, LSP servers and helper commands such as your status line command and `apiKeyHelper` run with your full access.",
+                "pt": "**Outros processos iniciados pelo Claude Code:** hooks de comando, servidores MCP locais, monitores de plugins, servidores LSP e comandos auxiliares, como seu comando de linha de status e `apiKeyHelper`, são executados com seu acesso completo."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-claude-5"
+              ],
+              "text": {
+                "en": "While the sandbox is enabled, shell commands Claude runs start inside its boundaries, as do their child processes. The sandbox is disabled by default. To enable it, run `/sandbox` in a session as shown in [Get started](https://code.claude.com/docs/en/sandboxing#get-started), or set `sandbox.enabled` to `true` in a settings file such as `~/.claude/settings.json`.",
+                "pt": "Enquanto a sandbox está ativada, os comandos de shell que Claude executa começam dentro dos seus limites, assim como os processos que eles iniciam. A sandbox está desativada por padrão. Para ativá-la, execute `/sandbox` em uma sessão, como mostra [Get started](https://code.claude.com/docs/en/sandboxing#get-started), ou defina `sandbox.enabled` como `true` em um arquivo de configurações como `~/.claude/settings.json`."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-claude-6"
+              ],
+              "text": {
+                "en": "The sandbox works on macOS, Linux and WSL2. On native Windows, Claude Code runs commands without a sandbox. To use sandboxing on a Windows machine, run Claude Code inside a WSL2 distribution.",
+                "pt": "A sandbox funciona em macOS, Linux e WSL2. No Windows nativo, Claude Code executa comandos sem sandbox. Para usar a sandbox em uma máquina Windows, execute Claude Code dentro de uma distribuição WSL2."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-dependencies-and-active-configuration",
+              "level": 4,
+              "text": {
+                "en": "CLI · Dependencies and active configuration",
+                "pt": "CLI · Dependências e configuração ativa"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-depth-163"
+              ],
+              "text": {
+                "en": "On macOS, the sandbox uses the built-in Seatbelt framework. On Linux and WSL2, it depends on `bubblewrap` and `socat`. The `/sandbox` panel reports missing dependencies.",
+                "pt": "No macOS, a sandbox usa o framework Seatbelt integrado. No Linux e WSL2, depende de `bubblewrap` e `socat`. O painel `/sandbox` informa se há dependências ausentes."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-depth-164"
+              ],
+              "text": {
+                "en": "The panel has **Mode**, for choosing how to approve sandboxed commands; **Overrides**, for deciding whether failing commands may run outside it; and **Config**, for viewing resolved settings. On Linux, an additional Dependencies tab appears when the optional seccomp filter is missing. If only Dependencies appears, a required package is missing: install it, restart Claude Code and run `/sandbox` again.",
+                "pt": "O painel tem as abas **Mode**, para escolher como aprovar comandos na sandbox; **Overrides**, para decidir se comandos que falham podem ser executados fora dela; e **Config**, para ver as configurações resolvidas. No Linux, uma aba Dependencies adicional aparece se o filtro seccomp opcional estiver ausente. Se apenas Dependencies aparecer, falta um pacote obrigatório: instale-o, reinicie Claude Code e execute `/sandbox` novamente."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-cursor-7"
+              ],
+              "text": {
+                "en": "Customize sandbox behavior with a `sandbox.json` file:",
+                "pt": "Personalize o comportamento da sandbox com um arquivo `sandbox.json`:"
+              }
+            },
+            {
+              "type": "table",
+              "references": [
+                "sandbox-cursor-7-part-2"
+              ],
+              "text": {
+                "en": "| Location | Scope |\n| --- | --- |\n| `~/.cursor/sandbox.json` | Applies to every project directory on your machine. |\n| `<project-dir>/.cursor/sandbox.json` | Applies to one project directory. Commit it when the project needs to share the same sandbox rules. |",
+                "pt": "| Local | Escopo |\n| --- | --- |\n| `~/.cursor/sandbox.json` | Aplica-se a todos os diretórios de projeto na sua máquina. |\n| `<project-dir>/.cursor/sandbox.json` | Aplica-se a um diretório de projeto. Faça commit quando o projeto precisar compartilhar as mesmas regras de sandbox. |"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-cursor-7-part-3"
+              ],
+              "text": {
+                "en": "If both files exist, Cursor merges them, prioritizing the project file. Team administrator policies and Cursor's fixed safety rules apply on top, so local files cannot weaken those protections.",
+                "pt": "Se ambos os arquivos existirem, Cursor os mescla, dando prioridade ao arquivo do projeto. As políticas dos administradores da equipe e as regras de segurança fixas do Cursor são aplicadas por cima; portanto, os arquivos locais não podem enfraquecer essas proteções."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-cursor-7-part-4"
+              ],
+              "text": {
+                "en": "Use `sandbox.json` to control network policy, additional read or write paths, writes to temporary directories and shared build caches. See the [sandbox.json reference](https://cursor.com/docs/reference/sandbox) for the complete schema.",
+                "pt": "Use `sandbox.json` para controlar a política de rede, caminhos adicionais de leitura ou escrita, escrita em diretórios temporários e caches compartilhados de build. Consulte a [referência de sandbox.json](https://cursor.com/docs/reference/sandbox) para o esquema completo."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-cursor-8"
+              ],
+              "text": {
+                "en": "Configure command execution with `/sandbox` or the `--sandbox <mode>` flag (`enabled` or `disabled`). Enable or disable sandbox mode and control network access through an interactive menu. Settings persist between sessions.",
+                "pt": "Configure as opções de execução de comandos com `/sandbox` ou a flag `--sandbox <mode>` (`enabled` ou `disabled`). Ative ou desative o modo sandbox e controle o acesso à rede por um menu interativo. As configurações persistem entre sessões."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-read-boundaries-and-paths",
+              "level": 4,
+              "text": {
+                "en": "Read boundaries and paths",
+                "pt": "Limites e caminhos de leitura"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-depth-165"
+              ],
+              "text": {
+                "en": "`permissions.json` guides which calls Auto-review runs automatically and which it reviews. `sandbox.json` controls sandboxed commands' reach, including network domains and additional read and write paths. Neither file is required to get started.",
+                "pt": "`permissions.json` orienta quais chamadas Auto-review executa automaticamente e quais revisa. `sandbox.json` controla o alcance dos comandos na sandbox, incluindo domínios de rede e caminhos adicionais de leitura e escrita. Nenhum desses arquivos é necessário para começar."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-depth-166"
+              ],
+              "text": {
+                "en": "Set `readBoundary` and `additionalReadPaths` in `sandbox.json` to configure reading per machine or project:",
+                "pt": "Defina `readBoundary` e `additionalReadPaths` em `sandbox.json` para configurar a leitura por máquina ou por projeto:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "sandbox-depth-167"
+              ],
+              "language": "json",
+              "code": "{\n  \"readBoundary\": \"workspace\",\n  \"additionalReadPaths\": [\"/opt/shared/design-tokens\", \"~/notes/*.md\"]\n}"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "sandbox-depth-168"
+              ],
+              "text": {
+                "en": "A value in `sandbox.json` overrides the value in Cursor settings, and the project file takes precedence over `~/.cursor/sandbox.json`. Settings show which file controls the value.",
+                "pt": "Um valor em `sandbox.json` substitui o valor das configurações do Cursor, e o arquivo do projeto tem precedência sobre `~/.cursor/sandbox.json`. As configurações mostram qual arquivo controla o valor."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

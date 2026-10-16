@@ -1,0 +1,318 @@
+{
+  "id": "permissions",
+  "order": 9,
+  "group": "execution",
+  "title": {
+    "en": "Permissions",
+    "pt": "Permissões"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "permissions-concept-1"
+          ],
+          "text": {
+            "en": "Permissions let you specify what the agent is and is not authorized to do.",
+            "pt": "Permissões permitem especificar o que o agente está autorizado a fazer e o que não está."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "permissions-concept-2"
+          ],
+          "text": {
+            "en": "Permission rules are enforced by the runtime, not the model. Instructions in the prompt or instruction files influence what the model tries to do but do not change what the program allows.",
+            "pt": "As regras de permissão são aplicadas pelo programa de execução, não pelo modelo. Instruções no prompt ou em arquivos de instruções influenciam o que o modelo tenta fazer, mas não alteram o que o programa permite."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-authorization-and-technical-boundaries",
+          "level": 3,
+          "text": {
+            "en": "Authorization and technical boundaries",
+            "pt": "Autorização e limite técnico"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "permissions-depth-71"
+          ],
+          "text": {
+            "en": "The [sandbox](sandbox.md) mode determines what is technically permitted during command execution, such as writable locations and network access. The approval policy determines when the agent must ask before acting, for example to leave the sandbox or run commands outside a trusted set.",
+            "pt": "O modo de [sandbox](sandbox.md) determina o que é tecnicamente permitido durante a execução de comandos, como os locais de escrita e o acesso à rede. A política de aprovação determina quando o agente deve perguntar antes de agir, por exemplo, para sair da sandbox ou executar comandos fora de um conjunto confiável."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-codex-3"
+              ],
+              "text": {
+                "en": "In the `Auto` preset (for example, `--sandbox workspace-write --ask-for-approval on-request`), Codex can read files, make edits and run commands automatically in the working directory.",
+                "pt": "Na predefinição `Auto` (por exemplo, `--sandbox workspace-write --ask-for-approval on-request`), Codex pode ler arquivos, fazer edições e executar comandos automaticamente no diretório de trabalho."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-codex-3-part-2"
+              ],
+              "text": {
+                "en": "Codex requests approval to edit files outside the workspace or run commands requiring network access. To chat or plan without making changes, switch to `read-only` mode with `/permissions`.",
+                "pt": "Codex solicita aprovação para editar arquivos fora do workspace ou executar comandos que exigem acesso à rede. Se quiser conversar ou planejar sem fazer alterações, mude para o modo `read-only` com o comando `/permissions`."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-approvals-within-the-sandbox",
+              "level": 4,
+              "text": {
+                "en": "CLI · Approvals within the sandbox",
+                "pt": "CLI · Aprovações dentro da sandbox"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-depth-72"
+              ],
+              "text": {
+                "en": "With `on-request`, commands allowed by the sandbox can run without approval, read accessible files and use the network when that access is enabled.",
+                "pt": "Com `on-request`, comandos permitidos pela sandbox podem ser executados sem aprovação, ler os arquivos acessíveis e usar a rede quando esse acesso estiver habilitado."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-depth-73"
+              ],
+              "text": {
+                "en": "For interactive read-only use, run `codex --sandbox read-only --ask-for-approval on-request`.",
+                "pt": "Para uso interativo somente leitura, execute `codex --sandbox read-only --ask-for-approval on-request`."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-depth-184"
+              ],
+              "text": {
+                "en": "To grant or revoke access, use `/permissions`, permission rules, a permission mode or a [PreToolUse hook](hooks.md).",
+                "pt": "Para conceder ou revogar acesso, use `/permissions`, as regras de permissão, um modo de permissão ou um [hook PreToolUse](hooks.md)."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-claude-4"
+              ],
+              "text": {
+                "en": "You can view and manage Claude Code's tool permissions with `/permissions`. The dialog lists all permission rules and the `settings.json` file each comes from. You can open it while Claude works: when you add or remove a rule, Claude Code applies the change from Claude's next tool call in the same turn. Before v2.1.234, Claude Code queued the command until the turn ended.",
+                "pt": "Você pode visualizar e gerenciar as permissões de ferramentas do Claude Code com `/permissions`. A caixa de diálogo lista todas as regras de permissão e o arquivo `settings.json` de onde cada uma vem. Você pode abrir a caixa de diálogo enquanto Claude está trabalhando: ao adicionar ou remover uma regra, Claude Code aplica a mudança a partir da próxima chamada de ferramenta de Claude no mesmo turno. Antes da v2.1.234, Claude Code colocava o comando na fila até o turno terminar."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "permissions-claude-4-part-2-item-1"
+              ],
+              "text": {
+                "en": "**Allow** rules let Claude Code use the specified tool without manual approval.",
+                "pt": "Regras **Allow** permitem que Claude Code use a ferramenta especificada sem aprovação manual."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "permissions-claude-4-part-2-item-2"
+              ],
+              "text": {
+                "en": "**Ask** rules request confirmation whenever Claude Code attempts to use the specified tool.",
+                "pt": "Regras **Ask** solicitam confirmação sempre que Claude Code tenta usar a ferramenta especificada."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "permissions-claude-4-part-2-item-3"
+              ],
+              "text": {
+                "en": "**Deny** rules prevent Claude Code from using the specified tool.",
+                "pt": "Regras **Deny** impedem que Claude Code use a ferramenta especificada."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-claude-4-part-3"
+              ],
+              "text": {
+                "en": "Rules are evaluated in order: deny, then ask, then allow. The first match in that order determines the result, and rule specificity does not change the order.",
+                "pt": "As regras são avaliadas na ordem: deny, depois ask, depois allow. A primeira correspondência nessa ordem determina o resultado, e a especificidade da regra não altera a ordem."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-claude-5"
+              ],
+              "text": {
+                "en": "Plan mode instructs Claude to research and propose changes without making them. Claude reads files, runs shell commands to explore and writes a plan, but does not edit your source code. Except in interactive terminal sessions with permission bypass available, edits remain blocked until you approve the plan.",
+                "pt": "O modo Plan instrui Claude a pesquisar e propor alterações sem realizá-las. Claude lê arquivos, executa comandos de shell para explorar e escreve um plano, mas não edita seu código-fonte. Exceto em sessões interativas de terminal com a opção de ignorar permissões disponível, as edições permanecem bloqueadas até que você aprove o plano."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-rules-and-conflicts",
+              "level": 4,
+              "text": {
+                "en": "Rules and conflicts",
+                "pt": "Regras e conflitos"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-depth-74"
+              ],
+              "text": {
+                "en": "A broad deny rule such as `Bash(aws *)` blocks every matching call, including those allowed by a more specific allow rule such as `Bash(aws s3 ls)`. An allow rule cannot make an exception to a deny rule. The same precedence applies between ask and allow: a matching ask rule prompts for approval even when a more specific allow rule also matches.",
+                "pt": "Uma regra deny ampla, como `Bash(aws *)`, bloqueia todas as chamadas correspondentes, inclusive aquelas permitidas por uma regra allow mais específica, como `Bash(aws s3 ls)`. Uma regra allow não abre exceção em uma deny. A mesma precedência se aplica entre ask e allow: uma ask correspondente solicita aprovação mesmo quando uma allow mais específica também corresponde."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-desktop",
+              "level": 4,
+              "text": {
+                "en": "Desktop",
+                "pt": "Desktop"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-cursor-6"
+              ],
+              "text": {
+                "en": "In the desktop app, go to **Settings > Agents > Approvals & Execution**.",
+                "pt": "No aplicativo desktop, acesse **Settings > Agents > Approvals & Execution**."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-auto-review",
+              "level": 4,
+              "text": {
+                "en": "Auto-review",
+                "pt": "Auto-review"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-cursor-7"
+              ],
+              "text": {
+                "en": "The classifier runs on Cursor's backend. To evaluate a call, it can make read-only `ReadFile`, `Grep`, `Glob` and `ListDir` calls on your machine, for example to read a script that the command executes.",
+                "pt": "O classificador é executado no backend do Cursor. Para avaliar uma chamada, ele pode realizar chamadas somente leitura de `ReadFile`, `Grep`, `Glob` e `ListDir` na sua máquina, por exemplo, para ler um script que o comando executa."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-cursor-7-part-2"
+              ],
+              "text": {
+                "en": "When the classifier blocks a call, Cursor may try another approach. If the agent decides the action makes sense despite the classifier's assessment, Cursor shows an approval prompt.",
+                "pt": "Quando o classificador bloqueia uma chamada, Cursor pode tentar outra abordagem. Se o agente decidir que a ação faz sentido apesar do que o classificador disse, Cursor mostrará uma solicitação de aprovação."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-cli-command-configuration",
+              "level": 4,
+              "text": {
+                "en": "CLI · Command configuration",
+                "pt": "CLI · Configuração de comandos"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-depth-75"
+              ],
+              "text": {
+                "en": "CLI permissions use permission tokens in `~/.cursor/cli-config.json` at global scope, or `<project>/.cursor/cli.json` at project scope.",
+                "pt": "As permissões da CLI usam tokens de permissão em `~/.cursor/cli-config.json`, no escopo global, ou `<project>/.cursor/cli.json`, no escopo do projeto."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "permissions-depth-76"
+              ],
+              "text": {
+                "en": "The `Shell(commandBase)` format controls shell commands. `commandBase` is the first token of the command line; glob patterns and optional `command:args` syntax are supported for more detailed control.",
+                "pt": "O formato `Shell(commandBase)` controla comandos de shell. `commandBase` é o primeiro token da linha de comando; são aceitos padrões glob e a sintaxe opcional `command:args` para controle mais detalhado."
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "permissions-depth-77"
+              ],
+              "language": "json",
+              "code": "{\n  \"version\": 1,\n  \"editor\": { \"vimMode\": false },\n  \"permissions\": {\n    \"allow\": [\"Shell(ls)\", \"Shell(echo)\"],\n    \"deny\": [\"Shell(rm)\"]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

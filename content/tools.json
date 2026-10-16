@@ -1,0 +1,281 @@
+{
+  "id": "tools",
+  "order": 1,
+  "group": "architecture",
+  "title": {
+    "en": "Tools",
+    "pt": "Ferramentas"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "tools-concept-1"
+          ],
+          "text": {
+            "en": "A tool is an action the agent can take: read a file, edit code, run a shell command, search the web or start a [subagent](subagents.md).",
+            "pt": "Uma ferramenta é uma ação que o agente pode realizar: ler um arquivo, editar código, executar um comando de shell, pesquisar na web ou iniciar um [subagente](subagents.md)."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "definition-call-interface",
+          "level": 3,
+          "text": {
+            "en": "Call interface",
+            "pt": "Interface de chamada"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "tools-depth-51"
+          ],
+          "text": {
+            "en": "A tool definition includes a name identifying the call, a description telling the model when to use it, a schema of accepted arguments and a function that receives the validated arguments and performs the operation.",
+            "pt": "A definição de uma ferramenta inclui um nome que identifica a chamada, uma descrição que informa ao modelo quando usá-la, um esquema dos argumentos aceitos e uma função que recebe os argumentos validados e executa a operação."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "tools-depth-3"
+          ],
+          "text": {
+            "en": "Tools let the agent act. Without tools, the model can only respond with text. With them, it can read code, edit files, run commands, search the web and interact with external services. Each tool use returns information that feeds back into the loop and informs the next decision.",
+            "pt": "As ferramentas permitem ao agente agir. Sem ferramentas, o modelo só pode responder com texto. Com elas, pode ler código, editar arquivos, executar comandos, pesquisar na web e interagir com serviços externos. Cada uso de ferramenta retorna informações que alimentam o ciclo e orientam a próxima decisão."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli",
+              "level": 4,
+              "text": {
+                "en": "CLI",
+                "pt": "CLI"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "tools-codex-3-item-1"
+              ],
+              "text": {
+                "en": "**Work with your local repository:** let Codex inspect files, make edits and run the tools already installed on your machine.",
+                "pt": "**Trabalhe com seu repositório local:** permita que Codex inspecione arquivos, faça edições e execute as ferramentas já instaladas na sua máquina."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-inspecting-effects",
+              "level": 4,
+              "text": {
+                "en": "CLI · Inspecting effects",
+                "pt": "CLI · Inspeção dos efeitos"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-depth-52"
+              ],
+              "text": {
+                "en": "Type `/diff` to inspect the Git diff and scroll through the CLI output to review edits and added files. Codex shows staged, unstaged and untracked changes so you can decide what to keep.",
+                "pt": "Digite `/diff` para inspecionar o diff Git e percorra a saída na CLI para revisar edições e arquivos adicionados. Codex mostra alterações na área de staging, alterações ainda não adicionadas e arquivos que o Git ainda não acompanha, permitindo decidir o que manter."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-and-extension-operation-limits",
+              "level": 4,
+              "text": {
+                "en": "CLI and extension · Operation limits",
+                "pt": "CLI e extensão · Limites das operações"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-depth-183"
+              ],
+              "text": {
+                "en": "In the CLI and IDE extension, operating-system mechanisms enforce [sandbox](sandbox.md) policies. Defaults include no network access and writes limited to the active workspace. The sandbox, approval policy and network are configurable.",
+                "pt": "Na CLI e na extensão de IDE, mecanismos do sistema operacional aplicam as políticas de [sandbox](sandbox.md). Os padrões incluem ausência de acesso à rede e escrita limitada ao workspace ativo. A sandbox, a política de aprovação e a rede são configuráveis."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-claude-4"
+              ],
+              "text": {
+                "en": "Claude Code has access to built-in tools that help it understand and modify your codebase. Tool names are the exact strings used in permission rules, subagent tool lists and hook matchers.",
+                "pt": "Claude Code tem acesso a um conjunto de ferramentas integradas que o ajudam a entender e modificar sua base de código. Os nomes das ferramentas são as strings exatas usadas em regras de permissão, listas de ferramentas de subagentes e filtros de correspondência de hooks."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-claude-4-part-2"
+              ],
+              "text": {
+                "en": "To control which tools Claude can use and when it asks for approval first, configure permission rules in settings, hooks or a subagent's tool list. See [Configure tools with permission rules and hooks](https://code.claude.com/docs/en/tools-reference#configure-tools-with-permission-rules-and-hooks) for every location that accepts a tool name.",
+                "pt": "Para controlar quais ferramentas Claude pode usar e quando pede aprovação primeiro, configure regras de permissão nas configurações, hooks ou a lista de ferramentas de um subagente. Consulte [Configure tools with permission rules and hooks](https://code.claude.com/docs/en/tools-reference#configure-tools-with-permission-rules-and-hooks) para cada local que aceita um nome de ferramenta."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-claude-4-part-3"
+              ],
+              "text": {
+                "en": "To add custom tools, connect an [MCP server](mcp.md). To extend Claude with reusable prompt-based workflows, write a [skill](skills.md), which runs through the existing `Skill` tool instead of adding a new tool entry.",
+                "pt": "Para adicionar ferramentas personalizadas, conecte um [servidor MCP](mcp.md). Para estender Claude com fluxos reutilizáveis baseados em prompts, escreva uma [skill](skills.md), que é executada pela ferramenta `Skill` existente em vez de adicionar uma nova entrada de ferramenta."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-selection-during-a-task",
+              "level": 4,
+              "text": {
+                "en": "Selection during a task",
+                "pt": "Seleção durante uma tarefa"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-depth-24"
+              ],
+              "text": {
+                "en": "Claude chooses tools based on the prompt and what it learns during execution. Asked to fix failing tests, it may run the suite, read the error output, search for relevant files, read them to understand the code, edit them and rerun the tests. Each tool use supplies new information for the next step.",
+                "pt": "Claude escolhe as ferramentas com base no prompt e no que aprende durante a execução. Ao receber o pedido para corrigir testes que falham, pode executar a suíte, ler a saída de erro, pesquisar os arquivos relevantes, lê-los para entender o código, editá-los e executar novamente os testes. Cada uso de ferramenta fornece informações novas para a etapa seguinte."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor",
+              "level": 4,
+              "text": {
+                "en": "Editor",
+                "pt": "Editor"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-cursor-5"
+              ],
+              "text": {
+                "en": "Run commands in the terminal and monitor the output. By default, Cursor uses the first available terminal profile.",
+                "pt": "Execute comandos no terminal e monitore a saída. Por padrão, Cursor usa o primeiro perfil de terminal disponível."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-cursor-5-part-2"
+              ],
+              "text": {
+                "en": "To set your preferred terminal profile:",
+                "pt": "Para definir seu perfil de terminal preferido:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "tools-cursor-5-part-3-item-1"
+              ],
+              "text": {
+                "en": "Open the Command Palette (`Cmd/Ctrl+Shift+P`).",
+                "pt": "Abra a Command Palette (`Cmd/Ctrl+Shift+P`)."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "tools-cursor-5-part-3-item-2"
+              ],
+              "text": {
+                "en": "Search for \"Terminal: Select Default Profile\".",
+                "pt": "Pesquise por \"Terminal: Select Default Profile\"."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "tools-cursor-5-part-3-item-3"
+              ],
+              "text": {
+                "en": "Choose the profile you want.",
+                "pt": "Escolha o perfil desejado."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-reading-and-editing",
+              "level": 4,
+              "text": {
+                "en": "Editor · Reading and editing",
+                "pt": "Editor · Leitura e edição"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-depth-25"
+              ],
+              "text": {
+                "en": "The read tool examines a file's contents. It also accepts images (.png, .jpg, .gif, .webp, .svg) and includes them in the conversation context for analysis by vision-capable models.",
+                "pt": "A ferramenta de leitura examina o conteúdo de um arquivo. Também aceita imagens (.png, .jpg, .gif, .webp, .svg) e as inclui no contexto da conversa para análise por modelos com capacidade visual."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "tools-depth-26"
+              ],
+              "text": {
+                "en": "The edit tool suggests file changes and applies them automatically.",
+                "pt": "A ferramenta de edição sugere alterações nos arquivos e as aplica automaticamente."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

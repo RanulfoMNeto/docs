@@ -1,0 +1,347 @@
+{
+  "id": "skills",
+  "order": 14,
+  "group": "extensions",
+  "title": {
+    "en": "Skills",
+    "pt": "Skills"
+  },
+  "sections": [
+    {
+      "id": "definition",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "skills-concept-1"
+          ],
+          "text": {
+            "en": "A skill is a portable, version-controlled package that teaches agents to perform tasks in a specific domain. Skills can include scripts, templates and references that agents can act on using their tools.",
+            "pt": "Uma skill é um pacote portátil e controlado por versão que ensina agentes a realizar tarefas de um domínio específico. Skills podem incluir scripts, templates e referências sobre os quais os agentes podem agir usando suas ferramentas."
+          }
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "references": [
+            "skills-concept-2"
+          ],
+          "text": {
+            "en": "Skills use **progressive disclosure** to manage context efficiently. Each skill's name and description are presented first; the full `SKILL.md` instructions load when the agent decides to use it.",
+            "pt": "Skills usam **revelação progressiva** para gerenciar o contexto com eficiência. Primeiro são apresentados o nome e a descrição de cada skill; as instruções completas de `SKILL.md` são carregadas quando o agente decide usá-la."
+          }
+        },
+        {
+          "type": "heading",
+          "id": "operation-resources-loaded-as-needed",
+          "level": 3,
+          "text": {
+            "en": "Resources loaded as needed",
+            "pt": "Recursos carregados por necessidade"
+          }
+        },
+        {
+          "type": "paragraph",
+          "references": [
+            "skills-depth-4"
+          ],
+          "text": {
+            "en": "Keep the main `SKILL.md` focused on the procedure and move detailed reference material into separate files. This keeps context usage efficient because agents load resources progressively, only as needed.",
+            "pt": "Mantenha o arquivo principal `SKILL.md` concentrado no procedimento e mova material de referência detalhado para arquivos separados. Isso mantém o uso de contexto eficiente, pois os agentes carregam os recursos progressivamente, somente quando necessário."
+          }
+        }
+      ]
+    },
+    {
+      "id": "implementation",
+      "panels": [
+        {
+          "id": "codex",
+          "label": "Codex",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-codex-3"
+              ],
+              "text": {
+                "en": "Codex reads skills from repository, user, administrator and system locations. For repositories, Codex searches `.agents/skills` in each directory from the current working directory up to the repository root. If two skills share the same `name`, Codex does not merge them; both may appear in skill pickers.",
+                "pt": "Codex lê skills de locais de repositório, usuário, administrador e sistema. Para repositórios, Codex procura `.agents/skills` em cada diretório, do diretório de trabalho atual até a raiz do repositório. Se duas skills compartilham o mesmo `name`, Codex não as mescla; ambas podem aparecer nos seletores de skills."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-codex-4"
+              ],
+              "text": {
+                "en": "ChatGPT and Codex can activate skills in two ways:",
+                "pt": "ChatGPT e Codex podem ativar skills de duas formas:"
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "skills-codex-4-part-2-item-1"
+              ],
+              "text": {
+                "en": "**Explicit invocation:** include the skill directly in the prompt. In ChatGPT, type `@` to select a skill. In the Codex CLI or IDE extension, run `/skills` or type `$` to mention one.",
+                "pt": "**Invocação explícita:** inclua a skill diretamente no prompt. No ChatGPT, digite `@` para selecionar uma skill. Na CLI do Codex ou na extensão de IDE, execute `/skills` ou digite `$` para mencionar uma skill."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": true,
+              "references": [
+                "skills-codex-4-part-2-item-2"
+              ],
+              "text": {
+                "en": "**Implicit invocation:** ChatGPT or Codex may choose a skill when your task matches the skill's `description`.",
+                "pt": "**Invocação implícita:** ChatGPT ou Codex podem escolher uma skill quando sua tarefa corresponde à `description` da skill."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-codex-cli-and-ide-structure-and-updates",
+              "level": 4,
+              "text": {
+                "en": "CLI and IDE · Structure and updates",
+                "pt": "CLI e IDE · Estrutura e atualização"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-5"
+              ],
+              "text": {
+                "en": "You can also create a skill manually by creating a folder with a `SKILL.md` file:",
+                "pt": "Você também pode criar uma skill manualmente, criando uma pasta com um arquivo `SKILL.md`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "skills-depth-6"
+              ],
+              "language": "md",
+              "code": "---\nname: skill-name\ndescription: Explain exactly when this skill should and should not trigger.\n---\n\nSkill instructions for ChatGPT or Codex to follow."
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-7"
+              ],
+              "text": {
+                "en": "Codex automatically detects skill changes. If an update does not appear, restart Codex.",
+                "pt": "Codex detecta automaticamente alterações nas skills. Se uma atualização não aparecer, reinicie Codex."
+              }
+            }
+          ]
+        },
+        {
+          "id": "claude",
+          "label": "Claude Code",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-claude-5"
+              ],
+              "text": {
+                "en": "Skills extend what Claude can do. Create a `SKILL.md` file with instructions, and Claude adds it to its toolset. Claude uses skills when relevant, or you can invoke one directly with `/skill-name`.",
+                "pt": "Skills ampliam o que Claude pode fazer. Crie um arquivo `SKILL.md` com instruções, e Claude o adiciona ao seu conjunto de ferramentas. Claude usa skills quando são relevantes, ou você pode invocar uma diretamente com `/skill-name`."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "skills-claude-6-item-1"
+              ],
+              "text": {
+                "en": "**Personal:** `~/.claude/skills/<skill-name>/SKILL.md`. Loads in all your projects on this machine, but not in Cowork or cloud sessions.",
+                "pt": "**Pessoal:** `~/.claude/skills/<skill-name>/SKILL.md`. Carrega em todos os seus projetos nesta máquina, mas não em sessões Cowork ou na nuvem."
+              }
+            },
+            {
+              "type": "item",
+              "ordered": false,
+              "references": [
+                "skills-claude-6-item-2"
+              ],
+              "text": {
+                "en": "**Project:** `.claude/skills/<skill-name>/SKILL.md`. Loads in this repository's sessions. Commit it so your team receives it too.",
+                "pt": "**Projeto:** `.claude/skills/<skill-name>/SKILL.md`. Carrega nas sessões deste repositório. Faça commit para que sua equipe também a receba."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-claude-cli-structure-and-procedure",
+              "level": 4,
+              "text": {
+                "en": "CLI · Structure and procedure",
+                "pt": "CLI · Estrutura e procedimento"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-8"
+              ],
+              "text": {
+                "en": "Every skill needs a `SKILL.md` file with two parts: YAML frontmatter between `---` markers, telling Claude when to use the skill, and Markdown content with the instructions followed during execution. The directory name, or the `name` field when set, becomes the command you type; the `description` helps Claude decide when to load it automatically.",
+                "pt": "Toda skill precisa de um arquivo `SKILL.md` com duas partes: frontmatter YAML entre marcadores `---`, que informa quando Claude deve usar a skill, e conteúdo Markdown com as instruções seguidas durante sua execução. O nome do diretório, ou o campo `name` quando definido, torna-se o comando digitado; a `description` ajuda Claude a decidir quando carregar a skill automaticamente."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-9"
+              ],
+              "text": {
+                "en": "Save the following in `~/.claude/skills/summarize-changes/SKILL.md`:",
+                "pt": "Salve o seguinte em `~/.claude/skills/summarize-changes/SKILL.md`:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "skills-depth-10"
+              ],
+              "language": "yaml",
+              "code": "---\ndescription: Summarizes uncommitted changes and flags anything risky. Use when the user asks what changed, wants a commit message, or asks to review their diff.\n---\n\n## Current changes\n\n!`git diff HEAD`\n\n## Instructions\n\nSummarize the changes above in two or three bullet points, then list any risks you notice such as missing error handling, hardcoded values, or tests that need updating. If the diff is empty, say there are no uncommitted changes."
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-11"
+              ],
+              "text": {
+                "en": "The line running `git diff HEAD` uses dynamic context injection: Claude Code executes the command and replaces the line with its output before Claude sees the skill content. The instructions arrive with the current diff already included.",
+                "pt": "A linha que executa `git diff HEAD` usa injeção dinâmica de contexto: Claude Code executa o comando e substitui a linha pela saída antes de Claude ver o conteúdo da skill. As instruções chegam com o diff atual já incluído."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-12"
+              ],
+              "text": {
+                "en": "This example creates a skill that summarizes uncommitted changes in the Git repository and flags potential risks. It includes the current diff in the prompt before Claude reads it. Claude loads the skill automatically when you ask about your changes, or you can invoke it directly with `/summarize-changes`.",
+                "pt": "Este exemplo cria uma skill que resume alterações ainda não commitadas no repositório Git e aponta possíveis riscos. Ele inclui o diff atual no prompt antes da leitura por Claude. Claude carrega a skill automaticamente quando você pergunta sobre suas alterações, ou você pode invocá-la diretamente com `/summarize-changes`."
+              }
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "label": "Cursor",
+          "blocks": [
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-cursor-7"
+              ],
+              "text": {
+                "en": "When Cursor starts, it automatically discovers skills in skill directories and makes them available to Agent. Available skills are presented to the agent, which decides when they are relevant based on context.",
+                "pt": "Quando Cursor inicia, descobre automaticamente skills nos diretórios de skills e as disponibiliza ao Agent. As skills disponíveis são apresentadas ao agente, que decide quando são relevantes com base no contexto."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-cursor-7-part-2"
+              ],
+              "text": {
+                "en": "Skills can also be invoked manually by typing `/` in Agent chat and searching for the skill name. A skill invoked this way is attached to a message. To keep a skill active throughout the session, use it as a Custom Mode with Option+Enter (Mac) or Alt+Enter (Windows). See [Custom Modes](https://cursor.com/docs/agent/prompting#custom-modes).",
+                "pt": "Skills também podem ser invocadas manualmente digitando `/` no chat do Agent e pesquisando pelo nome da skill. Uma skill invocada dessa forma é anexada a uma mensagem. Para manter uma skill ativa durante toda a sessão, use-a como Custom Mode com Option+Enter (Mac) ou Alt+Enter (Windows). Consulte [Custom Modes](https://cursor.com/docs/agent/prompting#custom-modes)."
+              }
+            },
+            {
+              "type": "table",
+              "references": [
+                "skills-cursor-8"
+              ],
+              "text": {
+                "en": "| Location | Scope |\n| --- | --- |\n| `.agents/skills/` | Project |\n| `.cursor/skills/` | Project |\n| `~/.agents/skills/` | User (global) on the local machine |\n| `~/.cursor/skills/` | User (global) on the local machine |",
+                "pt": "| Local | Escopo |\n| --- | --- |\n| `.agents/skills/` | Projeto |\n| `.cursor/skills/` | Projeto |\n| `~/.agents/skills/` | Usuário (global) na máquina local |\n| `~/.cursor/skills/` | Usuário (global) na máquina local |"
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-editor-and-cli-skill-format",
+              "level": 4,
+              "text": {
+                "en": "Editor and CLI · Skill format",
+                "pt": "Editor e CLI · Formato da skill"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-13"
+              ],
+              "text": {
+                "en": "Each skill is defined in a `SKILL.md` file with YAML frontmatter:",
+                "pt": "Cada skill é definida em um arquivo `SKILL.md` com frontmatter YAML:"
+              }
+            },
+            {
+              "type": "code",
+              "references": [
+                "skills-depth-14"
+              ],
+              "language": "markdown",
+              "code": "---\nname: my-skill\ndescription: Short description of what this skill does and when to use it.\n---\n\n# My Skill\n\nDetailed instructions for the agent.\n\n## When to Use\n\n- Use this skill when...\n- This skill is helpful for...\n\n## Instructions\n\n- Step-by-step guidance for the agent\n- Domain-specific conventions\n- Best practices and patterns\n- Use the ask questions tool if you need to clarify requirements with the user"
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-15"
+              ],
+              "text": {
+                "en": "The `name` field is required, uses only lowercase letters, numbers and hyphens, and must match the containing folder's name. The `description` is also required: it describes what the skill does and when to use it; the agent uses it to determine relevance.",
+                "pt": "O campo `name` é obrigatório, usa apenas letras minúsculas, números e hífens e deve corresponder ao nome da pasta que contém a skill. A `description` também é obrigatória: descreve o que a skill faz e quando usá-la; o agente a utiliza para determinar a relevância."
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-16"
+              ],
+              "text": {
+                "en": "By default, skills apply automatically when the agent determines they are relevant. Set `disable-model-invocation: true` to include the skill in context only when you explicitly type `/skill-name` in chat.",
+                "pt": "Por padrão, skills são aplicadas automaticamente quando o agente determina que são relevantes. Defina `disable-model-invocation: true` para incluir a skill no contexto somente quando você digitar explicitamente `/skill-name` no chat."
+              }
+            },
+            {
+              "type": "heading",
+              "id": "implementation-cursor-inspecting-discovered-skills",
+              "level": 4,
+              "text": {
+                "en": "Inspecting discovered skills",
+                "pt": "Inspeção das skills descobertas"
+              }
+            },
+            {
+              "type": "paragraph",
+              "references": [
+                "skills-depth-88"
+              ],
+              "text": {
+                "en": "To see discovered skills, open **Customize** in the sidebar and go to **Skills**. Skills installed by plugins or the project appear alongside rules in the **Agent Decides** section.",
+                "pt": "Para ver as skills descobertas, abra **Customize** na barra lateral e acesse **Skills**. As skills instaladas por plugins ou pelo projeto aparecem junto às regras na seção **Agent Decides**."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
