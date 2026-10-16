@@ -1,0 +1,32 @@
+[
+  {
+    "reference": "https://code.claude.com/docs/en/overview",
+    "path": "assets/fonts/AnthropicSans-Text-Regular-Static.otf",
+    "url": "https://assets.claude.ai/Fonts/AnthropicSans-Text-Regular-Static.otf",
+    "sha256": "9fdf9048587cf014deb4d6e049b92f5c1689bd3a14f12d18c4c7a3b77da6fcdb"
+  },
+  {
+    "reference": "https://code.claude.com/docs/en/overview",
+    "path": "assets/fonts/AnthropicSans-Text-RegularItalic-Static.otf",
+    "url": "https://assets.claude.ai/Fonts/AnthropicSans-Text-RegularItalic-Static.otf",
+    "sha256": "29a790aad6780e330dc63f9319e7d2f321333348c3d4362172c80342439e57c9"
+  },
+  {
+    "reference": "https://code.claude.com/docs/en/overview",
+    "path": "assets/fonts/AnthropicSans-Text-Semibold-Static.otf",
+    "url": "https://assets.claude.ai/Fonts/AnthropicSans-Text-Semibold-Static.otf",
+    "sha256": "96131bc98138a7f0e0af1367e06cbe08099386025ab84cd5a8a113c5510816af"
+  },
+  {
+    "reference": "https://code.claude.com/docs/en/overview",
+    "path": "assets/fonts/AnthropicSerif-Display-Regular-Static.otf",
+    "url": "https://assets.claude.ai/Fonts/AnthropicSerif-Display-Regular-Static.otf",
+    "sha256": "f90d31564307c521d8284d6cc91f3063d4ab7501355b81b6353f05141ac7e680"
+  },
+  {
+    "reference": "https://code.claude.com/docs/en/overview",
+    "path": "assets/fonts/PaperMono_Variable.p.4fb029ee.woff2",
+    "url": "https://code.claude.com/docs/_next/static/media/PaperMono_Variable.p.4fb029ee.woff2",
+    "sha256": "57b28aaaffc46f85ed5b5adeda22bc7bce0fcdbf3e6f84850c327765fe6fdc6b"
+  }
+]
