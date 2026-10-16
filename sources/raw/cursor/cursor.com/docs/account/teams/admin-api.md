@@ -1,0 +1,3058 @@
+# Admin API
+
+The Admin API lets you programmatically access your team's data, including member information, usage metrics, spending details, Team directory groups, model access, and Grok Bot.
+
+- The Admin API uses [Basic Authentication](https://cursor.com/docs/api.md#basic-authentication) with your API key as the username.
+- For details on creating API keys, authentication methods, rate limits, and best practices, see the [API Overview](https://cursor.com/docs/api.md).
+
+For org-wide actions across your teams, see [Organizations](https://cursor.com/docs/enterprise/organizations.md) and the [Organization API](https://cursor.com/docs/account/organizations/organization-admin-api.md).
+
+## Endpoints
+
+### Get Team Members
+
+GET
+
+`/teams/members`
+
+Retrieve all team members and their details.
+
+#### Response Fields
+
+`teamMembers` array
+
+Array of team member objects, each containing:
+
+- `id` string - Encoded user ID for the team member (e.g., `user_PDSPmvukpYgZEDXsoNirw3CFhy`). OpenTelemetry Export carries the same value as the optional [`cursor.user.account_id`](https://cursor.com/docs/enterprise/opentelemetry-export/wire.md#resource-attributes) resource attribute.
+- `email` string - Email address of the team member
+- `name` string - Display name of the team member
+- `role` string - Role in the team (e.g., `member`, `owner`)
+- `isRemoved` boolean - Whether the member has been removed from the team
+
+```bash
+curl -X GET https://api.cursor.com/teams/members \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "teamMembers": [
+    {
+      "id": "user_PDSPmvukpYgZEDXsoNirw3CFhy",
+      "name": "Alex",
+      "email": "developer@company.com",
+      "role": "member",
+      "isRemoved": false
+    },
+    {
+      "id": "user_kljUvI0ASZORvSEXf9hV0ydcso",
+      "name": "Sam",
+      "email": "admin@company.com",
+      "role": "owner",
+      "isRemoved": false
+    }
+  ]
+}
+```
+
+### Get Audit Logs
+
+GET
+
+`/teams/audit-logs`
+
+Retrieve audit log events for your team with filtering. Track team activity, security events, and configuration changes. Rate limited to 20 requests per minute per team. See [rate limits and best practices](https://cursor.com/docs/api.md#rate-limits).
+
+#### Parameters
+
+`startTime` string | number
+
+Start time (defaults to 7 days ago). See [Date Formats](https://cursor.com/docs/account/teams/admin-api.md#date-formats)
+
+`endTime` string | number
+
+End time (defaults to now). See [Date Formats](https://cursor.com/docs/account/teams/admin-api.md#date-formats)
+
+`eventTypes` string
+
+Comma-separated `event_type` values, for example `login,add_user`. See the [event type tables](https://cursor.com/docs/enterprise/compliance-and-monitoring.md#event-types) for every value and its `event_data` fields
+
+`search` string
+
+Case-insensitive substring match against `user_email`, `event_type`, and `event_id`. It does not search `event_data`
+
+`page` number
+
+Page number (1-indexed). Default: `1`
+
+`pageSize` number
+
+Results per page (1-500). Default: `100`
+
+`users` string
+
+Filter by users. See [User Filtering](https://cursor.com/docs/account/teams/admin-api.md#user-filtering) below
+
+Date range cannot exceed 30 days. Make multiple requests for longer periods.
+
+#### Date Formats
+
+The `startTime` and `endTime` parameters support multiple formats:
+
+- **Relative shortcuts**: `now`, `today`, `yesterday`, `7d` (7 days ago), `5h` (5 hours ago), `300s` (300 seconds ago)
+- **ISO 8601 strings**: `2024-01-15T12:00:00Z` or `2024-01-15T10:00:00-05:00`
+- **YYYY-MM-DD format**: `2024-01-15` (time defaults to 00:00:00 UTC)
+- **Unix timestamps**: `1705315200` (seconds) or `1705315200000` (milliseconds)
+
+**Examples:**
+
+- `?startTime=7d&endTime=now` - Last 7 days
+- `?startTime=5h&endTime=now` - Last 5 hours
+- `?startTime=2024-01-15&endTime=2024-01-20` - Specific date range
+- `?startTime=1705315200000&endTime=1705401600000` - Unix timestamps
+
+#### User Filtering
+
+The `users` parameter accepts multiple formats, comma-separated:
+
+- **Email addresses**: `developer@company.com,admin@company.com`
+- **Encoded user IDs**: `user_PDSPmvukpYgZEDXsoNirw3CFhy,user_kljUvI0ASZORvSEXf9hV0ydcso`
+
+You can mix formats: `developer@company.com,12345,user_PDSPmvukpYgZEDXsoNirw3CFhy`
+
+Maximum number of users per request equals `pageSize`.
+
+```bash
+curl -X GET "https://api.cursor.com/teams/audit-logs?users=admin@company.com,developer@company.com&eventTypes=login,add_user" \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+Events are returned oldest first. Each object in `events` includes `application_type`: `grok_bot` for Grok Bot, `cursor` for other Cursor surfaces, or an empty string when the application cannot be determined (including rows written before this field existed). `event_data` fields for each `event_type` are listed in [Compliance and Monitoring](https://cursor.com/docs/enterprise/compliance-and-monitoring.md#event-types). `old_value` and `new_value` are parsed into JSON when the stored value is valid JSON.
+
+Routine rows identify the Bot with `event_data.sand_agent_id`.
+
+```json
+{
+  "events": [
+    {
+      "event_id": "3b6d2c1e-5f8a-4a0b-9c7d-1e2f3a4b5c6d",
+      "timestamp": "2024-01-15T10:15:00.000Z",
+      "ip_address": "192.168.1.1",
+      "user_email": "developer@company.com",
+      "event_type": "login",
+      "application_type": "cursor",
+      "event_data": {
+        "success": true,
+        "login_type": "LOGIN_TYPE_WEB"
+      }
+    },
+    {
+      "event_id": "8a1f0f0e-0d1b-4c7e-9b3a-2f6e1c9d4a55",
+      "timestamp": "2024-01-15T12:30:00.000Z",
+      "ip_address": "203.0.113.42",
+      "user_email": "admin@company.com",
+      "event_type": "add_user",
+      "application_type": "cursor",
+      "event_data": {
+        "user_email": "developer@company.com",
+        "role": "member",
+        "source": "invite",
+        "team_id": "12345",
+        "invited_by_email": "admin@company.com",
+        "invited_by_user_id": "4242",
+        "invite_id": "3f9a1c2b"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 100,
+    "totalCount": 2,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPreviousPage": false
+  },
+  "params": {
+    "teamId": 12345,
+    "startDate": 1704729600000,
+    "endDate": 1705334400000
+  }
+}
+```
+
+### Get Daily Usage Data
+
+POST
+
+`/teams/daily-usage-data`
+
+Retrieve daily usage metrics for your team. Data is aggregated at the hourly level - we recommend polling this endpoint at most once per hour. Rate limited to 20 requests per minute per team. See [best practices](https://cursor.com/docs/api.md#best-practices).
+
+#### Parameters
+
+`startDate` number Required
+
+Start date in epoch milliseconds
+
+`endDate` number Required
+
+End date in epoch milliseconds
+
+`page` number
+
+Page number (1-indexed). When provided along with `pageSize`, enables pagination and returns data for **all team members with a membership during the requested date range**.
+
+`pageSize` number
+
+Number of users per page. When provided along with `page`, enables pagination and returns data for **all team members with a membership during the requested date range**.
+
+Without pagination parameters, this endpoint only returns **active users** (those with activity during the date range). To get **all team members**, include both `page` and `pageSize` parameters.
+
+When using pagination, the response includes an `isActive` field for each user indicating whether they had activity on that day. Members who joined after the requested period are excluded.
+
+Date range cannot exceed 30 days. Make multiple requests for longer periods.
+
+The fields `subscriptionIncludedReqs`, `usageBasedReqs`, and `apiKeyReqs` count raw usage events, not billable request units in older request-based pricing. To get accurate billable request counts, use the [`/teams/filtered-usage-events`](https://cursor.com/docs/account/teams/admin-api.md#get-usage-events-data) endpoint and sum the `requestsCosts` field.
+
+#### Response Fields
+
+Each object in the `data` array contains:
+
+- `userId` number - Unique identifier for the user
+- `day` string - The date this record covers (ISO date, e.g., `2024-03-18`)
+- `date` number - Date as epoch milliseconds
+- `email` string - User's email address
+- `isActive` boolean - Whether the user had activity on this day (only present with pagination)
+- `totalLinesAdded` number - Total lines of code added
+- `totalLinesDeleted` number - Total lines of code deleted
+- `acceptedLinesAdded` number - AI-suggested lines added that were accepted
+- `acceptedLinesDeleted` number - AI-suggested lines deleted that were accepted
+- `totalApplies` number - Total AI code apply actions
+- `totalAccepts` number - Total accepted AI suggestions
+- `totalRejects` number - Total rejected AI suggestions
+- `totalTabsShown` number - Total Tab completions shown to the user
+- `totalTabsAccepted` number - Total Tab completions accepted by the user
+- `composerRequests` number - Number of Composer requests made
+- `chatRequests` number - Number of chat requests made
+- `agentRequests` number - Number of Agent mode requests made
+- `cmdkUsages` number - Number of Cmd+K inline edit usages
+- `subscriptionIncludedReqs` number - Requests included in the subscription plan
+- `apiKeyReqs` number - Requests made via API key
+- `usageBasedReqs` number - Usage-based (overage) requests
+- `bugbotUsages` number - Number of Bugbot usages
+- `mostUsedModel` string | null - Most frequently used AI model for the day
+- `applyMostUsedExtension` string | null - Most common file extension for apply actions
+- `tabMostUsedExtension` string | null - Most common file extension for Tab completions
+- `clientVersion` string | null - Cursor client version used
+
+```bash
+# Get data for active users only (no pagination)
+curl -X POST https://api.cursor.com/teams/daily-usage-data \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startDate": 1710720000000,
+    "endDate": 1710892800000
+  }'
+
+# Get data for ALL team members (with pagination)
+curl -X POST https://api.cursor.com/teams/daily-usage-data \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startDate": 1710720000000,
+    "endDate": 1710892800000,
+    "page": 1,
+    "pageSize": 1000
+  }'
+```
+
+**Response (without pagination - active users only):**
+
+```json
+{
+  "data": [
+    {
+      "userId": 12345,
+      "day": "2024-03-18",
+      "date": 1710720000000,
+      "isActive": true,
+      "totalLinesAdded": 1543,
+      "totalLinesDeleted": 892,
+      "acceptedLinesAdded": 1102,
+      "acceptedLinesDeleted": 645,
+      "totalApplies": 87,
+      "totalAccepts": 73,
+      "totalRejects": 14,
+      "totalTabsShown": 342,
+      "totalTabsAccepted": 289,
+      "composerRequests": 45,
+      "chatRequests": 128,
+      "agentRequests": 12,
+      "cmdkUsages": 67,
+      "subscriptionIncludedReqs": 180,
+      "apiKeyReqs": 0,
+      "usageBasedReqs": 5,
+      "bugbotUsages": 3,
+      "mostUsedModel": "gpt-5",
+      "applyMostUsedExtension": ".tsx",
+      "tabMostUsedExtension": ".ts",
+      "clientVersion": "0.25.1",
+      "email": "developer@company.com"
+    }
+  ],
+  "period": {
+    "startDate": 1710720000000,
+    "endDate": 1710892800000
+  }
+}
+```
+
+**Response (with pagination - all team members):**
+
+```json
+{
+  "data": [
+    {
+      "userId": 12345,
+      "day": "2024-03-18",
+      "date": 1710720000000,
+      "isActive": true,
+      "totalLinesAdded": 1543,
+      "totalLinesDeleted": 892,
+      "acceptedLinesAdded": 1102,
+      "acceptedLinesDeleted": 645,
+      "totalApplies": 87,
+      "totalAccepts": 73,
+      "totalRejects": 14,
+      "totalTabsShown": 342,
+      "totalTabsAccepted": 289,
+      "composerRequests": 45,
+      "chatRequests": 128,
+      "agentRequests": 12,
+      "cmdkUsages": 67,
+      "subscriptionIncludedReqs": 180,
+      "apiKeyReqs": 0,
+      "usageBasedReqs": 5,
+      "bugbotUsages": 3,
+      "mostUsedModel": "gpt-5",
+      "applyMostUsedExtension": ".tsx",
+      "tabMostUsedExtension": ".ts",
+      "clientVersion": "0.25.1",
+      "email": "developer@company.com"
+    },
+    {
+      "userId": 12346,
+      "day": "2024-03-18",
+      "date": 1710720000000,
+      "isActive": false,
+      "totalLinesAdded": 0,
+      "totalLinesDeleted": 0,
+      "acceptedLinesAdded": 0,
+      "acceptedLinesDeleted": 0,
+      "totalApplies": 0,
+      "totalAccepts": 0,
+      "totalRejects": 0,
+      "totalTabsShown": 0,
+      "totalTabsAccepted": 0,
+      "composerRequests": 0,
+      "chatRequests": 0,
+      "agentRequests": 0,
+      "cmdkUsages": 0,
+      "subscriptionIncludedReqs": 0,
+      "apiKeyReqs": 0,
+      "usageBasedReqs": 0,
+      "bugbotUsages": 0,
+      "mostUsedModel": null,
+      "applyMostUsedExtension": null,
+      "tabMostUsedExtension": null,
+      "clientVersion": null,
+      "email": "inactive-user@company.com"
+    }
+  ],
+  "period": {
+    "startDate": 1710720000000,
+    "endDate": 1710892800000
+  },
+  "pagination": {
+    "page": 1,
+    "pageSize": 1000,
+    "totalUsers": 150,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPreviousPage": false
+  }
+}
+```
+
+### Get Spending Data
+
+POST
+
+`/teams/spend`
+
+Retrieve spending information for the current billing cycle with search, sorting, and pagination.
+
+#### Parameters
+
+`searchTerm` string
+
+Search in user names and emails
+
+`sortBy` string
+
+Sort by: `amount`, `date`, `user`. Default: `date`
+
+`sortDirection` string
+
+Sort direction: `asc`, `desc`. Default: `desc`
+
+`page` number
+
+Page number (1-indexed). Default: `1`
+
+`pageSize` number
+
+Results per page
+
+#### Response Fields
+
+Each object in `teamMemberSpend` contains:
+
+- `userId` string - Encoded user ID (e.g., `user_PDSPmvukpYgZEDXsoNirw3CFhy`). Shares the same identifier namespace as `teamMembers[].id` from [`/teams/members`](https://cursor.com/docs/account/teams/admin-api.md#get-team-members).
+- `name` string - Display name of the user
+- `email` string - Email address of the user
+- `role` string - Role in the team (e.g., `member`, `owner`)
+- `spendCents` number - On-demand spend in cents for the current billing cycle (excludes included usage)
+- `overallSpendCents` number - Total spend in cents for the current billing cycle, including both on-demand and included usage
+- `fastPremiumRequests` number - Number of usage-based premium requests made during the billing cycle
+- `hardLimitOverrideDollars` number - Custom hard spending limit override in dollars for this user (0 means no override)
+- `monthlyLimitDollars` number | null - Monthly spending limit in dollars set for this user, or `null` if no limit is set
+- `effectivePerUserLimitDollars` number - Currently enforced per-user spending limit in dollars, derived from `monthlyLimitDollars` and `hardLimitOverrideDollars`
+
+On June 4th, 2026 we added additional precision to the spendCents and overallSpendCents fields to avoid rounding errors when comparing results to invoice amounts.
+
+```bash
+curl -X POST https://api.cursor.com/teams/spend \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "searchTerm": "alex@company.com",
+    "page": 2,
+    "pageSize": 25
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "teamMemberSpend": [
+    {
+      "userId": "user_PDSPmvukpYgZEDXsoNirw3CFhy",
+      "spendCents": 2450.125487,
+      "overallSpendCents": 2450.125487,
+      "fastPremiumRequests": 1250,
+      "name": "Alex",
+      "email": "developer@company.com",
+      "role": "member",
+      "hardLimitOverrideDollars": 100,
+      "monthlyLimitDollars": 200,
+      "effectivePerUserLimitDollars": 100
+    },
+    {
+      "userId": "user_kljUvI0ASZORvSEXf9hV0ydcso",
+      "spendCents": 1875.500123,
+      "overallSpendCents": 3200.750456,
+      "fastPremiumRequests": 980,
+      "name": "Sam",
+      "email": "admin@company.com",
+      "role": "owner",
+      "hardLimitOverrideDollars": 0,
+      "monthlyLimitDollars": null,
+      "effectivePerUserLimitDollars": 50
+    }
+  ],
+  "subscriptionCycleStart": 1708992000000,
+  "totalMembers": 15,
+  "totalPages": 1
+}
+```
+
+### Get Usage Events Data
+
+POST
+
+`/teams/filtered-usage-events`
+
+Retrieve detailed usage events for your team with filtering, search, and pagination options. This endpoint provides granular insights into API calls, model usage, token consumption, and costs. Data is aggregated at the hourly level. We recommend polling this endpoint at most once per hour. Rate limited to 60 requests per minute per team. See the [API guidance](https://cursor.com/docs/api.md#best-practices).
+
+**Cost Calculation**: To reconcile event-level costs with `/teams/spend` totals, sum the `chargedCents` field across events. This field includes both the model cost and the Cursor Token Rate when a request is eligible for the rate, matching the dashboard totals. It works for both token-based and request-based billing plans.
+
+The `cursorTokenFee` field represents the Cursor Token Rate and is only present when the rate applies to a third-party model request. This includes when Auto routes to a third-party model. First-party Cursor models such as Grok and Composer, and request-based enterprise accounts do not include this fee. See [Cursor Token Rate](https://cursor.com/help/models-and-usage/token-rate.md).
+
+#### Parameters
+
+`startDate` number
+
+Start date in epoch milliseconds. This bound is inclusive.
+
+`endDate` number
+
+End date in epoch milliseconds. This bound is inclusive.
+
+`startDate` and `endDate` are points in time with millisecond precision, and
+both bounds are inclusive. An event exactly at `2026-05-08T00:00:00.000Z` is
+included when `endDate` is `1778198400000`. For non-overlapping daily
+ingestion windows, set the previous window's `endDate` to the final
+millisecond of the day, such as `2026-05-07T23:59:59.999Z`.
+
+`userId` number
+
+Filter by specific user ID
+
+`page` number
+
+Page number (1-indexed). Default: `1`
+
+`pageSize` number
+
+Number of results per page. Default: `100`. Maximum: `1000`.
+
+`email` string
+
+Filter by user email address
+
+`serviceAccountId` string
+
+Filter by service account ID
+
+`cloudAgentId` string
+
+Filter by a specific cloud agent run ID. Pass `*` to return events from all cloud agent runs.
+
+`automationId` string
+
+Filter by a specific automation UUID. Pass `*` to return events from all automations.
+
+`hostingType` string
+
+Filter cloud agent (background agent) runs by where they executed. Use this to isolate inference spend for self-hosted agents from Cursor-hosted runs. Accepted values:
+
+- `CLOUD` - Cursor-hosted runs
+- `SELF_HOSTED` - any self-hosted run (a Team Pool worker or a My Machines worker)
+- `SELF_HOSTED_POOL` - Team Pool workers only
+- `SELF_HOSTED_MACHINE` - personal "My Machine" workers only
+
+An unrecognized `hostingType` value returns a `400` error rather than an empty result, so a typo can't be mistaken for genuinely zero self-hosted spend. This filter covers inference spend only; self-hosted compute runs on your own machines and is never metered by Cursor.
+
+When you pass multiple filters, the endpoint combines them with `AND`. For example, `automationId` and `serviceAccountId` return events that match both values.
+
+#### Response Fields
+
+Each object in `usageEvents` contains:
+
+- `timestamp` string - Event timestamp in epoch milliseconds (as a string)
+- `userEmail` string - Email address of the user who made the request
+- `serviceAccountId` string | undefined - ID of the service account that made the request. Omitted for human user events.
+- `serviceAccountName` string | undefined - Display name of the service account that made the request. Omitted for human user events.
+- `cloudAgentId` string | undefined - ID of the cloud agent run attributed to this event. Omitted for events outside cloud agents.
+- `automationId` string | undefined - UUID of the automation attributed to this event. Omitted for events outside automations.
+- `conversationId` string | undefined - ID of the conversation (agent session) that generated this event. Use it to attribute spend to a session or as a join key with other sources that expose conversation IDs, such as the [AI Code Tracking API](https://cursor.com/docs/account/teams/ai-code-tracking-api.md). Omitted for events without an associated conversation.
+- `model` string - AI model used for the request
+- `kind` string - Billing category (e.g., `Usage-based`, `Included in Business`)
+- `maxMode` boolean - Whether the request used max mode
+- `requestsCosts` number - Cost in request units
+- `isTokenBasedCall` boolean - Whether the request was billed by token usage
+- `isChargeable` boolean - Whether this event incurs a charge
+- `isHeadless` boolean - Whether this request was made without a connected client (e.g., background agents)
+- `tokenUsage` object | undefined - Token usage details (present when `isTokenBasedCall` is `true`):
+  - `inputTokens` number - Input tokens consumed
+  - `outputTokens` number - Output tokens generated
+  - `cacheWriteTokens` number - Tokens written to cache
+  - `cacheReadTokens` number - Tokens read from cache
+  - `totalCents` number - Total model cost in cents
+  - `discountPercentOff` number | undefined - Discount percentage applied, if any
+- `chargedCents` number - Total amount charged in cents for this event. For third-party model requests subject to the Cursor Token Rate, this includes model cost plus the Cursor Token Rate. Use this field to reconcile event-level costs with `/teams/spend` totals. Works for both token-based and request-based billing plans.
+- `cursorTokenFee` number | undefined - Cursor Token Rate in cents. Present only when the rate applies to a third-party model request (including when Auto routes to a third-party model).
+
+```bash
+curl -X POST https://api.cursor.com/teams/filtered-usage-events \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startDate": 1748411762359,
+    "endDate": 1751003762359,
+    "email": "developer@company.com",
+    "page": 1,
+    "pageSize": 25
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "totalUsageEventsCount": 113,
+  "pagination": {
+    "numPages": 5,
+    "currentPage": 1,
+    "pageSize": 25,
+    "hasNextPage": true,
+    "hasPreviousPage": false
+  },
+  "usageEvents": [
+    {
+      "timestamp": "1750979225854",
+      "userEmail": "developer@company.com",
+      "conversationId": "8f2e4a1b-6c3d-4e5f-9a7b-2d1c8e6f4a3b",
+      "model": "claude-4.5-sonnet",
+      "kind": "Usage-based",
+      "maxMode": true,
+      "requestsCosts": 5,
+      "isTokenBasedCall": true,
+      "isChargeable": true,
+      "isHeadless": false,
+      "tokenUsage": {
+        "inputTokens": 126,
+        "outputTokens": 450,
+        "cacheWriteTokens": 6112,
+        "cacheReadTokens": 11964,
+        "totalCents": 20.18232
+      },
+      "chargedCents": 21.36232,
+      "cursorTokenFee": 1.18
+    },
+    {
+      "timestamp": "1750979173824",
+      "userEmail": "developer@company.com",
+      "conversationId": "8f2e4a1b-6c3d-4e5f-9a7b-2d1c8e6f4a3b",
+      "model": "claude-4.5-sonnet",
+      "kind": "Usage-based",
+      "maxMode": true,
+      "requestsCosts": 10,
+      "isTokenBasedCall": true,
+      "isChargeable": true,
+      "isHeadless": false,
+      "tokenUsage": {
+        "inputTokens": 5805,
+        "outputTokens": 311,
+        "cacheWriteTokens": 11964,
+        "cacheReadTokens": 0,
+        "totalCents": 40.167,
+        "discountPercentOff": 10
+      },
+      "chargedCents": 37.33,
+      "cursorTokenFee": 1.18
+    },
+    {
+      "timestamp": "1750978339901",
+      "userEmail": "admin@company.com",
+      "model": "claude-4-sonnet-thinking",
+      "kind": "Included in Business",
+      "maxMode": true,
+      "requestsCosts": 1.4,
+      "isTokenBasedCall": false,
+      "isChargeable": false,
+      "isHeadless": false,
+      "chargedCents": 8
+    }
+  ],
+  "period": {
+    "startDate": 1748411762359,
+    "endDate": 1751003762359
+  }
+}
+```
+
+**Service account usage example:**
+
+```bash
+curl -X POST https://api.cursor.com/teams/filtered-usage-events \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startDate": 1748411762359,
+    "endDate": 1751003762359,
+    "serviceAccountId": "sa_abc123",
+    "page": 1,
+    "pageSize": 10
+  }'
+```
+
+**Service account response:**
+
+```json
+{
+  "totalUsageEventsCount": 1,
+  "pagination": {
+    "numPages": 1,
+    "currentPage": 1,
+    "pageSize": 10,
+    "hasNextPage": false,
+    "hasPreviousPage": false
+  },
+  "usageEvents": [
+    {
+      "timestamp": "1750979225854",
+      "userEmail": "agent-runner@company.com",
+      "serviceAccountId": "sa_abc123",
+      "serviceAccountName": "Nightly CI Agent",
+      "conversationId": "3b9d7c2e-1f4a-4b8c-a6d5-e9f0a2b4c6d8",
+      "model": "claude-4.5-sonnet",
+      "kind": "Usage-based",
+      "maxMode": true,
+      "requestsCosts": 5,
+      "isTokenBasedCall": true,
+      "isChargeable": true,
+      "isHeadless": true,
+      "tokenUsage": {
+        "inputTokens": 126,
+        "outputTokens": 450,
+        "cacheWriteTokens": 6112,
+        "cacheReadTokens": 11964,
+        "totalCents": 20.18232
+      },
+      "chargedCents": 21.36232,
+      "cursorTokenFee": 1.18
+    }
+  ],
+  "period": {
+    "startDate": 1748411762359,
+    "endDate": 1751003762359
+  }
+}
+```
+
+**Automation usage example:**
+
+Use an automation UUID to retrieve its usage events. Automation attribution works for automations that run as a user or a service account.
+
+```bash
+curl -X POST https://api.cursor.com/teams/filtered-usage-events \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startDate": 1748411762359,
+    "endDate": 1751003762359,
+    "automationId": "7fc64f90-6d7a-4a5d-91b1-bd1f529a85dd",
+    "page": 1,
+    "pageSize": 100
+  }'
+```
+
+Each matching event includes its `automationId` and `cloudAgentId`. Sum `chargedCents` across the events to calculate the automation's total cost.
+
+**Self-hosted agent spend example:**
+
+```bash
+curl -X POST https://api.cursor.com/teams/filtered-usage-events \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startDate": 1748411762359,
+    "endDate": 1751003762359,
+    "hostingType": "SELF_HOSTED",
+    "page": 1,
+    "pageSize": 10
+  }'
+```
+
+### Set User Spend Limit
+
+POST
+
+`/teams/user-spend-limit`
+
+Set spending limits for individual team members. This allows you to control how much each user can spend on AI usage within your team. Rate limited to 250 requests per minute per team. See [rate limits](https://cursor.com/docs/api.md#rate-limits).
+
+To update up to 100 members per request, use [Set User Spend Limits in Bulk (Preview)](https://cursor.com/docs/account/teams/admin-api.md#set-user-spend-limits-in-bulk-preview).
+
+#### Parameters
+
+`userEmail` string Required
+
+Email address of the team member
+
+`spendLimitDollars` number | null Required
+
+Spending limit in dollars (integer only, no decimals). Set to `null` to remove the limit.
+
+- **Availability**: Enterprise only
+- The user must already be a member of your team
+- Only integer values are accepted (no decimal amounts)
+- Setting `spendLimitDollars` to 0 will set the limit to $0
+- Setting `spendLimitDollars` to `null` will clear/remove the limit entirely
+
+```bash
+curl -X POST https://api.cursor.com/teams/user-spend-limit \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userEmail": "developer@company.com",
+    "spendLimitDollars": 100
+  }'
+```
+
+**Successful response:**
+
+```json
+{
+  "outcome": "success",
+  "message": "Spend limit set to $100 for user developer@company.com"
+}
+```
+
+**Error response:**
+
+```json
+{
+  "outcome": "error",
+  "message": "Invalid email format"
+}
+```
+
+### Set User Spend Limits in Bulk (Preview)
+
+POST
+
+`/teams/user-spend-limits`
+
+Set spending limits for up to 100 team members in one request. Rate limited to 20 requests per minute per team. See [rate limits](https://cursor.com/docs/api.md#rate-limits).
+
+This bulk route is in preview and may change. Request shape, response fields, and error behavior can shift before general availability.
+
+#### Parameters
+
+`updates` array Required
+
+One to 100 user spend limit updates. Each update contains:
+
+- `userEmail` string - Email address of the team member
+- `spendLimitDollars` number | null - Integer spending limit in dollars. Set to `null` to remove the limit.
+
+#### Response Fields
+
+- `requestedCount` number - Number of updates in the request
+- `updatedCount` number - Number of limits that changed
+- `unchangedCount` number - Number of limits already set to the requested value
+- `failedCount` number - Number of updates Cursor could not apply
+- `results` array - Results in request order. Each result includes `userEmail` and a status of `updated`, `unchanged`, or `failed`. Failed results also include an `error` message.
+
+* **Availability**: Enterprise only. The bulk endpoint is rolling out; teams that are not yet enabled receive a `403` response
+* A missing team member produces a `failed` result without blocking other updates
+* Invalid request fields, duplicate emails, or more than 100 updates return a `400` response without applying any updates
+* Repeating a successful update returns `unchanged` and does not create another audit event
+
+```bash
+curl -X POST https://api.cursor.com/teams/user-spend-limits \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "updates": [
+      {
+        "userEmail": "developer@company.com",
+        "spendLimitDollars": 100
+      },
+      {
+        "userEmail": "contractor@company.com",
+        "spendLimitDollars": null
+      },
+      {
+        "userEmail": "former-employee@company.com",
+        "spendLimitDollars": 50
+      }
+    ]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "requestedCount": 3,
+  "updatedCount": 1,
+  "unchangedCount": 1,
+  "failedCount": 1,
+  "results": [
+    {
+      "userEmail": "developer@company.com",
+      "status": "updated"
+    },
+    {
+      "userEmail": "contractor@company.com",
+      "status": "unchanged"
+    },
+    {
+      "userEmail": "former-employee@company.com",
+      "status": "failed",
+      "error": "User not found in team"
+    }
+  ]
+}
+```
+
+### Remove Team Member
+
+POST
+
+`/teams/remove-member`
+
+Remove a member from your team programmatically. This is useful for automating offboarding workflows or integrating with HR systems. Rate limited to 50 requests per minute per team. See [rate limits](https://cursor.com/docs/api.md#rate-limits).
+
+#### Parameters
+
+`userId` string
+
+Encoded user ID (e.g., `user_PDSPmvukpYgZEDXsoNirw3CFhy`). Required if `email` is not provided.
+
+`email` string
+
+Email address of the team member. Required if `userId` is not provided.
+
+- **Availability**: Enterprise only
+- Provide either `userId` or `email`, but not both
+- At least one paid member must remain on the team after removal
+- At least one admin (owner or free-owner) must remain on the team after removal
+
+```bash
+curl -X POST https://api.cursor.com/teams/remove-member \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "developer@company.com"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "userId": "user_PDSPmvukpYgZEDXsoNirw3CFhy",
+  "hasBillingCycleUsage": true
+}
+```
+
+**Remove by user ID:**
+
+```bash
+curl -X POST https://api.cursor.com/teams/remove-member \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": "user_PDSPmvukpYgZEDXsoNirw3CFhy"
+  }'
+```
+
+**Error responses:**
+
+```json
+{
+  "error": "User is not a member of this team"
+}
+```
+
+```json
+{
+  "error": "Either userId or email must be provided"
+}
+```
+
+```json
+{
+  "error": "Only one of userId or email should be provided, not both"
+}
+```
+
+### Get Team Repo Blocklists
+
+GET
+
+`/settings/repo-blocklists/repos`
+
+Retrieve all repository blocklists configured for your team. Add repositories and use patterns to prevent files or directories from being used as context.
+
+#### Pattern Examples
+
+Common blocklist patterns:
+
+- `*` - Block entire repository
+- `*.env` - Block all .env files
+- `config/*` - Block all files in config directory
+- `**/*.secret` - Block all .secret files in any subdirectory
+- `src/api/keys.ts` - Block specific file
+
+```bash
+curl -X GET https://api.cursor.com/settings/repo-blocklists/repos \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "repos": [
+    {
+      "id": "repo_123",
+      "url": "https://github.com/company/sensitive-repo",
+      "patterns": ["*.env", "config/*", "secrets/**"]
+    },
+    {
+      "id": "repo_456",
+      "url": "https://github.com/company/internal-tools",
+      "patterns": ["*"]
+    }
+  ]
+}
+```
+
+### Upsert Repo Blocklists
+
+POST
+
+`/settings/repo-blocklists/repos/upsert`
+
+Replace existing repository blocklists for the provided repos. This endpoint will only overwrite the patterns for the repositories provided. All other repos will be unaffected.
+
+#### Parameters
+
+`repos` array Required
+
+Array of repository blocklist objects. Each repository object must contain:
+
+- `url` string - Repository URL to blocklist
+- `patterns` string\[] - Array of file patterns to block (glob patterns supported)
+
+```bash
+curl -X POST https://api.cursor.com/settings/repo-blocklists/repos/upsert \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "repos": [
+      {
+        "url": "https://github.com/company/sensitive-repo",
+        "patterns": ["*.env", "config/*", "secrets/**"]
+      },
+      {
+        "url": "https://github.com/company/internal-tools",
+        "patterns": ["*"]
+      }
+    ]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "repos": [
+    {
+      "id": "repo_123",
+      "url": "https://github.com/company/sensitive-repo",
+      "patterns": ["*.env", "config/*", "secrets/**"]
+    },
+    {
+      "id": "repo_456",
+      "url": "https://github.com/company/internal-tools",
+      "patterns": ["*"]
+    }
+  ]
+}
+```
+
+### Delete Repo Blocklist
+
+DELETE
+
+`/settings/repo-blocklists/repos/:repoId`
+
+Remove a specific repository from the blocklist. Returns 204 No Content on successful deletion.
+
+#### Parameters
+
+`repoId` string Required
+
+ID of the repository blocklist to delete
+
+```bash
+curl -X DELETE https://api.cursor.com/settings/repo-blocklists/repos/repo_123 \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```text
+204 No Content
+```
+
+## Team directory groups
+
+Team Admin API routes at `/teams/directory-groups` manage Team directory groups. Those groups set spend and policy within one team. See [Organization Groups](https://cursor.com/docs/enterprise/organization-groups.md) for how they differ from org-level cohorts and [Billing Groups](https://cursor.com/docs/account/enterprise/billing-groups.md).
+
+[Map a group to a team](https://cursor.com/docs/enterprise/organization-groups.md#map-a-group-to-a-team) when an Organization Group should drive that team's membership. Create, list, and add or remove members of a Team directory group with a Team API key. For dashboard and SCIM setup, see [directory groups](https://cursor.com/docs/account/teams/scim.md#directory-groups).
+
+These routes are a different API from [billing groups](https://cursor.com/docs/account/teams/admin-api.md#billing-groups). Use this table to pick the right path and id:
+
+| Groups                | Path                      | ID                                                                                                                                                                        |
+| --------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Organization Groups   | `/organizations/groups`   | `id` uses the `g_` prefix. Responses also return `publicId` with the `grp_` prefix. See [Organization Groups](https://cursor.com/docs/enterprise/organization-groups.md). |
+| Team directory groups | `/teams/directory-groups` | Public id uses the `team_group_…` prefix, such as `team_group_01k2ja2000e0080000000000n2`.                                                                                |
+| Billing Groups        | `/teams/groups`           | `group_…`                                                                                                                                                                 |
+
+`:groupId` is the team's directory-group public id. It uses the `team_group_…` prefix. Do not pass Organization Group `g_` or `grp_` ids, or Billing Group `group_…` ids.
+
+- **Authentication**: Team API key (Basic auth). Reads require **`read:*`**. Writes require **`admin:*`**. Keys with **`admin:*`** work for both. A write with a `read:*` key returns `401`.
+- **Group IDs**: Every `:groupId` is the group's public id with the `team_group_…` prefix, such as `team_group_01k2ja2000e0080000000000n2`. Organization Groups use `g_` and `grp_`. Billing Groups use `group_…`.
+- **Pagination**: List routes accept `page` and `pageSize`. Both values must be positive integers.
+- **Rate limit**: Each route allows 20 requests per minute per team. See [rate limits and best practices](https://cursor.com/docs/api.md#rate-limits).
+- **SCIM-synced groups**: Manage membership in your identity provider. Member add and remove requests return `400` for SCIM-synced groups.
+
+Group routes share these error responses:
+
+| Status | When                                                                                    |
+| ------ | --------------------------------------------------------------------------------------- |
+| `400`  | Malformed group ID, pagination value, or request body                                   |
+| `401`  | Invalid API key, or the key is missing the `read:*` (reads) or `admin:*` (writes) scope |
+| `404`  | Group does not exist on this team                                                       |
+| `429`  | Rate limit exceeded. The response includes a `Retry-After: 60` header                   |
+
+### List Team directory groups
+
+GET
+
+`/teams/directory-groups`
+
+Retrieve Team directory groups for the team attached to your API key.
+
+#### Query parameters
+
+`page` number
+
+Page number. Defaults to `1`.
+
+`pageSize` number
+
+Number of groups per page. Defaults to `50`. Capped at 200; values above 200 are clamped to 200.
+
+#### Response Fields
+
+Each object in `groups` contains:
+
+- `id` string - Group public id with the `team_group_…` prefix. Use this value as `:groupId` on the other routes.
+- `name` string - Group name
+- `memberCount` number - Number of members in the group
+- `monthlySpendingLimitDollars` number | null - Monthly spending limit in whole dollars for each group member. `null` means the group has no limit.
+- `createdAt` string - Creation time in ISO 8601 format
+- `updatedAt` string - Last update time in ISO 8601 format
+
+`pagination` object
+
+Pagination metadata: `page`, `pageSize`, `totalCount`, `totalPages`, `hasNextPage`, and `hasPreviousPage`.
+
+```bash
+curl -X GET "https://api.cursor.com/teams/directory-groups?page=1&pageSize=50" \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "groups": [
+    {
+      "id": "team_group_01k2ja2000e0080000000000n2",
+      "name": "Engineering",
+      "memberCount": 12,
+      "monthlySpendingLimitDollars": 500,
+      "createdAt": "2026-01-15T10:30:00.000Z",
+      "updatedAt": "2026-01-20T14:22:00.000Z"
+    },
+    {
+      "id": "team_group_01k2jb4000e0080000000000p7",
+      "name": "Design",
+      "memberCount": 8,
+      "monthlySpendingLimitDollars": null,
+      "createdAt": "2026-01-16T09:00:00.000Z",
+      "updatedAt": "2026-01-16T09:00:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 50,
+    "totalCount": 2,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPreviousPage": false
+  }
+}
+```
+
+### Get Team directory group
+
+GET
+
+`/teams/directory-groups/:groupId`
+
+Retrieve one Team directory group.
+
+#### Parameters
+
+`groupId` string Required
+
+The group's public id with the `team_group_…` prefix, such as `team_group_01k2ja2000e0080000000000n2`. Organization Group `g_` or `grp_` ids and Billing Group `group_…` ids return `400` or `404`.
+
+#### Response Fields
+
+The `group` object contains `id`, `name`, `memberCount`, `monthlySpendingLimitDollars`, `createdAt`, and `updatedAt`. These fields match the [List Team directory groups](https://cursor.com/docs/account/teams/admin-api.md#list-team-directory-groups) response.
+
+```bash
+curl -X GET https://api.cursor.com/teams/directory-groups/team_group_01k2ja2000e0080000000000n2 \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "group": {
+    "id": "team_group_01k2ja2000e0080000000000n2",
+    "name": "Engineering",
+    "memberCount": 12,
+    "monthlySpendingLimitDollars": 500,
+    "createdAt": "2026-01-15T10:30:00.000Z",
+    "updatedAt": "2026-01-20T14:22:00.000Z"
+  }
+}
+```
+
+### Create Team directory group
+
+POST
+
+`/teams/directory-groups`
+
+Create a Team directory group with manually managed membership. To create a SCIM-synced group, sync it from your identity provider instead. See [SCIM](https://cursor.com/docs/account/teams/scim.md).
+
+#### Request body
+
+`name` string Required
+
+Group name. Must be unique among the team's active directory groups. Cursor removes leading and trailing whitespace.
+
+#### Response Fields
+
+Returns `201 Created` with the new `group` object. The object contains `id`, `name`, `memberCount`, `monthlySpendingLimitDollars`, `createdAt`, and `updatedAt`. The `id` is the group's public id with the `team_group_…` prefix.
+
+#### Errors
+
+- `400` - The group name is missing, empty, or already used by another active group.
+
+```bash
+curl -X POST https://api.cursor.com/teams/directory-groups \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Engineering"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "group": {
+    "id": "team_group_01k2ja2000e0080000000000n2",
+    "name": "Engineering",
+    "memberCount": 0,
+    "monthlySpendingLimitDollars": null,
+    "createdAt": "2026-01-15T10:30:00.000Z",
+    "updatedAt": "2026-01-15T10:30:00.000Z"
+  }
+}
+```
+
+### Update Team directory group
+
+PATCH
+
+`/teams/directory-groups/:groupId`
+
+Update a group's name or monthly spending limit. Updates are partial: include at least one field, and any field you omit keeps its current value.
+
+#### Parameters
+
+`groupId` string Required
+
+The group's public id with the `team_group_…` prefix, such as `team_group_01k2ja2000e0080000000000n2`.
+
+#### Request body
+
+`name` string
+
+New group name. Must be unique among the team's active directory groups. Cursor removes leading and trailing whitespace.
+
+`monthlySpendingLimitDollars` number
+
+Monthly spending limit in whole dollars for each group member, between `0` and `2147483647`.
+
+`clearMonthlySpendingLimitDollars` boolean
+
+Set to `true` to remove the group spending limit. Do not include `monthlySpendingLimitDollars` in the same request.
+
+#### Response Fields
+
+Returns the updated `group` object with `id`, `name`, `memberCount`, `monthlySpendingLimitDollars`, `createdAt`, and `updatedAt`.
+
+#### Errors
+
+- `400` - The request has no update fields, contains an invalid value, uses another active group's name, or sets and clears the spending limit in the same request.
+
+```bash
+curl -X PATCH https://api.cursor.com/teams/directory-groups/team_group_01k2ja2000e0080000000000n2 \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Platform Engineering",
+    "monthlySpendingLimitDollars": 500
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "group": {
+    "id": "team_group_01k2ja2000e0080000000000n2",
+    "name": "Platform Engineering",
+    "memberCount": 12,
+    "monthlySpendingLimitDollars": 500,
+    "createdAt": "2026-01-15T10:30:00.000Z",
+    "updatedAt": "2026-01-20T14:22:00.000Z"
+  }
+}
+```
+
+### Delete Team directory group
+
+DELETE
+
+`/teams/directory-groups/:groupId`
+
+Delete a Team directory group. The group must be empty: remove every member before deleting it.
+
+#### Parameters
+
+`groupId` string Required
+
+The group's public id with the `team_group_…` prefix, such as `team_group_01k2ja2000e0080000000000n2`.
+
+#### Response
+
+Returns `204 No Content` after deleting the group.
+
+#### Errors
+
+- `400` - The group still has members, or the group has an active SCIM mapping.
+
+You can't delete a group with an active SCIM mapping through this endpoint.
+Remove the mapping in the dashboard, remove every member, then delete the
+group.
+
+```bash
+curl -X DELETE https://api.cursor.com/teams/directory-groups/team_group_01k2ja2000e0080000000000n2 \
+  -u YOUR_API_KEY:
+```
+
+**Response:** `204 No Content`
+
+### List Team directory group members
+
+GET
+
+`/teams/directory-groups/:groupId/members`
+
+Retrieve members in a Team directory group.
+
+#### Parameters
+
+`groupId` string Required
+
+The group's public id with the `team_group_…` prefix, such as `team_group_01k2ja2000e0080000000000n2`.
+
+#### Query parameters
+
+`page` number
+
+Page number. Defaults to `1`.
+
+`pageSize` number
+
+Number of members per page. Defaults to `50`. Capped at 200; values above 200 are clamped to 200.
+
+#### Response Fields
+
+Each object in `members` contains:
+
+- `userId` string - Public user ID with the `user_` prefix
+- `name` string - Display name of the member
+- `email` string - Email address of the member
+- `joinedAt` string - Time the member was added to the group in ISO 8601 format
+
+`pagination` object
+
+Pagination metadata: `page`, `pageSize`, `totalCount`, `totalPages`, `hasNextPage`, and `hasPreviousPage`.
+
+```bash
+curl -X GET "https://api.cursor.com/teams/directory-groups/team_group_01k2ja2000e0080000000000n2/members?page=1&pageSize=50" \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "members": [
+    {
+      "userId": "user_abc123",
+      "name": "Alex Developer",
+      "email": "alex@company.com",
+      "joinedAt": "2026-01-15T10:30:00.000Z"
+    },
+    {
+      "userId": "user_def456",
+      "name": "Sam Engineer",
+      "email": "sam@company.com",
+      "joinedAt": "2026-01-16T09:15:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 50,
+    "totalCount": 2,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPreviousPage": false
+  }
+}
+```
+
+### Add Team directory group members
+
+POST
+
+`/teams/directory-groups/:groupId/members/bulk-add`
+
+Add members to a manual Team directory group.
+
+#### Parameters
+
+`groupId` string Required
+
+The group's public id with the `team_group_…` prefix, such as `team_group_01k2ja2000e0080000000000n2`.
+
+#### Request body
+
+`userIds` string\[] Required
+
+Array of public user IDs with the `user_` prefix. A single request may include up to 100 users.
+
+#### Response Fields
+
+`addedCount` number
+
+Number of memberships this request created. Cursor ignores users outside the team and users who already belong to the group, so they don't count toward this total.
+
+SCIM-synced groups reject manual membership changes with a `400` response.
+Manage their membership in your identity provider.
+
+```bash
+curl -X POST https://api.cursor.com/teams/directory-groups/team_group_01k2ja2000e0080000000000n2/members/bulk-add \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userIds": ["user_abc123", "user_def456"]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "addedCount": 2
+}
+```
+
+### Remove Team directory group members
+
+POST
+
+`/teams/directory-groups/:groupId/members/bulk-remove`
+
+Remove members from a manual Team directory group.
+
+#### Parameters
+
+`groupId` string Required
+
+The group's public id with the `team_group_…` prefix, such as `team_group_01k2ja2000e0080000000000n2`.
+
+#### Request body
+
+`userIds` string\[] Required
+
+Array of public user IDs with the `user_` prefix. A single request may include up to 100 users.
+
+#### Response Fields
+
+`removedCount` number
+
+Number of memberships this request removed. Cursor ignores users who don't belong to the group, so they don't count toward this total.
+
+SCIM-synced groups reject manual membership changes with a `400` response.
+Manage their membership in your identity provider.
+
+```bash
+curl -X POST https://api.cursor.com/teams/directory-groups/team_group_01k2ja2000e0080000000000n2/members/bulk-remove \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userIds": ["user_def456"]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "removedCount": 1
+}
+```
+
+## Billing Groups
+
+[Billing groups](https://cursor.com/docs/account/enterprise/billing-groups.md) allow Enterprise admins to understand and manage spend across groups of users. This functionality is useful for reporting, internal chargebacks, and budgeting.
+
+Members can only be in one billing group at a time. Members not assigned to any group are placed in a reserved `Unassigned` group.
+
+Billing Groups live at `/teams/groups` and use `group_…` ids. Team directory groups live at [`/teams/directory-groups`](https://cursor.com/docs/account/teams/admin-api.md#team-directory-groups) and use `team_group_…` ids. The two APIs do not accept each other's ids.
+
+### List Groups
+
+GET
+
+`/teams/groups`
+
+Retrieve all billing groups for your team with spend data for the current billing cycle.
+
+#### Parameters
+
+`billingCycle` string
+
+ISO date string (e.g., `2025-01-15`) to specify which billing cycle to query. Defaults to current cycle.
+
+```bash
+curl -X GET "https://api.cursor.com/teams/groups?billingCycle=2025-01-15" \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "groups": [
+    {
+      "id": "group_PDSPmvukpYgZEDXsoNirw3CFhy",
+      "name": "Engineering",
+      "type": "BILLING",
+      "directoryGroupId": null,
+      "memberCount": 12,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-20T14:22:00.000Z",
+      "spendCents": 245000,
+      "currentMembers": [
+        {
+          "userId": "user_abc123",
+          "name": "Alex Developer",
+          "email": "alex@company.com",
+          "joinedAt": "2024-01-15T10:30:00.000Z",
+          "leftAt": null,
+          "spendCents": 12500
+        }
+      ],
+      "formerMembers": [],
+      "dailySpend": [
+        { "date": "2025-01-15", "spendCents": 8500 },
+        { "date": "2025-01-16", "spendCents": 9200 }
+      ]
+    },
+    {
+      "id": "group_kljUvI0ASZORvSEXf9hV0ydcso",
+      "name": "Design",
+      "type": "BILLING",
+      "directoryGroupId": "dir_group_abc123xyz",
+      "memberCount": 5,
+      "createdAt": "2024-01-16T09:00:00.000Z",
+      "updatedAt": "2024-01-16T09:00:00.000Z",
+      "spendCents": 87500,
+      "currentMembers": [],
+      "formerMembers": [],
+      "dailySpend": []
+    }
+  ],
+  "unassignedGroup": {
+    "id": "group_unassigned",
+    "name": "Unassigned",
+    "type": "BILLING",
+    "directoryGroupId": null,
+    "memberCount": 3,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z",
+    "spendCents": 15000,
+    "currentMembers": [],
+    "formerMembers": [],
+    "dailySpend": []
+  },
+  "billingCycle": {
+    "cycleStart": "2025-01-01T00:00:00.000Z",
+    "cycleEnd": "2025-02-01T00:00:00.000Z"
+  }
+}
+```
+
+### Get Group
+
+GET
+
+`/teams/groups/:groupId`
+
+Retrieve a single billing group with its members and spend data for the current billing cycle.
+
+#### Parameters
+
+`groupId` string Required
+
+The encoded group ID (e.g., `group_PDSPmvukpYgZEDXsoNirw3CFhy`)
+
+`billingCycle` string
+
+ISO date string (e.g., `2025-01-15`) to specify which billing cycle to query. Defaults to current cycle.
+
+```bash
+curl -X GET "https://api.cursor.com/teams/groups/group_PDSPmvukpYgZEDXsoNirw3CFhy?billingCycle=2025-01-15" \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "group": {
+    "id": "group_PDSPmvukpYgZEDXsoNirw3CFhy",
+    "name": "Engineering",
+    "type": "BILLING",
+    "directoryGroupId": null,
+    "memberCount": 3,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-20T14:22:00.000Z",
+    "spendCents": 125000,
+    "currentMembers": [
+      {
+        "userId": "user_abc123",
+        "name": "Alex Developer",
+        "email": "alex@company.com",
+        "joinedAt": "2024-01-15T10:30:00.000Z",
+        "leftAt": null,
+        "spendCents": 75000,
+        "dailySpend": [
+          { "date": "2025-01-15", "spendCents": 5000 },
+          { "date": "2025-01-16", "spendCents": 7500 }
+        ]
+      },
+      {
+        "userId": "user_def456",
+        "name": "Sam Engineer",
+        "email": "sam@company.com",
+        "joinedAt": "2024-01-16T09:15:00.000Z",
+        "leftAt": null,
+        "spendCents": 50000,
+        "dailySpend": [
+          { "date": "2025-01-15", "spendCents": 3500 },
+          { "date": "2025-01-16", "spendCents": 4200 }
+        ]
+      }
+    ],
+    "formerMembers": [
+      {
+        "userId": "user_xyz789",
+        "name": "Former Member",
+        "email": "former@company.com",
+        "joinedAt": "2024-01-10T08:00:00.000Z",
+        "leftAt": "2024-01-14T17:00:00.000Z",
+        "spendCents": 0
+      }
+    ],
+    "dailySpend": [
+      { "date": "2025-01-15", "spendCents": 8500 },
+      { "date": "2025-01-16", "spendCents": 11700 }
+    ]
+  },
+  "billingCycle": {
+    "cycleStart": "2025-01-01T00:00:00.000Z",
+    "cycleEnd": "2025-02-01T00:00:00.000Z"
+  }
+}
+```
+
+### Create Group
+
+POST
+
+`/teams/groups`
+
+Create a new billing group. Rate limited to 20 requests per minute per team.
+
+#### Parameters
+
+`name` string Required
+
+Name of the group
+
+`type` string
+
+Group type. Currently only `BILLING` is supported. Default: `BILLING`
+
+```bash
+curl -X POST https://api.cursor.com/teams/groups \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Engineering"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "group": {
+    "id": "group_PDSPmvukpYgZEDXsoNirw3CFhy",
+    "name": "Engineering",
+    "type": "BILLING",
+    "directoryGroupId": null,
+    "memberCount": 0,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z",
+    "members": []
+  }
+}
+```
+
+### Update Group
+
+PATCH
+
+`/teams/groups/:groupId`
+
+Update a billing group's name or directory group attachment. Rate limited to 20 requests per minute per team.
+
+Only one field can be updated per request. To update both name and directory attachment, make separate requests.
+
+#### Parameters
+
+`groupId` string Required
+
+The encoded group ID
+
+`name` string
+
+New name for the group
+
+`directoryGroupId` string | null
+
+Directory group ID to sync with, or `null` to detach from directory sync
+
+```bash
+curl -X PATCH https://api.cursor.com/teams/groups/group_PDSPmvukpYgZEDXsoNirw3CFhy \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Platform Engineering"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "group": {
+    "id": "group_PDSPmvukpYgZEDXsoNirw3CFhy",
+    "name": "Platform Engineering",
+    "type": "BILLING",
+    "directoryGroupId": null,
+    "memberCount": 3,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-25T16:45:00.000Z",
+    "members": [
+      {
+        "userId": "user_abc123",
+        "name": "Alex Developer",
+        "email": "alex@company.com",
+        "joinedAt": "2024-01-15T10:30:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+### Delete Group
+
+DELETE
+
+`/teams/groups/:groupId`
+
+Delete a billing group. Returns 204 No Content on success. Rate limited to 20 requests per minute per team.
+
+Deleting a billing group is a destructive operation; data cannot be recovered. All historical usage for deleted groups is reassigned retroactively to the `Unassigned` group.
+
+#### Parameters
+
+`groupId` string Required
+
+The encoded group ID to delete
+
+```bash
+curl -X DELETE https://api.cursor.com/teams/groups/group_PDSPmvukpYgZEDXsoNirw3CFhy \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```text
+204 No Content
+```
+
+### Add Members to Group
+
+POST
+
+`/teams/groups/:groupId/members`
+
+Add team members to a billing group. Users must already be members of your team and not currently assigned to another group. Rate limited to 20 requests per minute per team.
+
+Billing groups synced with SCIM cannot be modified via the API. All member assignment for SCIM-synced groups must be handled via [SCIM](https://cursor.com/docs/account/teams/scim.md).
+
+#### Parameters
+
+`groupId` string Required
+
+The encoded group ID
+
+`userIds` string\[] Required
+
+Array of encoded user IDs to add (e.g., `["user_abc123", "user_def456"]`)
+
+```bash
+curl -X POST https://api.cursor.com/teams/groups/group_PDSPmvukpYgZEDXsoNirw3CFhy/members \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userIds": ["user_abc123", "user_def456"]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "group": {
+    "id": "group_PDSPmvukpYgZEDXsoNirw3CFhy",
+    "name": "Engineering",
+    "type": "BILLING",
+    "directoryGroupId": null,
+    "memberCount": 2,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-25T16:50:00.000Z",
+    "members": [
+      {
+        "userId": "user_abc123",
+        "name": "Alex Developer",
+        "email": "alex@company.com",
+        "joinedAt": "2024-01-25T16:50:00.000Z"
+      },
+      {
+        "userId": "user_def456",
+        "name": "Sam Engineer",
+        "email": "sam@company.com",
+        "joinedAt": "2024-01-25T16:50:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+### Remove Members from Group
+
+DELETE
+
+`/teams/groups/:groupId/members`
+
+Remove team members from a billing group. Removed members are moved to the `Unassigned` group. Rate limited to 20 requests per minute per team.
+
+Billing groups synced with SCIM cannot be modified via the API. All member changes for SCIM-synced groups must be handled via [SCIM](https://cursor.com/docs/account/teams/scim.md).
+
+#### Parameters
+
+`groupId` string Required
+
+The encoded group ID
+
+`userIds` string\[] Required
+
+Array of encoded user IDs to remove
+
+```bash
+curl -X DELETE https://api.cursor.com/teams/groups/group_PDSPmvukpYgZEDXsoNirw3CFhy/members \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userIds": ["user_def456"]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "group": {
+    "id": "group_PDSPmvukpYgZEDXsoNirw3CFhy",
+    "name": "Engineering",
+    "type": "BILLING",
+    "directoryGroupId": null,
+    "memberCount": 1,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-25T17:00:00.000Z",
+    "members": [
+      {
+        "userId": "user_abc123",
+        "name": "Alex Developer",
+        "email": "alex@company.com",
+        "joinedAt": "2024-01-25T16:50:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+## Model access
+
+Model access routes are in preview and may change. Paths, response fields, and error behavior can shift before general availability.
+
+Read and update the team's [model access](https://cursor.com/docs/enterprise/model-and-integration-management.md#model-access-control) policy: whether a custom policy is on, defaults for new providers and models, per-provider / per-model toggles, and per-model settings such as Fast and reasoning effort.
+
+Enabling a model without parameter settings leaves it on the catalog defaults. Use per-model settings when those defaults, such as Fast, do not match your team's policy.
+
+These routes return the **team baseline**. Organization Groups can still widen access for some members; group allowlists are not part of this API. Personal API key (BYOK) controls stay in the dashboard.
+
+For org-wide reads and bulk toggles across linked teams, see the [Organization API model access](https://cursor.com/docs/account/organizations/organization-admin-api.md#model-access) routes.
+
+- **Availability**: Teams with model access control enabled
+- **Authentication**: Team API key (Basic auth). Reads require **`models:read`**. Writes require **`models:*`**. Keys with **`admin:*`** work for both. Generic **`read:*`** keys cannot call these routes.
+- **Provider and model IDs**: Path segments are catalog ids such as `anthropic` and `claude-opus-4-6`, not display names. GET responses include display names.
+- **Configuration first**: Provider and model reads and writes return **409** while `state` is `unrestricted` (or `legacy`). The first `PUT /teams/model-access/configuration` with defaults on an unrestricted team turns policy on and seeds the current catalog (same idea as the first save on the Models page). Later configuration PUTs with defaults update defaults only and leave existing toggles in place.
+- **Return to unrestricted**: `PUT /teams/model-access/configuration` with `{ "state": "unrestricted" }` clears the custom policy so `state` becomes `unrestricted` again.
+- **Rate limits**: 20 requests per minute. Writes appear in team audit logs as `team_settings` events. See [rate limits and best practices](https://cursor.com/docs/api.md#rate-limits).
+
+### Get Model Access Configuration
+
+GET
+
+`/teams/model-access/configuration`
+
+Return whether the team has a custom model-access policy and the defaults for newly seen providers and models.
+
+#### Response Fields
+
+`teamId` number
+
+Integer team ID implied by the API key.
+
+`state` string
+
+One of `unrestricted`, `custom`, or `legacy`.
+
+`newProviderDefault` string | null
+
+`enabled` or `disabled` when `state` is `custom`. Otherwise `null`.
+
+`newModelDefault` string | null
+
+`enabled` or `disabled` when `state` is `custom`. Otherwise `null`.
+
+```bash
+curl -X GET https://api.cursor.com/teams/model-access/configuration \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "teamId": 7,
+  "state": "unrestricted",
+  "newProviderDefault": null,
+  "newModelDefault": null
+}
+```
+
+### Update Model Access Configuration
+
+PUT
+
+`/teams/model-access/configuration`
+
+Create a custom policy, update defaults, or return the team to unrestricted.
+
+Send either:
+
+- `{ "state": "unrestricted" }` to clear the custom policy (and legacy allowed/blocked lists) so `state` becomes `unrestricted`
+- `{ "newProviderDefault", "newModelDefault" }` to create or update a custom policy (backward-compatible shorthand for `state: "custom"`)
+
+The first defaults PUT on an unrestricted team creates a custom policy and seeds catalog entries. Later defaults PUTs update defaults only and leave existing toggles in place.
+
+#### Request body
+
+`state` string
+
+Optional. Use `unrestricted` to clear policy. Omit when sending defaults.
+
+`newProviderDefault` string
+
+`enabled` or `disabled`. Required when creating or updating a custom policy; omit when `state` is `unrestricted`.
+
+`newModelDefault` string
+
+`enabled` or `disabled`. Required when creating or updating a custom policy; omit when `state` is `unrestricted`.
+
+```bash
+curl -X PUT https://api.cursor.com/teams/model-access/configuration \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "newProviderDefault": "disabled",
+    "newModelDefault": "enabled"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "teamId": 7,
+  "state": "custom",
+  "newProviderDefault": "disabled",
+  "newModelDefault": "enabled"
+}
+```
+
+Return the team to unrestricted:
+
+```bash
+curl -X PUT https://api.cursor.com/teams/model-access/configuration \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{ "state": "unrestricted" }'
+```
+
+**Response:**
+
+```json
+{
+  "teamId": 7,
+  "state": "unrestricted",
+  "newProviderDefault": null,
+  "newModelDefault": null
+}
+```
+
+### List Model Access Providers
+
+GET
+
+`/teams/model-access/providers`
+
+List catalog providers and models with resolved enabled flags and per-model `parameters`. Returns **409** when the team does not have a custom policy.
+
+Each model includes a catalog-driven `parameters` array. Parameter ids and supported values come from the model catalog (for example `fast`, `reasoning`, `effort`, `context`). Use this GET to discover which parameters a model supports before writing.
+
+#### Model `parameters` fields
+
+`id` string
+
+Parameter id (for example `fast` or `reasoning`).
+
+`displayName` string
+
+Human-readable label.
+
+`supportedValues` string\[]
+
+All values the catalog allows for this parameter on this model.
+
+`allowedValues` string\[]
+
+Values currently allowed by the team policy.
+
+`configuredDefaultValue` string | null
+
+Admin-pinned default, or `null` when unset.
+
+`catalogDefaultValue` string | null
+
+Catalog default for the parameter on this model.
+
+```bash
+curl -X GET https://api.cursor.com/teams/model-access/providers \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "teamId": 7,
+  "state": "custom",
+  "providers": [
+    {
+      "id": "anthropic",
+      "displayName": "Anthropic",
+      "enabled": true,
+      "models": [
+        {
+          "id": "claude-opus-4-6",
+          "displayName": "Opus 4.6",
+          "enabled": true,
+          "parameters": [
+            {
+              "id": "fast",
+              "displayName": "Fast",
+              "supportedValues": ["false", "true"],
+              "allowedValues": ["false", "true"],
+              "configuredDefaultValue": null,
+              "catalogDefaultValue": "true"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "openai",
+      "displayName": "OpenAI",
+      "enabled": true,
+      "models": [
+        {
+          "id": "gpt-5.4",
+          "displayName": "GPT-5.4",
+          "enabled": true,
+          "parameters": [
+            {
+              "id": "reasoning",
+              "displayName": "Reasoning",
+              "supportedValues": ["low", "medium", "high", "xhigh", "max"],
+              "allowedValues": ["low", "medium", "high"],
+              "configuredDefaultValue": "high",
+              "catalogDefaultValue": "medium"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Update Model Access Provider
+
+PUT
+
+`/teams/model-access/providers/:provider`
+
+Enable or disable a provider. Returns **409** when the team is still `unrestricted` or `legacy`.
+
+#### Parameters
+
+`provider` string Required
+
+Catalog provider id (for example `openai` or `anthropic`).
+
+#### Request body
+
+`enabled` boolean Required
+
+```bash
+curl -X PUT https://api.cursor.com/teams/model-access/providers/openai \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": false}'
+```
+
+### List Models for a Provider
+
+GET
+
+`/teams/model-access/providers/:provider/models`
+
+List models for one provider with resolved enabled flags and per-model `parameters`. The parameter fields match the [providers response](https://cursor.com/docs/account/teams/admin-api.md#list-model-access-providers). Returns **409** when the team does not have a custom policy.
+
+#### Parameters
+
+`provider` string Required
+
+Catalog provider id (for example `anthropic`).
+
+```bash
+curl -X GET https://api.cursor.com/teams/model-access/providers/anthropic/models \
+  -u YOUR_API_KEY:
+```
+
+### Update Model Access Model
+
+PUT
+
+`/teams/model-access/providers/:provider/models/:model`
+
+Enable or disable a single model, and optionally set per-model parameter restrictions and defaults. Returns **409** when the team is still `unrestricted` or `legacy`.
+
+#### Parameters
+
+`provider` string Required
+
+Catalog provider id (for example `anthropic`).
+
+`model` string Required
+
+Catalog model id (for example `claude-opus-4-6`).
+
+#### Request body
+
+`enabled` boolean Required
+
+`parameters` object
+
+Optional map from parameter id to settings. Omitted parameters and fields are left unchanged.
+
+- `allowedValues` string\[] | null: Restrict which values members may pick. Pass `null` to clear the restriction.
+- `defaultValue` string | null: Default value for the team. Must be within `allowedValues` when a restriction is set. Pass `null` to restore the catalog default.
+
+Unknown parameter ids or values, empty `allowedValues` arrays, defaults outside `allowedValues`, and settings that resolve to no valid model variant return **400**.
+
+Disable Fast on a model:
+
+```bash
+curl -X PUT https://api.cursor.com/teams/model-access/providers/anthropic/models/claude-opus-4-6 \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "enabled": true,
+    "parameters": {
+      "fast": { "allowedValues": ["false"] }
+    }
+  }'
+```
+
+Set allowed reasoning levels and a default:
+
+```bash
+curl -X PUT https://api.cursor.com/teams/model-access/providers/openai/models/gpt-5.4 \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "enabled": true,
+    "parameters": {
+      "reasoning": {
+        "allowedValues": ["low", "medium", "high"],
+        "defaultValue": "high"
+      }
+    }
+  }'
+```
+
+Clear a restriction and restore the catalog default:
+
+```bash
+curl -X PUT https://api.cursor.com/teams/model-access/providers/openai/models/gpt-5.4 \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "enabled": true,
+    "parameters": {
+      "reasoning": {
+        "allowedValues": null,
+        "defaultValue": null
+      }
+    }
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "id": "gpt-5.4",
+  "displayName": "GPT-5.4",
+  "enabled": true,
+  "provider": "openai",
+  "parameters": [
+    {
+      "id": "reasoning",
+      "displayName": "Reasoning",
+      "supportedValues": ["low", "medium", "high", "xhigh", "max"],
+      "allowedValues": ["low", "medium", "high", "xhigh", "max"],
+      "configuredDefaultValue": null,
+      "catalogDefaultValue": "medium"
+    }
+  ]
+}
+```
+
+### Errors
+
+Error bodies use:
+
+```json
+{ "code": "error", "message": "…" }
+```
+
+| Status | When                                                                                                                                                                                                                              |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `401`  | Bad key, or missing `models:read` / `models:*` (or `admin:*`)                                                                                                                                                                     |
+| `403`  | Model access control is not available for that team                                                                                                                                                                               |
+| `409`  | Provider or model read or write while `state` is `unrestricted` or `legacy`                                                                                                                                                       |
+| `400`  | Unknown provider, model, parameter id, or parameter value; invalid body; empty `allowedValues`; default outside `allowedValues`; settings that resolve to no valid model variant; or a Smart Auto required model would be blocked |
+
+## Grok Bot
+
+Enable Grok Bot and manage capabilities, Enforce Auto-Review, group access, network policy, team rules, and setup scripts.
+
+- **Authentication**: Team API key (Basic auth). Reads require **`read:*`** or **`admin:*`**. Writes require **`admin:*`**. A write with a `read:*` key returns `401`.
+- **Rate limits**: 20 requests per minute per team per endpoint. When you exceed the limit, the API returns `429` with `Retry-After: 60`. See [rate limits](https://cursor.com/docs/api.md#rate-limits).
+- **Reads on every plan**: `GET /grok-bot/access`, `/network`, and `/auto-review` return the effective policy on every plan. Writes return `403` when the feature is not available to the team.
+
+### Enable Grok Bot
+
+POST
+
+`/grok-bot/enable`
+
+Enable Grok Bot for the team. The first enable on an eligible Enterprise team starts the trial. Returns 204 No Content on success.
+
+```bash
+curl -X POST https://api.cursor.com/grok-bot/enable \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```text
+204 No Content
+```
+
+### Disable Grok Bot
+
+POST
+
+`/grok-bot/disable`
+
+Disable Grok Bot for the team. Members lose access; their computers are not deleted. Returns **403** on Teams plans.
+
+```bash
+curl -X POST https://api.cursor.com/grok-bot/disable \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```text
+204 No Content
+```
+
+### Get Grok Bot Capabilities
+
+GET
+
+`/grok-bot/capabilities`
+
+Return the team's Grok Bot capabilities.
+
+#### Response Fields
+
+`enabled` boolean
+
+Whether Grok Bot is enabled. Read-only.
+
+`cloudAgents` boolean
+
+Whether members can delegate work to Cloud Agents.
+
+`templateSharing` string | null
+
+`all`, `team_only`, `none`, or `null` for the team default.
+
+`actionRecording` boolean
+
+Whether Action Recording is enabled.
+
+`localExecution` string | null
+
+Team ceiling for Bots on a member's machine: `never`, `ask`, `always`, or `null` for no ceiling.
+
+`localEgressAllowed` boolean
+
+Whether members can route Grok Bot's web traffic through their own computer (**Allow Local Egress Routing**; Enterprise only).
+
+```bash
+curl -X GET https://api.cursor.com/grok-bot/capabilities \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "enabled": true,
+  "cloudAgents": true,
+  "templateSharing": "team_only",
+  "actionRecording": false,
+  "localExecution": "ask",
+  "localEgressAllowed": true
+}
+```
+
+### Update Grok Bot Capabilities
+
+PATCH
+
+`/grok-bot/capabilities`
+
+Update Grok Bot capabilities. Omitted fields stay unchanged. Returns **403** when a field is not available to the team.
+
+`enabled` is read-only. Use [Enable Grok Bot](https://cursor.com/docs/account/teams/admin-api.md#enable-grok-bot) or [Disable Grok Bot](https://cursor.com/docs/account/teams/admin-api.md#disable-grok-bot). Send at least one field.
+
+#### Parameters
+
+`cloudAgents` boolean
+
+Whether members can delegate work to Cloud Agents.
+
+`templateSharing` string | null
+
+`all`, `team_only`, `none`, or `null` to restore the team default.
+
+`actionRecording` boolean
+
+Whether Action Recording is enabled.
+
+`localExecution` string | null
+
+`never`, `ask`, `always`, or `null` to clear the team ceiling.
+
+`localEgressAllowed` boolean
+
+Whether members can route Grok Bot's web traffic through their own computer (**Allow Local Egress Routing**; Enterprise only). Returns **403** when local egress routing controls are not enabled for the team.
+
+```bash
+curl -X PATCH https://api.cursor.com/grok-bot/capabilities \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cloudAgents": false,
+    "localExecution": "never",
+    "localEgressAllowed": false
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "enabled": true,
+  "cloudAgents": false,
+  "templateSharing": "team_only",
+  "actionRecording": false,
+  "localExecution": "never",
+  "localEgressAllowed": false
+}
+```
+
+### Get Enforce Auto-Review
+
+GET
+
+`/grok-bot/auto-review`
+
+Return the team's Enforce Auto-Review policy.
+
+#### Response Fields
+
+`enforced` boolean
+
+When `true`, every member must keep Enforce Auto-Review on.
+
+`rules` object
+
+Team `allow` and `block` instruction lists that feed Auto Review.
+
+```bash
+curl -X GET https://api.cursor.com/grok-bot/auto-review \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "enforced": true,
+  "rules": {
+    "allow": ["Read-only git commands"],
+    "block": ["Publishing releases"]
+  }
+}
+```
+
+### Replace Enforce Auto-Review
+
+PUT
+
+`/grok-bot/auto-review`
+
+Replace the team's Enforce Auto-Review policy. Returns **403** when Enforce Auto-Review is not available to the team.
+
+Empty `allow` and `block` lists keep stored instructions if your team can't set Auto-Review rules. Non-empty lists return **403** in that case.
+
+#### Parameters
+
+`enforced` boolean Required
+
+When `true`, every member must keep Enforce Auto-Review on.
+
+`rules` object Required
+
+Allow and block instruction lists.
+
+- `allow` string\[]: Up to 20 instructions, 1,000 characters each. Trimmed and deduped.
+- `block` string\[]: Up to 20 instructions, 1,000 characters each. Trimmed and deduped.
+
+```bash
+curl -X PUT https://api.cursor.com/grok-bot/auto-review \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "enforced": true,
+    "rules": {
+      "allow": ["Read-only git commands"],
+      "block": ["Publishing releases"]
+    }
+  }'
+```
+
+Lock Enforce Auto-Review without changing instructions:
+
+```bash
+curl -X PUT https://api.cursor.com/grok-bot/auto-review \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "enforced": true,
+    "rules": { "allow": [], "block": [] }
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "enforced": true,
+  "rules": {
+    "allow": ["Read-only git commands"],
+    "block": ["Publishing releases"]
+  }
+}
+```
+
+### Get Grok Bot Access
+
+GET
+
+`/grok-bot/access`
+
+Return who on the team can use Grok Bot.
+
+#### Response Fields
+
+`mode` string
+
+`all` or `limited`.
+
+`groups` array
+
+Selected groups when `mode` is `limited`. Each item has an encoded `id` and a `name`. Empty when `mode` is `all`.
+
+```bash
+curl -X GET https://api.cursor.com/grok-bot/access \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "mode": "limited",
+  "groups": [
+    {
+      "id": "group_PDSPmvukpYgZEDXsoNirw3CFhy",
+      "name": "Platform Engineering"
+    }
+  ]
+}
+```
+
+### Update Grok Bot Access
+
+PUT
+
+`/grok-bot/access`
+
+Set who on the team can use Grok Bot. Returns **403** when group access is not available to the team.
+
+#### Parameters
+
+`mode` string Required
+
+`all` for every member, or `limited` for selected billing groups.
+
+`groupIds` array
+
+Encoded group IDs from [List Groups](https://cursor.com/docs/account/teams/admin-api.md#list-groups). Required when `mode` is `limited` (1-100, duplicates count once). Omit when `mode` is `all`.
+
+Unknown or malformed IDs, an empty limited list, or group IDs with `all` return **400**.
+
+```bash
+curl -X PUT https://api.cursor.com/grok-bot/access \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mode": "limited",
+    "groupIds": ["group_PDSPmvukpYgZEDXsoNirw3CFhy"]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "mode": "limited",
+  "groups": [
+    {
+      "id": "group_PDSPmvukpYgZEDXsoNirw3CFhy",
+      "name": "Platform Engineering"
+    }
+  ]
+}
+```
+
+### Get Grok Bot Network Policy
+
+GET
+
+`/grok-bot/network`
+
+Return the team's Grok Bot network policy.
+
+#### Response Fields
+
+`egressMode` string
+
+`unset`, `allow_all`, `default_with_network_settings`, or `network_settings_only`.
+
+`allowlist` array
+
+Allowed destinations: domains, wildcard domains, IP addresses, CIDR ranges, or `host-or-CIDR:port` such as `54.85.223.0/24:3306`.
+
+`locked` boolean
+
+When `true`, group policies cannot override the team policy.
+
+```bash
+curl -X GET https://api.cursor.com/grok-bot/network \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "egressMode": "network_settings_only",
+  "allowlist": ["linkedin.com", "*.crunchbase.com", "10.0.0.0/8", "54.85.223.0/24:3306"],
+  "locked": true
+}
+```
+
+### Replace Grok Bot Network Policy
+
+PUT
+
+`/grok-bot/network`
+
+Replace the team's Grok Bot network policy. Returns **403** on Teams plans.
+
+#### Parameters
+
+`egressMode` string Required
+
+One of:
+
+- `unset`: Apply no policy
+- `allow_all`: Allow every destination
+- `default_with_network_settings`: Cursor defaults plus the allowlist
+- `network_settings_only`: The allowlist and destinations required to run Grok Bot
+
+`allowlist` array Required
+
+Up to 500 destinations, 1 to 253 characters each. Domains, wildcard domains, IP addresses, CIDR ranges, or `host-or-CIDR:port` such as `54.85.223.0/24:3306`.
+
+`locked` boolean Required
+
+When `true`, group policies cannot override the team policy.
+
+Partial bodies, unknown modes, and invalid allowlist entries return **400**.
+
+```bash
+curl -X PUT https://api.cursor.com/grok-bot/network \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "egressMode": "network_settings_only",
+    "allowlist": ["linkedin.com", "*.crunchbase.com", "10.0.0.0/8", "54.85.223.0/24:3306"],
+    "locked": true
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "egressMode": "network_settings_only",
+  "allowlist": ["linkedin.com", "*.crunchbase.com", "10.0.0.0/8", "54.85.223.0/24:3306"],
+  "locked": true
+}
+```
+
+### List Grok Bot Team Rules
+
+GET
+
+`/grok-bot/team-rules`
+
+List Grok Bot team rules, newest first.
+
+#### Parameters
+
+`limit` number
+
+Results per page. Default: `50`. Maximum: `100`.
+
+`cursor` string
+
+Opaque cursor from the previous `nextCursor`.
+
+```bash
+curl -X GET "https://api.cursor.com/grok-bot/team-rules?limit=50" \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "teamRules": [
+    {
+      "id": "rule_PDSPmvukpYgZEDXsoNirw3CFhy",
+      "name": "Ask before publishing",
+      "content": "Never publish a release without an explicit go from the requester.",
+      "enabled": true,
+      "scope": "grokBot",
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "nextCursor": null
+}
+```
+
+### Create Grok Bot Team Rule
+
+POST
+
+`/grok-bot/team-rules`
+
+Create a Grok Bot team rule. A team can store up to 50 Grok Bot rules. Returns **201**.
+
+#### Parameters
+
+`name` string Required
+
+1 to 255 characters.
+
+`content` string Required
+
+1 to 30,000 characters.
+
+`enabled` boolean Required
+
+Whether the rule is active.
+
+```bash
+curl -X POST https://api.cursor.com/grok-bot/team-rules \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Ask before publishing",
+    "content": "Never publish a release without an explicit go from the requester.",
+    "enabled": true
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "teamRule": {
+    "id": "rule_PDSPmvukpYgZEDXsoNirw3CFhy",
+    "name": "Ask before publishing",
+    "content": "Never publish a release without an explicit go from the requester.",
+    "enabled": true,
+    "scope": "grokBot",
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+### Update Grok Bot Team Rule
+
+PATCH
+
+`/grok-bot/team-rules/:id`
+
+Update a Grok Bot team rule. Returns **404** when the rule does not exist.
+
+Send at least one field.
+
+#### Parameters
+
+`id` string Required
+
+Encoded rule ID from the list or create response.
+
+`name` string
+
+1 to 255 characters.
+
+`content` string
+
+1 to 30,000 characters.
+
+`enabled` boolean
+
+Whether the rule is active.
+
+```bash
+curl -X PATCH https://api.cursor.com/grok-bot/team-rules/rule_PDSPmvukpYgZEDXsoNirw3CFhy \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "enabled": false
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "teamRule": {
+    "id": "rule_PDSPmvukpYgZEDXsoNirw3CFhy",
+    "name": "Ask before publishing",
+    "content": "Never publish a release without an explicit go from the requester.",
+    "enabled": false,
+    "scope": "grokBot",
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+### Delete Grok Bot Team Rule
+
+DELETE
+
+`/grok-bot/team-rules/:id`
+
+Delete a Grok Bot team rule. Returns 204 No Content on success.
+
+#### Parameters
+
+`id` string Required
+
+Encoded rule ID to delete.
+
+```bash
+curl -X DELETE https://api.cursor.com/grok-bot/team-rules/rule_PDSPmvukpYgZEDXsoNirw3CFhy \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```text
+204 No Content
+```
+
+### List Grok Bot Setup Manifests
+
+GET
+
+`/grok-bot/setup-manifests`
+
+List Grok Bot setup manifests, ordered by `id`.
+
+#### Parameters
+
+`limit` number
+
+Results per page. Default: `50`. Maximum: `100`.
+
+`cursor` string
+
+Opaque cursor from the previous `nextCursor`.
+
+```bash
+curl -X GET "https://api.cursor.com/grok-bot/setup-manifests?limit=50" \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```json
+{
+  "manifests": [
+    {
+      "id": "toolchain",
+      "scripts": [
+        { "id": "node", "setup": "mise install node@22", "check": "node --version" },
+        { "id": "pnpm", "setup": "npm i -g pnpm" }
+      ]
+    }
+  ],
+  "nextCursor": null
+}
+```
+
+### Upsert Grok Bot Setup Manifest
+
+PUT
+
+`/grok-bot/setup-manifests/:manifestId`
+
+Create or replace a setup manifest. A team can store up to 100 manifests. Returns **409** when the manifest changed during the request.
+
+#### Parameters
+
+`manifestId` string Required
+
+1 to 128 characters, starting with a letter or number, then letters, numbers, `.`, `_`, or `-`.
+
+`scripts` array Required
+
+Setup scripts.
+
+- `id` string: Same format as `manifestId`
+- `setup` string: Non-empty install command
+- `check` string: Optional verification command
+
+```bash
+curl -X PUT https://api.cursor.com/grok-bot/setup-manifests/toolchain \
+  -u YOUR_API_KEY: \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scripts": [
+      { "id": "node", "setup": "mise install node@22", "check": "node --version" },
+      { "id": "pnpm", "setup": "npm i -g pnpm" }
+    ]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "manifest": {
+    "id": "toolchain",
+    "scripts": [
+      { "id": "node", "setup": "mise install node@22", "check": "node --version" },
+      { "id": "pnpm", "setup": "npm i -g pnpm" }
+    ]
+  }
+}
+```
+
+### Delete Grok Bot Setup Manifest
+
+DELETE
+
+`/grok-bot/setup-manifests/:manifestId`
+
+Delete a setup manifest. Returns 204 No Content on success.
+
+#### Parameters
+
+`manifestId` string Required
+
+Manifest key to delete.
+
+```bash
+curl -X DELETE https://api.cursor.com/grok-bot/setup-manifests/toolchain \
+  -u YOUR_API_KEY:
+```
+
+**Response:**
+
+```text
+204 No Content
+```
+
+### Errors
+
+Error bodies use:
+
+```json
+{ "code": "error", "message": "…" }
+```
+
+| Status | When                                                                                                                                           |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `401`  | Bad key, missing `read:*` / `admin:*`, or Grok Bot Admin API not enabled for the team                                                          |
+| `403`  | The write is not available to the team or its plan                                                                                             |
+| `404`  | A well-formed rule or manifest ID in the path does not exist                                                                                   |
+| `409`  | A setup manifest changed during the request                                                                                                    |
+| `400`  | Invalid body or ID; empty PATCH; `enabled` on capabilities; unknown group; too many rules or manifests; no owner to attribute a setup manifest |
+| `429`  | The endpoint's rate limit was exceeded                                                                                                         |
+
+
+---
+
+## Sitemap
+
+[Overview of all docs pages](/llms.txt)

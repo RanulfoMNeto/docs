@@ -1,0 +1,34 @@
+We recommend using [Grok 4.7](https://cursor.com/docs/models/grok-4-7.md) for stronger self-verification and longer-running work. Grok 4.6 remains available.
+
+Grok 4.6 is a frontier model from Cursor and SpaceXAI for complex coding and knowledge work. It builds on Grok 4.5 with improved instruction following and long-horizon agentic work.
+
+## Strengths
+
+- Handles long-running tasks that require using tools, checking results, and adjusting its approach.
+- Works across code, documents, spreadsheets, and PDFs.
+- Follows detailed instructions more reliably than Grok 4.5.
+
+## Effort levels
+
+Grok 4.6 supports four effort levels: xhigh, high (default), medium, and low. Higher effort gives the model more time to work through difficult tasks.
+
+Fast is the default speed tier on Premium and higher, and on the legacy Pro, Pro+, and Ultra plans. On Plus and on the legacy [Start plan](https://cursor.com/docs/account/pricing/legacy-cursor-plans.md#start-india-only) (India only), Grok 4.6 is fixed at medium effort at standard speed.
+
+## Tools
+
+Grok 4.6 has access to all agent tools when used with Cursor, including:
+
+Learn more about [how tools work](https://cursor.com/docs/agent/overview.md#tools) and [tool calling fundamentals](https://cursor.com/learn/tool-calling.md).
+
+## Pricing
+
+Grok 4.6 draws from the weekly pool of [Cursor models](https://cursor.com/docs/models-and-pricing.md#cursor-models) included with every paid plan, alongside Grok 4.7, Grok 4.5, and Composer 2.5. On [legacy Cursor plans](https://cursor.com/docs/account/pricing/legacy-cursor-plans.md), it draws from the monthly Cursor Models pool.
+
+Additional usage beyond the pool at standard speed is priced at $2/M input tokens, $0.50/M cached input tokens, and $6/M output tokens. The Fast variant is priced at $4/M input tokens, $1/M cached input tokens, and $12/M output tokens. All prices are per million tokens.
+
+
+---
+
+## Sitemap
+
+[Overview of all docs pages](/llms.txt)
